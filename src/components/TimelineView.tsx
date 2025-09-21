@@ -68,27 +68,6 @@ export function TimelineView({ onProjectDetail }: TimelineViewProps) {
     const SKILLS_WIDTH = 200
     const PROJECT_LANE_WIDTH = 280 // 각 프로젝트 레인 너비
 
-    // 텍스트 줄바꿈 헬퍼 함수
-    const wrapText = (text: string, maxLength: number = 20): string => {
-        if (text.length <= maxLength) return text
-
-        const words = text.split(' ')
-        const lines: string[] = []
-        let currentLine = ''
-
-        for (const word of words) {
-            if ((currentLine + ' ' + word).length <= maxLength) {
-                currentLine = currentLine ? currentLine + ' ' + word : word
-            } else {
-                if (currentLine) lines.push(currentLine)
-                currentLine = word
-            }
-        }
-
-        if (currentLine) lines.push(currentLine)
-        return lines.join('\n')
-    }
-
     // 연도 범위 계산 (2021년 9월부터 시작)
     const totalYears = developerData.yearRange.end - developerData.yearRange.start + 1
     const TOTAL_HEIGHT = (totalYears * MONTH_HEIGHT * 12) - (8 * MONTH_HEIGHT)
@@ -98,7 +77,7 @@ export function TimelineView({ onProjectDetail }: TimelineViewProps) {
     /**
      * 경력 바의 스타일을 계산 (연도 넘어가는 경력 지원)
      */
-    const getExperienceBarStyle = (experience: Experience, index: number) => {
+    const getExperienceBarStyle = (experience: Experience) => {
         const expStartYear = experience.startYear
         const expEndYear = experience.endYear
 
@@ -622,7 +601,7 @@ export function TimelineView({ onProjectDetail }: TimelineViewProps) {
                 <motion.div
                     key={experience.id}
                     className="absolute px-2 group"
-                    style={{ ...getExperienceBarStyle(experience, idx), width: `${EXPERIENCE_WIDTH - 16}px` }}
+                    style={{ ...getExperienceBarStyle(experience), width: `${EXPERIENCE_WIDTH - 16}px` }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -722,7 +701,7 @@ export function TimelineView({ onProjectDetail }: TimelineViewProps) {
 
 
                 {/* 타임라인의 각 프로젝트 스킬들 */}
-                {developerData.projects.map((project, projectIdx) => {
+                {developerData.projects.map((project) => {
                     const yearOffset = (project.startYear - developerData.yearRange.start) * MONTH_HEIGHT * 12
                     const projectTop = yearOffset + (project.startMonth - 9) * MONTH_HEIGHT
 

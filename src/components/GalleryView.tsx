@@ -6,7 +6,7 @@ import { SkillBadge } from './ui/SkillBadge'
 import { ProjectDetailPage } from './ProjectDetailPage'
 import { ExperienceDetailPage } from './ExperienceDetailPage'
 import { Calendar, Briefcase, Code, User } from 'lucide-react'
-import type { Experience, Project, DetailedItem, DetailedProject, DetailedExperience } from '../types'
+import type { Experience, Project, DetailedItem } from '../types'
 import { isDetailedProject, isDetailedExperience } from '../types'
 
 const fadeInUp = {
@@ -15,7 +15,7 @@ const fadeInUp = {
     transition: { duration: 0.8, ease: "easeOut" }
 }
 
-const staggerContainer = {
+const staggerContainer = { 
     initial: {},
     animate: {
         transition: {
@@ -135,7 +135,7 @@ export function GalleryView() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {experienceItems.map((item, index) => {
-                            const { icon: Icon, label, color, bgColor } = getItemTypeInfo(item)
+                            const { label, color } = getItemTypeInfo(item)
                             return (
                                 <motion.article
                                     key={item.id}
@@ -190,7 +190,7 @@ export function GalleryView() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {workProjectItems.map((item, index) => {
-                            const { icon: Icon, label, color, bgColor } = getItemTypeInfo(item)
+                            const { label, color } = getItemTypeInfo(item)
                             const globalIndex = experienceItems.length + index + 1
                             return (
                                 <motion.article
@@ -253,7 +253,7 @@ export function GalleryView() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {personalProjectItems.map((item, index) => {
-                            const { icon: Icon, label, color, bgColor } = getItemTypeInfo(item)
+                            const { label, color } = getItemTypeInfo(item)
                             const globalIndex = experienceItems.length + workProjectItems.length + index + 1
                             return (
                                 <motion.article

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Calendar } from 'lucide-react'
+import { Calendar } from 'lucide-react'
 import type { DetailedProject } from '../types'
 import { SkillBadge } from './ui/SkillBadge'
 
