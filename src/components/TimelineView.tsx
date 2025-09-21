@@ -1,8 +1,13 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-import { timelineYears } from '../data/timelineData'
-import type { SkillTag, StackedSkills } from '../types'
+import { developerData } from '../data/devloperData'
+import { detailedDeveloperData } from '../data/detailedDeveloperData'
+import type { SkillTag, StackedSkills, Project, Experience } from '../types'
+import { YearDivider } from './YearDivider'
+import { SkillBadge } from './ui/SkillBadge'
+import { PhilosophySidebar } from './PhilosophySidebar'
 
+// 애니메이션 설정
 const staggerContainer = {
     initial: {},
     animate: {
@@ -12,513 +17,895 @@ const staggerContainer = {
     }
 }
 
-export function TimelineView() {
+// 연결선 타입 정의
+interface Connection {
+    id: string
+    fromX: number
+    fromY: number
+    toX: number
+    toY: number
+    color: string
+}
+
+interface SidebarData {
+    id: string;
+    number: string;
+    title: string;
+    description: string;
+    color: string;
+    details: string;
+    type?: 'philosophy' | 'project';
+    role?: string;
+    teamSize?: number;
+    skills?: Array<{ id: string; name: string; category: string; experience: string }>;
+    achievements?: string[];
+    fullDescription?: string;
+}
+
+interface TimelineViewProps {
+    onProjectDetail?: (projectId: string) => void;
+}
+
+export function TimelineView({ onProjectDetail }: TimelineViewProps) {
+    // ===== 상태 관리 =====
     const [stackedSkills, setStackedSkills] = useState<StackedSkills>({
         frontend: [],
         backend: [],
         other: []
     })
-    
-    const [connections, setConnections] = useState<Array<{
-        id: string
-        fromX: number
-        fromY: number
-        toX: number
-        toY: number
-        color: string
-    }>>([])
-    
+
+    const [isAllSkillsStacked, setIsAllSkillsStacked] = useState<boolean>(false)
+    const [connections, setConnections] = useState<Connection[]>([])
+    const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false)
     const containerRef = useRef<HTMLDivElement>(null)
+    const sidebarRef = useRef<HTMLDivElement>(null)
 
-    const monthHeight = 80;
-    const columnWidth = 200;
-    
-    // 경력 항목들 사이의 간격을 계산하는 함수
-    const getExperienceBarStyle = (year: number, startMonth: number, endMonth?: number, yearIndex: number, globalIndex: number) => {
-        const yearOffset = yearIndex * monthHeight * 12;
-        const monthOffset = (startMonth - 1) * monthHeight;
-        const spacingOffset = globalIndex * 15; // 전체 경력 순서에 따른 간격
-        
-        const top = yearOffset + monthOffset + spacingOffset;
-        const baseHeight = endMonth 
-            ? (endMonth - startMonth + 1) * monthHeight 
-            : (13 - startMonth) * monthHeight;
-        const adjustedHeight = Math.max(baseHeight - 10, monthHeight); // 최소 높이 보장
-        
-        return {
-            top: `${top}px`,
-            height: `${adjustedHeight}px`
-        };
-    };
+    // ===== 상수 정의 =====
+    const MONTH_HEIGHT = 80
+    const EXPERIENCE_WIDTH = 280
+    const PROJECT_WIDTH = 560 // 2줄 고정 (280px × 2)
+    const SKILLS_WIDTH = 200
+    const PROJECT_LANE_WIDTH = 280 // 각 프로젝트 레인 너비
 
-    const getProjectBarStyle = (year: number, startMonth: number, endMonth?: number, yearIndex: number, itemIndex: number = 0) => {
-        const yearOffset = yearIndex * monthHeight * 12;
-        const top = yearOffset + (startMonth - 1) * monthHeight + (itemIndex * 8);
-        const height = endMonth 
-            ? (endMonth - startMonth + 1) * monthHeight - (itemIndex > 0 ? 5 : 0)
-            : (13 - startMonth) * monthHeight - (itemIndex > 0 ? 5 : 0);
-        
-        return {
-            top: `${top}px`,
-            height: `${height}px`
-        };
-    };
+    // 텍스트 줄바꿈 헬퍼 함수
+    const wrapText = (text: string, maxLength: number = 20): string => {
+        if (text.length <= maxLength) return text
 
-    const getEventColor = (type: string) => {
-        const colors: Record<string, string> = {
-            experience: 'bg-gray-100 border-l-red-600',
-            education: 'bg-gray-100 border-l-violet-600',
-            project: 'bg-gray-100 border-l-emerald-600',
-            skill: 'bg-gray-100 border-l-orange-600'
-        };
-        return colors[type] || '';
-    };
+        const words = text.split(' ')
+        const lines: string[] = []
+        let currentLine = ''
 
-    const getEventPointColor = (type: string) => {
-        const colors: Record<string, string> = {
-            experience: 'text-red-600',
-            education: 'text-violet-600',
-            project: 'text-emerald-600',
-            skill: 'text-orange-600'
-        };
-        return colors[type] || '';
-    };
-
-    const getSkillColor = (category: string) => {
-        const colors: Record<string, string> = {
-            frontend: 'bg-gray-200 border-gray-300',
-            backend: 'bg-gray-200 border-gray-300', 
-            other: 'bg-gray-200 border-gray-300'
-        };
-        return colors[category] || 'bg-gray-200 border-gray-300';
-    };
-
-    const getSkillPointColor = (category: string) => {
-        const colors: Record<string, string> = {
-            frontend: 'text-cyan-600',
-            backend: 'text-lime-600', 
-            other: 'text-fuchsia-600'
-        };
-        return colors[category] || 'text-gray-600';
-    };
-
-    const totalHeight = timelineYears.length * monthHeight * 12;
-
-    // 실제 렌더링된 요소들의 위치를 계산해서 연결선 생성
-    useEffect(() => {
-        const calculateConnections = () => {
-            if (!containerRef.current) return;
-            
-            const newConnections: typeof connections = [];
-            const container = containerRef.current;
-            const containerRect = container.getBoundingClientRect();
-            
-            // 모든 경력 요소 찾기
-            const experienceElements = container.querySelectorAll('[data-type="experience"]');
-            const projectElements = container.querySelectorAll('[data-type="project"]');
-            
-            experienceElements.forEach((expEl) => {
-                const expYear = expEl.getAttribute('data-year');
-                const expIndex = expEl.getAttribute('data-index');
-                const expRect = expEl.getBoundingClientRect();
-                const expCenterY = expRect.top + expRect.height / 2 - containerRect.top;
-                const expRightX = expRect.right - containerRect.left;
-                
-                // 같은 연도의 프로젝트들과 연결 확인
-                projectElements.forEach((projEl) => {
-                    const projYear = projEl.getAttribute('data-year');
-                    const projIndex = projEl.getAttribute('data-index');
-                    
-                    if (expYear === projYear) {
-                        // 실제 시기 겹침 확인 로직은 나중에... 일단 같은 연도면 연결
-                        const projRect = projEl.getBoundingClientRect();
-                        const projCenterY = projRect.top + projRect.height / 2 - containerRect.top;
-                        const projLeftX = projRect.left - containerRect.left;
-                        
-                        newConnections.push({
-                            id: `exp-${expYear}-${expIndex}-proj-${projIndex}`,
-                            fromX: expRightX + 8, // 바 밖으로 8px 더 나가기
-                            fromY: projCenterY,   // 프로젝트 Y 위치에 맞춤
-                            toX: projLeftX - 8,   // 프로젝트 바 앞에서 8px 떨어져서 끝나기
-                            toY: projCenterY,
-                            color: '#dc2626'
-                        });
-                    }
-                });
-            });
-            
-            setConnections(newConnections);
-        };
-        
-        // DOM 업데이트 후 계산
-        const timer = setTimeout(calculateConnections, 100);
-        return () => clearTimeout(timer);
-    }, [timelineYears]);
-
-    // Intersection Observer로 경력과 프로젝트가 뷰포트를 지날 때 스킬 추가
-    useEffect(() => {
-        const skillElements = document.querySelectorAll('[data-related-skills]');
-        
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const skillsData = entry.target.getAttribute('data-related-skills');
-                        if (skillsData) {
-                            const skills: SkillTag[] = JSON.parse(skillsData);
-                            
-                            setStackedSkills(prev => {
-                                const newStacked = { ...prev };
-                                
-                                skills.forEach(skill => {
-                                    const categorySkills = newStacked[skill.category];
-                                    if (!categorySkills.some(s => s.name === skill.name)) {
-                                        categorySkills.push(skill);
-                                    }
-                                });
-                                
-                                console.log('Added skills:', skills, 'New state:', newStacked);
-                                return newStacked;
-                            });
-                        }
-                    }
-                });
-            },
-            {
-                threshold: 0.3,
-                rootMargin: '-10% 0px -10% 0px'
+        for (const word of words) {
+            if ((currentLine + ' ' + word).length <= maxLength) {
+                currentLine = currentLine ? currentLine + ' ' + word : word
+            } else {
+                if (currentLine) lines.push(currentLine)
+                currentLine = word
             }
-        );
+        }
 
-        skillElements.forEach(el => observer.observe(el));
+        if (currentLine) lines.push(currentLine)
+        return lines.join('\n')
+    }
+
+    // 연도 범위 계산 (2021년 9월부터 시작)
+    const totalYears = developerData.yearRange.end - developerData.yearRange.start + 1
+    const TOTAL_HEIGHT = (totalYears * MONTH_HEIGHT * 12) - (8 * MONTH_HEIGHT)
+
+    // ===== 스타일 계산 함수들 =====
+
+    /**
+     * 경력 바의 스타일을 계산 (연도 넘어가는 경력 지원)
+     */
+    const getExperienceBarStyle = (experience: Experience, index: number) => {
+        const expStartYear = experience.startYear
+        const expEndYear = experience.endYear
+
+        // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
+        const startYearOffset = (expStartYear - developerData.yearRange.start) * MONTH_HEIGHT * 12
+        const absoluteTop = startYearOffset + (experience.startMonth - 9) * MONTH_HEIGHT
+
+        // 전체 높이 계산
+        let totalHeight = 0
+        if (expStartYear === expEndYear) {
+            // 같은 연도 내 경력
+            totalHeight = (experience.endMonth - experience.startMonth + 1) * MONTH_HEIGHT
+        } else {
+            // 시작 연도 높이
+            totalHeight += (12 - experience.startMonth + 1) * MONTH_HEIGHT
+            // 중간 연도들 높이
+            for (let year = expStartYear + 1; year < expEndYear; year++) {
+                totalHeight += 12 * MONTH_HEIGHT
+            }
+            // 종료 연도 높이
+            totalHeight += experience.endMonth * MONTH_HEIGHT
+        }
+
+        return {
+            top: `${absoluteTop}px`,
+            height: `${Math.max(totalHeight - 8, MONTH_HEIGHT)}px`
+        }
+    }
+
+    /**
+     * 프로젝트 바의 스타일을 계산 (연도 넘어가는 프로젝트 지원)
+     */
+    const getProjectBarStyle = (project: Project) => {
+        const projectStartYear = project.startYear
+        const projectEndYear = project.endYear
+
+        // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
+        const startYearOffset = (projectStartYear - developerData.yearRange.start) * MONTH_HEIGHT * 12
+        const absoluteTop = startYearOffset + (project.startMonth - 9) * MONTH_HEIGHT
+
+        // 전체 높이 계산
+        let totalHeight = 0
+
+        if (projectStartYear === projectEndYear) {
+            // 같은 연도 내 프로젝트
+            totalHeight = (project.endMonth - project.startMonth + 1) * MONTH_HEIGHT
+        } else {
+            // 시작 연도 높이
+            totalHeight += (12 - project.startMonth + 1) * MONTH_HEIGHT
+
+            // 중간 연도들 높이
+            for (let year = projectStartYear + 1; year < projectEndYear; year++) {
+                totalHeight += 12 * MONTH_HEIGHT
+            }
+
+            // 종료 연도 높이
+            totalHeight += project.endMonth * MONTH_HEIGHT
+        }
+
+        return {
+            top: `${absoluteTop}px`,
+            height: `${totalHeight - 8}px`
+        }
+    }
+
+    // ===== 색상 헬퍼 함수들 =====
+
+    const getEventColor = (type: string, isPersonalProject?: boolean) => {
+        const colors: Record<string, string> = {
+            experience: 'bg-amber-50 border-l-amber-500',
+            project: isPersonalProject
+                ? 'bg-orange-50 border-l-orange-500'
+                : 'bg-emerald-50 border-l-emerald-500',
+            skill: 'bg-slate-50 border-l-slate-400'
+        }
+        return colors[type] || ''
+    }
+
+    // const getEventPointColor = (type: string, isPersonalProject?: boolean) => {
+    //     const colors: Record<string, string> = {
+    //         experience: 'text-amber-600',
+    //         project: isPersonalProject
+    //             ? 'text-orange-600'
+    //             : 'text-emerald-600',
+    //         skill: 'text-slate-600'
+    //     }
+    //     return colors[type] || ''
+    // }
+
+    // ===== 데이터 처리 함수들 =====
+
+    /**
+     * 연도 배열 생성
+     */
+    const getYearsArray = () => {
+        const years = []
+        for (let year = developerData.yearRange.start; year <= developerData.yearRange.end; year++) {
+            years.push(year)
+        }
+        return years
+    }
+
+    const yearsArray = getYearsArray()
+
+    // 프로젝트 클릭 핸들러
+    const handleProjectClick = (projectId: string) => {
+        const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
+        if (detailedProject) {
+            const projectSummary = {
+                id: detailedProject.id,
+                number: detailedProject.id.split('-')[1].padStart(2, '0'),
+                title: detailedProject.title,
+                description: detailedProject.shortDescription,
+                color: detailedProject.experienceId ? 'text-emerald-600' : 'text-orange-600',
+                details: '',
+                type: 'project' as const,
+                role: detailedProject.role,
+                teamSize: detailedProject.teamSize,
+                skills: detailedProject.skills.map(skill => ({
+                    id: skill.id,
+                    name: skill.name,
+                    category: skill.category,
+                    experience: skill.experience === 'beginner' ? 'Beginner' :
+                               skill.experience === 'intermediate' ? 'Intermediate' : 'Advanced'
+                })),
+                achievements: detailedProject.achievements.slice(0, 4),
+                fullDescription: detailedProject.fullDescription
+            };
+            setSelectedProjectSummary(projectSummary);
+            setIsSidebarOpen(true);
+        }
+    };
+
+    // Click outside to close sidebar
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        if (isSidebarOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
 
         return () => {
-            skillElements.forEach(el => observer.unobserve(el));
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, []);
+    }, [isSidebarOpen]);
 
+    /**
+     * 프로젝트를 경력/개인 2개 레인에 배치하는 레이아웃 계산 함수
+     * 0번 레인: 경력 관련 프로젝트 (experienceId 있음)
+     * 1번 레인: 개인 프로젝트 (experienceId 없음)
+     */
+    const calculateProjectLayout = (): Array<Project & { laneIndex: number }> => {
+        const allProjects: Array<Project & { laneIndex: number }> = []
+
+        // 시작 시점 기준으로 정렬 (연도 우선, 월 보조)
+        const sortedProjects = [...developerData.projects].sort((a, b) => {
+            if (a.startYear !== b.startYear) return a.startYear - b.startYear
+            return a.startMonth - b.startMonth
+        })
+
+        // 각 프로젝트를 경력/개인에 따라 레인 배치
+        sortedProjects.forEach((project) => {
+            const laneIndex = project.experienceId ? 0 : 1 // 경력 관련: 0번 레인, 개인: 1번 레인
+
+            // 결과 배열에 추가
+            allProjects.push({
+                ...project,
+                laneIndex
+            })
+        })
+
+        return allProjects
+    }
+
+
+    // ===== 이펙트 훅들 =====
+
+    /**
+     * 경력과 프로젝트 간의 연결선을 계산하고 생성하는 이펙트
+     * 개인 프로젝트(experienceId가 없는)는 연결선 제외
+     */
+    useEffect(() => {
+        const calculateConnections = () => {
+            if (!containerRef.current) return
+
+            const newConnections: Connection[] = []
+            const container = containerRef.current
+            const containerRect = container.getBoundingClientRect()
+
+            // DOM 요소들 찾기
+            const experienceElements = container.querySelectorAll('[data-type="experience"]')
+            const projectElements = container.querySelectorAll('[data-type="project"]')
+
+            // 각 경력에 대해 연결된 프로젝트들과 연결선 생성
+            experienceElements.forEach((expEl) => {
+                const expId = expEl.getAttribute('data-id')
+                const expRect = expEl.getBoundingClientRect()
+                const expRightX = expRect.right - containerRect.left
+
+                // 해당 경력의 프로젝트들과 연결 (개인 프로젝트 제외)
+                projectElements.forEach((projEl) => {
+                    const projExpId = projEl.getAttribute('data-experience-id')
+
+                    // 경력과 연관된 프로젝트만 연결선 생성 (개인 프로젝트는 data-experience-id 속성 없음)
+                    if (expId === projExpId && projExpId) {
+                        const projRect = projEl.getBoundingClientRect()
+                        const projCenterY = projRect.top + projRect.height / 2 - containerRect.top
+                        const projLeftX = projRect.left - containerRect.left
+
+                        newConnections.push({
+                            id: `exp-${expId}-proj-${projEl.getAttribute('data-id')}`,
+                            fromX: expRightX + 8,
+                            fromY: projCenterY,
+                            toX: projLeftX - 8,
+                            toY: projCenterY,
+                            color: '#dc2626'
+                        })
+                    }
+                })
+            })
+
+            setConnections(newConnections)
+        }
+
+        const timer = setTimeout(calculateConnections, 100)
+        return () => clearTimeout(timer)
+    }, [developerData])
+
+    /**
+     * Intersection Observer를 사용해 프로젝트가 뷰포트에 들어올 때 스킬 누적
+     */
+    useEffect(() => {
+        const stickyPosition = 100 // sticky top position (연도 라벨의 sticky 위치)
+        const passedProjects = new Set<string>()
+
+        const handleScroll = () => {
+            const projectElements = document.querySelectorAll('[data-skills]')
+
+            projectElements.forEach(element => {
+                const rect = element.getBoundingClientRect()
+                const projectId = element.getAttribute('data-project-id')
+
+                if (!projectId) return
+
+                // sticky 위치를 지나갔는지 확인
+                const hasPassedSticky = rect.top <= stickyPosition
+
+                if (hasPassedSticky && !passedProjects.has(projectId)) {
+                    // sticky 위치를 지나감 - 스킬 추가
+                    passedProjects.add(projectId)
+
+                    const skillsData = element.getAttribute('data-skills')
+                    if (skillsData) {
+                        const skills: SkillTag[] = JSON.parse(skillsData)
+
+                        setStackedSkills(prev => {
+                            const newStacked = { ...prev }
+                            skills.forEach(skill => {
+                                const categorySkills = newStacked[skill.category]
+                                // ID로 중복 체크 - 모든 스킬 ID를 저장
+                                if (!categorySkills.some(s => s.id === skill.id)) {
+                                    categorySkills.push(skill)
+                                }
+                            })
+                            return newStacked
+                        })
+                    }
+                } else if (!hasPassedSticky && passedProjects.has(projectId)) {
+                    // sticky 위치 위로 다시 올라감 - 이 프로젝트의 스킬만 제거
+                    passedProjects.delete(projectId)
+
+                    const skillsData = element.getAttribute('data-skills')
+                    if (skillsData) {
+                        const skills: SkillTag[] = JSON.parse(skillsData)
+
+                        setStackedSkills(prev => {
+                            const newStacked = { ...prev }
+                            skills.forEach(skill => {
+                                // 이 스킬 ID를 제거 (ID는 프로젝트별로 고유하므로 다른 프로젝트 체크 불필요)
+                                const categorySkills = newStacked[skill.category]
+                                const skillIndex = categorySkills.findIndex(s => s.id === skill.id)
+                                if (skillIndex > -1) {
+                                    categorySkills.splice(skillIndex, 1)
+                                }
+                            })
+                            return newStacked
+                        })
+                    }
+                }
+            })
+
+            // 바닥 스크롤 처리
+            const documentHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            )
+            const windowHeight = window.innerHeight
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+            const isNearBottom = scrollTop + windowHeight >= documentHeight - 50
+
+            // 바닥에 도달했을 때만 모든 스킬 추가
+            if (isNearBottom) {
+                if (!isAllSkillsStacked) {
+                    console.log('바닥 도달 - 모든 스킬 강제 추가')
+
+                    // 모든 프로젝트를 passedProjects에 추가
+                    developerData.projects.forEach(project => {
+                        passedProjects.add(project.id)
+                    })
+
+                    // 모든 스킬 수집 (ID 기반으로 모든 스킬 포함)
+                    const allSkills: SkillTag[] = []
+                    developerData.projects.forEach(project => {
+                        project.skills.forEach(skill => {
+                            allSkills.push(skill)
+                        })
+                    })
+
+                    // 스킬 스택 설정
+                    setStackedSkills({
+                        frontend: allSkills.filter(skill => skill.category === 'frontend'),
+                        backend: allSkills.filter(skill => skill.category === 'backend'),
+                        other: allSkills.filter(skill => skill.category === 'other')
+                    })
+
+                    setIsAllSkillsStacked(true)
+                }
+            } else {
+                if (isAllSkillsStacked) {
+                    console.log('바닥에서 벗어남 - 스킬 초기화')
+
+                    // 완전 초기화
+                    passedProjects.clear()
+                    setStackedSkills({ frontend: [], backend: [], other: [] })
+                    setIsAllSkillsStacked(false)
+
+                    // 현재 상태에서 다시 계산
+                    projectElements.forEach(element => {
+                        const rect = element.getBoundingClientRect()
+                        const projectId = element.getAttribute('data-project-id')
+
+                        if (projectId && rect.top <= stickyPosition) {
+                            passedProjects.add(projectId)
+
+                            const skillsData = element.getAttribute('data-skills')
+                            if (skillsData) {
+                                const skills: SkillTag[] = JSON.parse(skillsData)
+                                setStackedSkills(prev => {
+                                    const newStacked = { ...prev }
+                                    skills.forEach(skill => {
+                                        const categorySkills = newStacked[skill.category]
+                                        if (!categorySkills.some(s => s.id === skill.id)) {
+                                            categorySkills.push(skill)
+                                        }
+                                    })
+                                    return newStacked
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        }
+
+        // 초기 체크
+        setTimeout(handleScroll, 100)
+
+        // 스크롤 이벤트
+        window.addEventListener('scroll', handleScroll, { passive: true })
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+
+    // ===== 렌더링 함수들 =====
+
+    /**
+     * 월별 그리드 라인을 렌더링
+     */
+    const renderMonthlyGrid = () => (
+        <div className="absolute inset-0">
+            {yearsArray.map((_, yearIndex) => (
+                <div key={yearIndex}>
+                    {[...Array(12)].map((_, idx) => {
+                        // 2021년(첫 해) 1-8월은 렌더링하지 않음
+                        if (yearIndex === 0 && idx < 8) return null
+
+                        const adjustedTop = yearIndex === 0
+                            ? (idx - 8) * MONTH_HEIGHT
+                            : (yearIndex * MONTH_HEIGHT * 12) + (idx * MONTH_HEIGHT) - (8 * MONTH_HEIGHT)
+
+                        return (
+                            <div
+                                key={`${yearIndex}-${idx}`}
+                                className="border-b border-gray-50"
+                                style={{
+                                    position: 'absolute',
+                                    top: `${adjustedTop}px`,
+                                    width: '100%',
+                                    height: `${MONTH_HEIGHT}px`
+                                }}
+                            />
+                        )
+                    })}
+                </div>
+            ))}
+        </div>
+    )
+
+    /**
+     * 연도 라벨을 렌더링 (고정 위치)
+     */
+    const renderYearLabels = () => (
+        <div className="w-20 relative">
+            {yearsArray.map((year, yearIndex) => (
+                <div
+                    key={year}
+                    className="sticky bg-[#F8F8F8] border border-gray-200 rounded shadow-sm"
+                    style={{
+                        top: '100px',
+                        height: '40px',
+                        marginBottom: `${yearIndex === 0 ? (MONTH_HEIGHT * 4 - 40) : (MONTH_HEIGHT * 12 - 40)}px`
+                    }}
+                >
+                    <div className="text-2xl font-bold text-gray-900 flex items-center justify-center h-full">
+                        {year}
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+
+    /**
+     * 월 라벨을 렌더링
+     */
+    const renderMonthLabels = () => (
+        <div className="w-12">
+            {yearsArray.map((_, yearIndex) => (
+                <div key={yearIndex}>
+                    {[...Array(12)].map((_, month) => {
+                        // 2021년(첫 해) 1-8월은 렌더링하지 않음
+                        if (yearIndex === 0 && month < 8) return null
+
+                        return (
+                            <div
+                                key={`${yearIndex}-${month}`}
+                                className="text-sm text-gray-500 font-medium text-center border-b border-gray-50"
+                                style={{
+                                    height: `${MONTH_HEIGHT}px`,
+                                    lineHeight: `${MONTH_HEIGHT}px`
+                                }}
+                            >
+                                {month + 1}
+                            </div>
+                        )
+                    })}
+                </div>
+            ))}
+        </div>
+    )
+
+    /**
+     * 연결선 SVG를 렌더링
+     */
+    const renderConnections = () => (
+        <svg
+            className="absolute inset-0 pointer-events-none z-10"
+            style={{ width: '100%', height: '100%' }}
+        >
+            {connections.map((conn) => (
+                <g key={conn.id}>
+                    {/* 시작점 원형 */}
+                    <circle
+                        cx={conn.fromX}
+                        cy={conn.fromY}
+                        r="5"
+                        fill={conn.color}
+                        stroke="white"
+                        strokeWidth="2"
+                    />
+                    {/* 연결선 */}
+                    <line
+                        x1={conn.fromX + 5}
+                        y1={conn.fromY}
+                        x2={conn.toX - 5}
+                        y2={conn.toY}
+                        stroke={conn.color}
+                        strokeWidth="2"
+                        strokeDasharray="4,2"
+                    />
+                    {/* 끝점 원형 */}
+                    <circle
+                        cx={conn.toX}
+                        cy={conn.toY}
+                        r="5"
+                        fill={conn.color}
+                        stroke="white"
+                        strokeWidth="2"
+                    />
+                </g>
+            ))}
+        </svg>
+    )
+
+    /**
+     * 경력 컬럼을 렌더링
+     */
+    const renderExperienceColumn = () => (
+        <div className="relative" style={{ width: `${EXPERIENCE_WIDTH}px`, height: `${TOTAL_HEIGHT}px` }}>
+            {renderMonthlyGrid()}
+
+            {developerData.experiences.map((experience, idx) => (
+                <motion.div
+                    key={experience.id}
+                    className="absolute px-2 group"
+                    style={{ ...getExperienceBarStyle(experience, idx), width: `${EXPERIENCE_WIDTH - 16}px` }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                        delay: 0.2 + idx * 0.1,
+                        duration: 0.6,
+                        ease: "easeOut"
+                    }}
+                >
+                    <div
+                        className={`h-full ${getEventColor(experience.type)} relative border-l-4`}
+                        data-type="experience"
+                        data-id={experience.id}
+                    >
+                        <div className="sticky top-20 p-3 z-10">
+                            <div className="text-sm font-bold text-gray-900 tracking-wide drop-shadow-sm">
+                                • {experience.title}
+                            </div>
+                            {experience.subtitle && (
+                                <div className="text-xs text-gray-700 font-semibold drop-shadow-sm mt-1">
+                                    {experience.subtitle}
+                                </div>
+                            )}
+                            {experience.description && (
+                                <div className="text-xs text-gray-700 leading-relaxed font-medium drop-shadow-sm mt-1">
+                                    {experience.description}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.div>
+            ))}
+        </div>
+    )
+
+    /**
+     * 프로젝트 컬럼을 렌더링 (3레인 시스템)
+     */
+    const renderProjectsColumn = () => {
+        const projectsWithLayout = calculateProjectLayout()
+
+        return (
+            <div className="relative" style={{ width: `${PROJECT_WIDTH}px`, height: `${TOTAL_HEIGHT}px` }}>
+                {renderMonthlyGrid()}
+
+
+                {projectsWithLayout.map((project, idx) => (
+                    <motion.div
+                        key={project.id}
+                        className="absolute px-2 group cursor-pointer"
+                        style={{
+                            ...getProjectBarStyle(project),
+                            left: `${project.laneIndex * PROJECT_LANE_WIDTH}px`,
+                            width: `${PROJECT_LANE_WIDTH - 16}px`
+                        }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            delay: 0.3 + idx * 0.1,
+                            duration: 0.6,
+                            ease: "easeOut"
+                        }}
+                        data-skills={JSON.stringify(project.skills)}
+                        onClick={() => handleProjectClick(project.id)}
+                    >
+                        <div
+                            className={`h-full ${getEventColor(project.type, !project.experienceId)} relative border-l-4 transition-all duration-200 group-hover:opacity-80 group-hover:shadow-lg`}
+                            data-type="project"
+                            data-id={project.id}
+                            {...(project.experienceId && { 'data-experience-id': project.experienceId })}
+                            >
+                            <div className="sticky top-20 p-3 z-10">
+                                <div className="text-sm font-bold text-gray-900 tracking-wide">
+                                    <span className="crayon-hover crayon-hover-red">• {project.title}</span>
+                                </div>
+                                {project.description && (
+                                    <div className="text-xs text-gray-700 leading-relaxed font-medium mt-1">
+                                        {project.description}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </motion.div>
+                ))}
+            </div>
+        )
+    }
+
+    /**
+     * 스킬 컬럼을 렌더링
+     */
+    const renderSkillsColumn = () => {
+        const allCollectedSkills = stackedSkills.frontend.concat(stackedSkills.backend, stackedSkills.other)
+
+        return (
+            <div className="relative" style={{ width: `${SKILLS_WIDTH}px`, height: `${TOTAL_HEIGHT}px` }}>
+                {renderMonthlyGrid()}
+
+
+                {/* 타임라인의 각 프로젝트 스킬들 */}
+                {developerData.projects.map((project, projectIdx) => {
+                    const yearOffset = (project.startYear - developerData.yearRange.start) * MONTH_HEIGHT * 12
+                    const projectTop = yearOffset + (project.startMonth - 9) * MONTH_HEIGHT
+
+                    const adjustedTop = projectTop + 5
+
+                    return (
+                        <div
+                            key={`project-skills-${project.id}`}
+                            className="absolute left-2 right-2"
+                            style={{ top: `${adjustedTop}px` }}
+                            data-skills={JSON.stringify(project.skills)}
+                            data-project-id={project.id}
+                        >
+                            <div className="flex flex-wrap gap-1">
+                                {project.skills.map((skill, skillIdx) => {
+                                    // 해당 스킬 ID가 수집되었는지 확인
+                                    const isCollected = allCollectedSkills.some(s => s.id === skill.id)
+
+                                    return (
+                                        <div
+                                            key={`${project.id}-${skill.name}-${skillIdx}`}
+                                            className={`inline-block transition-all duration-300 ${isCollected ? 'opacity-30 blur-sm' : 'opacity-100'}`}
+                                        >
+                                            <SkillBadge skill={skill} size="sm" />
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        )
+    }
+
+    /**
+     * 범례를 렌더링
+     */
+    const renderLegend = () => (
+        <div className="mt-12 flex flex-wrap gap-6 text-xs text-gray-700">
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-amber-500 border border-amber-400"></div>
+                <span className="font-medium">Experience</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-emerald-500 border border-emerald-400"></div>
+                <span className="font-medium">Work Projects</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-orange-500 border border-orange-400"></div>
+                <span className="font-medium">Personal Projects</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-sky-500 border border-sky-400"></div>
+                <span className="font-medium">Frontend Skills</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-indigo-900 border border-indigo-800"></div>
+                <span className="font-medium">Backend Skills</span>
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="w-4 h-3 bg-purple-600 border border-purple-500"></div>
+                <span className="font-medium">Other Skills</span>
+            </div>
+        </div>
+    )
+
+    // ===== 메인 렌더링 =====
     return (
-        <motion.section 
+        <motion.section
             className="mb-12"
             initial="initial"
             animate="animate"
             variants={staggerContainer}
         >
-            {/* Column Headers */}
-            <div className="flex gap-4 mb-6 sticky top-0 bg-[#F8F8F8] z-20 pb-4">
+            {/* 컬럼 헤더 */}
+            <div className="flex gap-4 mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4">
                 <div className="w-20"></div>
                 <div className="w-12"></div>
-                <div className="flex gap-4">
-                    <div className="text-sm font-semibold text-gray-700" style={{ width: `${columnWidth}px` }}>
-                        EXPERIENCE & EDUCATION
+                <div className="flex gap-8">
+                    <div
+                        className="text-[28px] font-semibold crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block"
+                        style={{ width: `${EXPERIENCE_WIDTH}px` }}
+                    >
+                        EXPERIENCE
                     </div>
-                    <div className="text-sm font-semibold text-gray-700" style={{ width: `${columnWidth}px` }}>
-                        PROJECTS
+                    <div
+                        className="flex"
+                        style={{ width: `${PROJECT_WIDTH}px` }}
+                    >
+                        <div
+                            className="text-[28px] font-semibold crayon-highlight mr-8 crayon-highlight-forest font-cafe24-gowoonbam inline-block"
+                            style={{ width: `${PROJECT_LANE_WIDTH}px` }}
+                        >
+                            WORK PROJECTS
+                        </div>
+                        <div
+                            className="text-[28px] font-semibold crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam inline-block"
+                            style={{ width: `${PROJECT_LANE_WIDTH}px` }}
+                        >
+                            PERSONAL PROJECTS
+                        </div>
                     </div>
-                    <div className="text-sm font-semibold text-gray-700" style={{ width: `${columnWidth}px` }}>
+                    <div
+                        className="text-[28px] font-semibold crayon-highlight crayon-highlight-silver font-cafe24-gowoonbam inline-block"
+                        style={{ width: `${SKILLS_WIDTH}px` }}
+                    >
                         SKILLS
                     </div>
                 </div>
             </div>
 
-
             <div className="flex gap-4">
-                {/* Timeline Container */}
+                {/* 타임라인 컨테이너 */}
                 <div className="flex gap-4">
-                    {/* Year and Month Labels */}
+                    {/* 연도 및 월 라벨 */}
                     <div className="flex">
-                        {/* Year Labels - Sticky */}
-                        <div className="w-20 relative">
-                            {timelineYears.map((yearData, yearIndex) => (
-                                <div
-                                    key={yearData.year}
-                                    className="sticky bg-[#F8F8F8] border border-gray-200 rounded shadow-sm"
-                                    style={{ 
-                                        top: '100px',
-                                        height: '40px',
-                                        marginBottom: `${monthHeight * 12 - 40}px`
-                                    }}
-                                >
-                                    <div className="text-2xl font-bold text-gray-900 flex items-center justify-center h-full">
-                                        {yearData.year}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Month Labels */}
-                        <div className="w-12">
-                            {timelineYears.map((_, yearIndex) => (
-                                <div key={yearIndex}>
-                                    {[...Array(12)].map((_, month) => (
-                                        <div 
-                                            key={`${yearIndex}-${month}`} 
-                                            className="text-sm text-gray-500 font-medium text-center border-b border-gray-50"
-                                            style={{ height: `${monthHeight}px`, lineHeight: `${monthHeight}px` }}
-                                        >
-                                            {month + 1}
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
+                        {renderYearLabels()}
+                        {renderMonthLabels()}
                     </div>
 
-                    {/* Timeline Grid */}
+                    {/* 타임라인 그리드 */}
                     <div className="flex gap-8 relative" ref={containerRef}>
-                        {/* 계산된 연결선들을 동그라미 + 선으로 렌더링 */}
-                        <svg 
-                            className="absolute inset-0 pointer-events-none z-10"
-                            style={{ width: '100%', height: '100%' }}
-                        >
-                            {connections.map((conn) => (
-                                <g key={conn.id}>
-                                    {/* 시작점 동그라미 */}
-                                    <circle
-                                        cx={conn.fromX}
-                                        cy={conn.fromY}
-                                        r="6"
-                                        fill={conn.color}
-                                        stroke="white"
-                                        strokeWidth="2"
-                                    />
-                                    {/* 연결선 */}
-                                    <line
-                                        x1={conn.fromX + 6}
-                                        y1={conn.fromY}
-                                        x2={conn.toX - 6}
-                                        y2={conn.toY}
-                                        stroke={conn.color}
-                                        strokeWidth="3"
-                                    />
-                                    {/* 끝점 화살표 */}
-                                    <polygon
-                                        points={`${conn.toX-6},${conn.toY-4} ${conn.toX-6},${conn.toY+4} ${conn.toX+2},${conn.toY}`}
-                                        fill={conn.color}
-                                    />
-                                </g>
-                            ))}
-                        </svg>
-                        {/* Experience Column */}
-                        <div className="relative" style={{ width: `${columnWidth}px`, height: `${totalHeight}px` }}>
-                            <div className="absolute inset-0">
-                                {timelineYears.map((_, yearIndex) => (
-                                    <div key={yearIndex}>
-                                        {[...Array(12)].map((_, idx) => (
-                                            <div 
-                                                key={`${yearIndex}-${idx}`}
-                                                className={`border-b ${yearIndex > 0 && idx === 0 ? 'border-gray-300' : 'border-gray-50'}`}
-                                                style={{ 
-                                                    position: 'absolute',
-                                                    top: `${yearIndex * monthHeight * 12 + idx * monthHeight}px`,
-                                                    width: '100%',
-                                                    height: `${monthHeight}px` 
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
-                            {timelineYears.map((yearData, yearIndex) => {
-                                let experienceGlobalIndex = 0;
-                                // 이전 연도들의 경력 항목 수를 계산
-                                for (let i = 0; i < yearIndex; i++) {
-                                    experienceGlobalIndex += timelineYears[i].events.experience.length;
-                                }
-                                
-                                return yearData.events.experience.map((event, idx) => (
-                                    <motion.div
-                                        key={`${yearData.year}-${idx}`}
-                                        className="absolute w-full px-2 group"
-                                        style={getExperienceBarStyle(yearData.year, event.startMonth, event.endMonth, yearIndex, experienceGlobalIndex + idx)}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.3 + yearIndex * 0.2, duration: 0.8, ease: "easeOut" }}
-                                        data-related-skills={event.relatedSkills ? JSON.stringify(event.relatedSkills) : undefined}
-                                    >
-                                        
-                                        <div 
-                                            className={`h-full ${getEventColor(event.type)} relative border-l-4 shadow-sm`}
-                                            data-type="experience"
-                                            data-year={yearData.year}
-                                            data-index={idx}
-                                        >
-                                            <div className="sticky top-20 p-3 z-10">
-                                                <div className={`text-sm font-semibold ${getEventPointColor(event.type)}`}>• {event.title}</div>
-                                                {event.subtitle && (
-                                                    <div className="text-xs text-gray-600 mt-1">{event.subtitle}</div>
-                                                )}
-                                                {event.description && (
-                                                    <div className="text-xs text-gray-500 mt-1 leading-relaxed">{event.description}</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))
-                            })}
-                        </div>
-
-                        {/* Projects Column */}
-                        <div className="relative" style={{ width: `${columnWidth}px`, height: `${totalHeight}px` }}>
-                            <div className="absolute inset-0">
-                                {timelineYears.map((_, yearIndex) => (
-                                    <div key={yearIndex}>
-                                        {[...Array(12)].map((_, idx) => (
-                                            <div 
-                                                key={`${yearIndex}-${idx}`}
-                                                className={`border-b ${yearIndex > 0 && idx === 0 ? 'border-gray-300' : 'border-gray-50'}`}
-                                                style={{ 
-                                                    position: 'absolute',
-                                                    top: `${yearIndex * monthHeight * 12 + idx * monthHeight}px`,
-                                                    width: '100%',
-                                                    height: `${monthHeight}px` 
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
-                            {timelineYears.map((yearData, yearIndex) => (
-                                yearData.events.projects.map((event, idx) => (
-                                    <motion.div
-                                        key={`${yearData.year}-${idx}`}
-                                        className="absolute w-full px-2 group"
-                                        style={getProjectBarStyle(yearData.year, event.startMonth, event.endMonth, yearIndex, idx)}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: 0.5 + yearIndex * 0.2, duration: 0.8, ease: "easeOut" }}
-                                        data-related-skills={event.relatedSkills ? JSON.stringify(event.relatedSkills) : undefined}
-                                    >
-                                        
-                                        <div 
-                                            className={`h-full ${getEventColor(event.type)} relative border-l-4 shadow-sm`}
-                                            data-type="project"
-                                            data-year={yearData.year}
-                                            data-index={idx}
-                                        >
-                                            <div className="sticky top-20 p-3 z-10">
-                                                <div className={`text-sm font-semibold ${getEventPointColor(event.type)}`}>• {event.title}</div>
-                                                {event.description && (
-                                                    <div className="text-xs text-gray-500 mt-1 leading-relaxed">{event.description}</div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                ))
-                            ))}
-                        </div>
-
-                        {/* Skills Column */}
-                        <div className="relative" style={{ width: `${columnWidth}px`, height: `${totalHeight}px` }}>
-                            <div className="absolute inset-0">
-                                {timelineYears.map((_, yearIndex) => (
-                                    <div key={yearIndex}>
-                                        {[...Array(12)].map((_, idx) => (
-                                            <div 
-                                                key={`${yearIndex}-${idx}`}
-                                                className={`border-b ${yearIndex > 0 && idx === 0 ? 'border-gray-300' : 'border-gray-50'}`}
-                                                style={{ 
-                                                    position: 'absolute',
-                                                    top: `${yearIndex * monthHeight * 12 + idx * monthHeight}px`,
-                                                    width: '100%',
-                                                    height: `${monthHeight}px` 
-                                                }}
-                                            />
-                                        ))}
-                                    </div>
-                                ))}
-                            </div>
-
-
-                            {/* Original Project Skills at their timeline positions */}
-                            {timelineYears.map((yearData, yearIndex) => (
-                                yearData.events.projects.map((project, projectIdx) => (
-                                    project.relatedSkills?.map((skill, skillIdx) => (
-                                        <motion.div
-                                            key={`${yearData.year}-${projectIdx}-skill-${skillIdx}`}
-                                            className="absolute px-2"
-                                            style={{
-                                                top: `${yearIndex * monthHeight * 12 + (project.startMonth - 1) * monthHeight + skillIdx * 25}px`,
-                                                width: `${columnWidth}px`,
-                                                height: '20px',
-                                            }}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            transition={{ delay: 0.7 + yearIndex * 0.2, duration: 0.6 }}
-                                        >
-                                            <div className={`h-full ${getSkillColor(skill.category)} px-2 flex items-center shadow-sm border`}>
-                                                <div className={`w-2 h-2 rounded-full ${getSkillPointColor(skill.category)} mr-2`}></div>
-                                                <span className="text-xs font-medium text-gray-700">{skill.name}</span>
-                                            </div>
-                                        </motion.div>
-                                    ))
-                                ))
-                            ))}
-                        </div>
+                        <YearDivider
+                            totalHeight={TOTAL_HEIGHT}
+                            monthHeight={MONTH_HEIGHT}
+                            yearsArray={yearsArray}
+                        />
+                        {renderConnections()}
+                        {renderExperienceColumn()}
+                        {renderProjectsColumn()}
+                        {renderSkillsColumn()}
                     </div>
                 </div>
 
-                {/* Sticky Skills Display */}
-                <div className="fixed top-20 right-8 bg-white/95 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-xs z-30">
-                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Accumulated Skills</h3>
-                    
-                    {(['frontend', 'backend', 'other'] as const).map(category => (
-                        stackedSkills[category].length > 0 && (
-                            <div key={category} className="mb-3">
-                                <div className={`text-xs font-medium mb-2 ${getSkillPointColor(category)}`}>
-                                    {category.toUpperCase()}
-                                </div>
-                                <div className="flex flex-wrap gap-1">
-                                    {stackedSkills[category].map((skill, idx) => (
-                                        <motion.span
-                                            key={skill.name}
-                                            className={`text-xs px-2 py-1 rounded ${getSkillColor(category)} border`}
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            transition={{ delay: idx * 0.1, duration: 0.4 }}
-                                        >
-                                            {skill.name}
-                                        </motion.span>
-                                    ))}
-                                </div>
-                            </div>
-                        )
-                    ))}
-                    
-                    {Object.values(stackedSkills).every(arr => arr.length === 0) && (
-                        <p className="text-xs text-gray-500 italic">Scroll to see skills appear</p>
-                    )}
-                </div>
+                {/* 수집된 스킬들을 우측에 별도로 표시 */}
+                {stackedSkills.frontend.concat(stackedSkills.backend, stackedSkills.other).length > 0 && (
+                    <div className="sticky top-20 ml-4 self-start">
+                        <div className="flex flex-wrap gap-1" style={{ width: '200px' }}>
+                            {(() => {
+                                // 모든 수집된 스킬에서 이름별로 중복 제거
+                                const allSkills = stackedSkills.frontend.concat(stackedSkills.backend, stackedSkills.other)
+                                const uniqueSkills = allSkills.reduce((acc, skill) => {
+                                    if (!acc.some(s => s.name === skill.name)) {
+                                        acc.push(skill)
+                                    }
+                                    return acc
+                                }, [] as typeof allSkills)
 
+                                return uniqueSkills.map((skill, idx) => (
+                                    <motion.div
+                                        key={`external-stacked-${skill.name}`}
+                                        className="inline-block"
+                                        initial={{ scale: 0, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0, opacity: 0 }}
+                                        transition={{ delay: idx * 0.05, type: 'spring' }}
+                                    >
+                                        <SkillBadge skill={skill} size="sm" />
+                                    </motion.div>
+                                ))
+                            })()}
+                        </div>
+                    </div>
+                )}
             </div>
 
-            {/* Legend */}
-            <div className="mt-12 flex flex-wrap gap-6 text-xs text-gray-700">
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-red-600 border border-red-500"></div>
-                    <span className="font-medium">Experience</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-violet-600 border border-violet-500"></div>
-                    <span className="font-medium">Education</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-emerald-600 border border-emerald-500"></div>
-                    <span className="font-medium">Projects</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-cyan-500 border border-cyan-400"></div>
-                    <span className="font-medium">Frontend Skills</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-lime-500 border border-lime-400"></div>
-                    <span className="font-medium">Backend Skills</span>
-                </div>
-                <div className="flex items-center gap-2">
-                    <div className="w-4 h-3 bg-fuchsia-500 border border-fuchsia-400"></div>
-                    <span className="font-medium">Other Skills</span>
-                </div>
-            </div>
+            {renderLegend()}
+
+            {/* Project Sidebar */}
+            <PhilosophySidebar
+                ref={sidebarRef}
+                isOpen={isSidebarOpen}
+                onClose={() => setIsSidebarOpen(false)}
+                onViewDetail={() => {
+                    if (selectedProjectSummary && onProjectDetail) {
+                        onProjectDetail(selectedProjectSummary.id);
+                        setIsSidebarOpen(false);
+                    }
+                }}
+                philosophyData={selectedProjectSummary}
+            />
+
         </motion.section>
     )
 }
