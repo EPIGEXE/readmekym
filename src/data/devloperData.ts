@@ -61,7 +61,7 @@ export const developerData: DeveloperData = {
         {
             id: 'proj-3',
             type: 'project',
-            title: 'Axilog 개선',
+            title: 'Catis 출입통제 프로그램 Axilog 개선',
             description: 'CATIS 출입통제 프로그램 Axilog 개선 및 유지보수',
             startYear: 2024,
             endYear: 2024,

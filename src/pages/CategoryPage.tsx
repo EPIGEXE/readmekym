@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { developerData } from "../data/devloperData";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
 import type { SkillTag } from "../types";
-import { SkillBadge } from "./ui/SkillBadge";
+import { SkillBadge } from "../components/ui/SkillBadge";
 import { ChevronRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { PhilosophySidebar } from "./PhilosophySidebar";
+import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
 
 interface SidebarData {
     id: string;
@@ -22,26 +22,23 @@ interface SidebarData {
     fullDescription?: string;
 }
 
-interface CategoryViewProps {
-    onProjectDetail?: (projectId: string) => void;
-}
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8, ease: "easeOut" },
+    transition: { duration: 0.4, ease: "easeOut" }, // 0.8에서 0.4로 줄여서 더 빠르게
 };
 
 const staggerContainer = {
     initial: {},
     animate: {
         transition: {
-            staggerChildren: 0.15,
+            staggerChildren: 0.1, // 0.15에서 0.05로 줄여서 더 빠르게
         },
     },
 };
 
-export function CategoryView({ onProjectDetail }: CategoryViewProps) {
+export function CategoryPage() {
     const [selectedPhilosophy, setSelectedPhilosophy] = useState<SidebarData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
@@ -159,9 +156,13 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
     };
 
     return (
-        <motion.div initial="initial" animate="animate" variants={staggerContainer} key="category-content">
+        <div key="category-content">
             {/* Hero Section */}
-            <motion.section className="py-15 mb-24" variants={fadeInUp}>
+            <motion.section
+                className="py-15 mb-24"
+                initial="initial"
+                animate="animate"
+                variants={fadeInUp}>
                 <div className="max-w-6xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
                         {/* Left Content */}
@@ -280,17 +281,15 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
                 ref={sidebarRef}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
-                onViewDetail={() => {
-                    if (selectedProjectSummary && onProjectDetail) {
-                        onProjectDetail(selectedProjectSummary.id);
-                        setIsSidebarOpen(false);
-                    }
-                }}
                 philosophyData={selectedPhilosophy || selectedProjectSummary}
             />
 
             {/* Experience Section */}
-            <motion.section className="mb-12" variants={fadeInUp}>
+            <motion.section
+                className="mb-12"
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}>
                 <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block"
@@ -327,7 +326,11 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
             </motion.section>
 
             {/* Work Projects Section */}
-            <motion.section className="mb-12" variants={fadeInUp}>
+            <motion.section
+                className="mb-12"
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}>
                 <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-forest font-cafe24-gowoonbam inline-block"
@@ -380,7 +383,11 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
             </motion.section>
 
             {/* Personal Projects Section */}
-            <motion.section className="mb-12" variants={fadeInUp}>
+            <motion.section
+                className="mb-12"
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}>
                 <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam inline-block"
@@ -433,7 +440,11 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
             </motion.section>
 
             {/* Skills Section */}
-            <motion.section className="mb-12" variants={fadeInUp}>
+            <motion.section
+                className="mb-12"
+                initial="initial"
+                animate="animate"
+                variants={staggerContainer}>
                 <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-silver font-cafe24-gowoonbam inline-block"
@@ -485,6 +496,6 @@ export function CategoryView({ onProjectDetail }: CategoryViewProps) {
                     )}
                 </motion.div>
             </motion.section>
-        </motion.div>
+        </div>
     );
 }

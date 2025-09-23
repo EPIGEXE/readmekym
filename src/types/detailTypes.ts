@@ -5,13 +5,6 @@ export interface DetailedSkill extends SkillTag {
     experience: 'beginner' | 'intermediate' | 'advanced' // 숙련도
 }
 
-export interface ProjectImage {
-    id: string
-    url: string
-    caption: string
-    alt: string
-}
-
 export interface ImplementationDetail {
     id: string
     title: string
@@ -34,7 +27,6 @@ export interface DetailedProject {
 
     // 새로운 상세 정보
     skills: DetailedSkill[]
-    images: ProjectImage[]
     implementation: ImplementationDetail[]
     challenges: string[] // 전체 프로젝트 도전 과제들
     achievements: string[] // 성과/결과
@@ -49,7 +41,8 @@ export interface DetailedProject {
     teamSize?: number // 팀 규모
     role?: string // 담당 역할
     repository?: string // GitHub 링크
-    liveDemo?: string // 라이브 데모 링크
+    SeeMore?: string // 더 보기 링크
+    live?: string // 라이브 링크
     documentation?: string // 문서 링크
 
     // 경력 연관

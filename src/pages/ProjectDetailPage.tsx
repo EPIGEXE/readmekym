@@ -1,13 +1,9 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar } from 'lucide-react'
-import type { DetailedProject } from '../types'
-import { SkillBadge } from './ui/SkillBadge'
-
-interface ProjectDetailPageProps {
-    project: DetailedProject
-    onBack: () => void
-}
+import { detailedDeveloperData } from '../data/detailedDeveloperData'
+import { SkillBadge } from '../components/ui/SkillBadge'
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -24,10 +20,30 @@ const staggerContainer = {
     }
 }
 
-export function ProjectDetailPage({ project, onBack }: ProjectDetailPageProps) {
+export function ProjectDetailPage() {
+    const { id } = useParams<{ id: string }>()
+    const navigate = useNavigate()
+    const project = detailedDeveloperData.projects.find(p => p.id === id)
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    if (!project) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-4">Project not found</h2>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="text-gray-500 hover:text-gray-700"
+                    >
+                        ← Back
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
     const formatPeriod = (startYear: number, startMonth: number, endYear: number, endMonth: number) => {
         return `${startYear}.${String(startMonth).padStart(2, '0')} - ${endYear}.${String(endMonth).padStart(2, '0')}`
@@ -46,17 +62,17 @@ export function ProjectDetailPage({ project, onBack }: ProjectDetailPageProps) {
                 {/* Back Button */}
                 <motion.button
                     variants={fadeInUp}
-                    onClick={onBack}
+                    onClick={() => navigate(-1)}
                     className="text-lg text-gray-500 tracking-widest uppercase mb-12 hover:text-gray-700 transition-colors"
                     style={{ fontFamily: "'Pretendard', sans-serif" }}
                 >
-                    ← Gallery
+                    ← Back
                 </motion.button>
                         {/* Hero Section */}
                 <motion.section className="mb-24" variants={fadeInUp}>
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
                         {/* Left Content */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <div className="lg:col-span-3 space-y-8">
                             <div className="text-lg text-gray-500 tracking-widest uppercase" style={{ fontFamily: "'Pretendard', sans-serif" }}>
                                 {project.experienceId ? 'Work Project' : 'Personal Project'}
                             </div>
@@ -77,7 +93,7 @@ export function ProjectDetailPage({ project, onBack }: ProjectDetailPageProps) {
                             </p>
 
                             {/* Project Links */}
-                            {(project.repository || project.liveDemo) && (
+                            {(project.repository || project.live || project.SeeMore) && (
                                 <div className="flex gap-4 pt-4">
                                     {project.repository && (
                                         <a
@@ -89,9 +105,19 @@ export function ProjectDetailPage({ project, onBack }: ProjectDetailPageProps) {
                                             Repository →
                                         </a>
                                     )}
-                                    {project.liveDemo && (
+                                    {project.SeeMore && (
                                         <a
-                                            href={project.liveDemo}
+                                            href={project.SeeMore}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-gray-600 hover:text-gray-900 transition-colors underline decoration-dotted"
+                                        >
+                                            See More →
+                                        </a>
+                                    )}
+                                    {project.live && (
+                                        <a
+                                            href={project.live}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="text-gray-600 hover:text-gray-900 transition-colors underline decoration-dotted"
@@ -103,15 +129,6 @@ export function ProjectDetailPage({ project, onBack }: ProjectDetailPageProps) {
                             )}
                         </div>
 
-                        {/* Right Image Placeholder */}
-                        <div className="lg:col-span-1">
-                            <div className="w-full aspect-square bg-gray-100 flex items-center justify-center">
-                                <div className="text-center text-gray-400">
-                                    <div className="text-4xl mb-2">📷</div>
-                                    <div className="text-sm font-light">Project Image</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </motion.section>
 

@@ -18,12 +18,11 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 name: 'SCOP',
                 industry: 'IT 솔루션',
                 size: '중소기업',
-                website: 'https://www.scop.co.kr'
             },
             position: {
                 title: 'Solution Engineer',
                 level: '신입',
-                department: 'PLM사업부'
+                department: 'PLM 프로젝트팀'
             },
             responsibilities: [
                 'Siemens Teamcenter PLM 시스템 구축 및 커스터마이징',
@@ -35,7 +34,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             ],
             achievements: [
                 '치과의료기기 제조업체 A사 PLM 시스템 성공적 구축 (6개월)',
-                '바이오 의약품 제조업체 B사 BOM 시스템 구축으로 업무 효율성 40% 향상',
+                '바이오 의약품 제조업체 B사 BOM 시스템 구축',
                 'Teamcenter 커스터마이징을 통한 고객 맞춤형 솔루션 제공',
                 '프로젝트 납기 준수율 100% 달성'
             ],
@@ -100,12 +99,13 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             company: {
                 name: 'CATIS',
                 industry: '보안 솔루션',
-                size: '중소기업'
+                size: '중소기업',
+                website: 'https://www.catis.co.kr/'
             },
             position: {
                 title: 'Web Developer',
                 level: '경력 2년차',
-                department: '솔루션개발팀'
+                department: 'R&D Center'
             },
             responsibilities: [
                 '출입통제 시스템 웹 애플리케이션 개발',
@@ -165,12 +165,12 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 lessonsLearned: [
                     '보안 요구사항의 중요성과 구현 방법',
                     '정부 프로젝트의 엄격한 품질 기준',
-                    '팀 협업과 코드 리뷰의 가치'
+                    '팀 협업의 가치치'
                 ],
                 careerGrowth: [
                     'PLM에서 웹 개발로의 성공적인 커리어 전환',
                     '모던 웹 기술 스택에 대한 전문성 확보',
-                    '풀스택 개발자로서의 역량 구축'
+                    '풀스택 개발자로 나아가기 위한 역량 구축'
                 ]
             }
         }
@@ -206,7 +206,6 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'advanced'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
@@ -238,8 +237,6 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             achievements: [
                 '6개월 만에 성공적인 시스템 업그레이드 완료',
                 '사양관리 효율성 60% 향상',
-                '데이터 품질 개선으로 오류 발생률 80% 감소',
-                '사용자 만족도 90% 이상 달성'
             ],
             retrospective: {
                 whatWentWell: [
@@ -288,7 +285,6 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'advanced'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
@@ -300,9 +296,9 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 {
                     id: 'impl-2',
                     title: '승인 워크플로우 구축',
-                    description: 'BOM 변경에 대한 다단계 승인 프로세스를 Teamcenter 워크플로우로 구현했습니다.',
-                    challenges: '복잡한 승인 단계와 다양한 이해관계자 관리',
-                    solution: '단계별 권한 관리와 자동 알림 시스템 구축'
+                    description: 'BOM 변경에 대한 승인 프로세스를 회사 내부 승인 프로그램과 연동하여 체계적인 변경 관리 시스템을 구축',
+                    challenges: '복잡한 승인 단계와 이해관계자 관리',
+                    solution: '단계별 권한 관리 구축과 이해관계자 관리 연동'
                 }
             ],
             challenges: [
@@ -311,20 +307,17 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 '다양한 부서 간 협업 프로세스 구축'
             ],
             achievements: [
-                'BOM 관리 효율성 50% 향상',
                 '제품 변경 추적 시스템 구축으로 규제 대응 강화',
-                '부품 정보 정확도 95% 이상 달성',
                 '사용자 교육 완료율 100% 달성'
             ],
             retrospective: {
                 whatWentWell: [
                     '제약업계 도메인 지식 습득과 적용',
-                    '복잡한 워크플로우 설계 및 구현 성공',
-                    '사용자 중심의 시스템 설계'
+                    '복잡한 승인 프로세스 설계 연동',
                 ],
                 whatCouldBeImproved: [
-                    '초기 데이터 마이그레이션 계획 수립 미흡',
-                    '성능 최적화 고려 부족'
+                    '초기 요구사항 분석 단계에서 더 세밀한 업무 프로세스 파악 필요',
+                    '사용자 교육 및 변화 관리 전략 수립 미흡'
                 ],
                 lessonsLearned: [
                     '규제가 엄격한 업계에서의 시스템 구축 방법',
@@ -337,7 +330,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             id: 'proj-3',
             type: 'project',
             itemType: 'project',
-            title: 'Axilog 개선',
+            title: 'Catis 출입통제 프로그램 Axilog 개선',
             shortDescription: 'CATIS 출입통제 프로그램 Axilog 개선 및 유지보수',
             fullDescription: 'CATIS의 기존 출입통제 프로그램인 Axilog의 성능 개선과 새로운 기능 추가를 담당했습니다. C#과 .NET Framework 기반의 레거시 시스템을 분석하고, 사용자 요구사항에 맞는 개선사항을 구현했습니다.',
             startYear: 2024,
@@ -363,7 +356,6 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'intermediate'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
@@ -386,10 +378,8 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 '제한된 개발 리소스와 일정'
             ],
             achievements: [
-                '시스템 응답 속도 30% 향상',
-                '사용자 만족도 조사에서 85% 긍정적 평가',
                 '버그 발생률 60% 감소',
-                '신규 기능 3개 추가 구현'
+                '신규 기능 7개 추가 구현'
             ],
             retrospective: {
                 whatWentWell: [
@@ -413,72 +403,81 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '화물검색 이력관리 프로그램 개선',
-            shortDescription: '국가 시설 C 납품용 화물검색 이력관리 프로그램 개선',
-            fullDescription: '국가 시설에 납품할 화물검색 이력관리 프로그램의 성능 개선과 새로운 요구사항 구현을 담당했습니다. Spring Boot와 Thymeleaf를 활용하여 웹 기반 시스템으로 현대화하고, 사용자 경험을 크게 개선했습니다.',
+            shortDescription: '국가 시설 C 납품용 X-ray 화물검색 이력관리 프로그램 개선',
+            fullDescription: '국가 시설에 납품할 X-ray 화물검색 이력관리 프로그램의 화면 개선 프로젝트입니다. 외주업체에서 Spring Boot와 Thymeleaf로 개발한 기존 시스템이 고객 요구사항을 충족하지 못하는 화면 표시 문제가 있어, 사용자 인터페이스를 전면 재구축하고 Spring Scheduler를 활용한 데이터 백업 기능을 추가했습니다.',
             startYear: 2024,
             endYear: 2024,
             startMonth: 4,
             endMonth: 6,
             experienceId: 'exp-2',
             teamSize: 3,
-            role: '백엔드 개발 및 시스템 아키텍처 설계',
+            role: '프론트엔드 화면 재구축 및 백업 시스템 개발',
             skills: [
                 {
                     id: 'springboot-cargo',
                     name: 'Spring Boot',
                     category: 'backend',
-                    usage: 'REST API 개발, 보안 구현, 데이터베이스 연동',
+                    usage: '기존 백엔드 로직 분석, API 활용',
                     experience: 'intermediate'
                 },
                 {
                     id: 'thymeleaf-cargo',
                     name: 'Thymeleaf',
                     category: 'frontend',
-                    usage: '서버사이드 렌더링, 동적 UI 구현',
+                    usage: '사용자 인터페이스 재구축, 동적 화면 구현',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'spring-scheduler',
+                    name: 'Spring Scheduler',
+                    category: 'backend',
+                    usage: '주기적 데이터 백업, 배치 작업 자동화',
                     experience: 'beginner'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: 'Spring Boot 기반 시스템 재구축',
-                    description: '기존 레거시 시스템을 Spring Boot 기반으로 재구축하여 성능과 유지보수성을 향상시켰습니다.',
-                    challenges: '기존 데이터 구조 유지하면서 새로운 아키텍처로 마이그레이션',
-                    solution: '단계적 마이그레이션과 데이터 호환성 보장'
+                    title: '사용자 인터페이스 전면 재구축',
+                    description: '고객 요구사항을 충족하지 못하는 기존 화면을 Thymeleaf 기반으로 완전히 재설계했습니다.',
+                    challenges: '기존 Spring Boot 백엔드 로직은 유지하면서 화면만 새로 구성해야 하는 제약',
+                    solution: '기존 API를 활용하되 사용자 경험을 고려한 직관적인 UI/UX로 재설계'
                 },
                 {
                     id: 'impl-2',
-                    title: '화물 검색 알고리즘 최적화',
-                    description: '대용량 화물 데이터에서 빠른 검색이 가능하도록 알고리즘을 최적화했습니다.',
-                    challenges: '대용량 데이터 처리와 실시간 검색 성능',
-                    solution: '인덱싱 최적화와 캐싱 전략 적용'
+                    title: 'Spring Scheduler 기반 데이터 백업 시스템',
+                    description: '카드 데이터 데이터베이스를 주기적으로 백업하는 시스템을 구축했습니다.',
+                    challenges: '카드 데이터 백업 시스템 구축',
+                    solution: 'Spring @Scheduled 어노테이션을 활용한 백업 구현'
+                },
+                {
+                    id: 'impl-3',
+                    title: '화물 이력 표시 화면 개선',
+                    description: '화물 태깅 위치, X-ray 이미지, 검색 결과를 한눈에 볼 수 있는 통합 화면을 구현했습니다.',
+                    challenges: '복잡한 검색 이력 데이터를 사용자가 이해하기 쉽게 표현',
+                    solution: '시각적 매핑과 시간순 정렬을 통한 직관적인 이력 추적 화면 구성'
                 }
             ],
             challenges: [
-                '정부 보안 요구사항 준수',
-                '대용량 데이터 처리 성능 최적화',
-                '기존 시스템과의 호환성 유지'
+                '외주업체 개발 시스템의 요구사항 미충족 화면 분석',
+                '기존 Spring Boot 백엔드 로직 유지하면서 화면만 재구축',
+                '복잡한 화물 검색 이력 데이터의 직관적 표현',
             ],
             achievements: [
-                '검색 속도 70% 향상',
-                '시스템 안정성 95% 이상 달성',
-                '정부 보안 인증 통과',
-                '사용자 교육 시간 50% 단축'
+                'UI 재구축 완료',
+                'Spring Scheduler 기반 자동 백업 시스템 구축',
             ],
             retrospective: {
                 whatWentWell: [
-                    'Spring Boot 생태계에 대한 깊은 이해 습득',
+                    'Spring Boot 생태계에 대한 이해 습득',
                     '정부 프로젝트 요구사항 대응 능력 향상',
                     '성능 최적화 경험 축적'
                 ],
                 whatCouldBeImproved: [
                     '프론트엔드 기술 스택 현대화 필요',
-                    '자동화된 배포 프로세스 구축 부족'
                 ],
                 lessonsLearned: [
                     '정부 프로젝트의 특수한 요구사항과 절차',
-                    '성능 최적화의 중요성과 방법론',
                     '레거시 시스템 현대화 전략'
                 ]
             }
@@ -488,88 +487,77 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '국가 시설 C 출입통제 개선 프로젝트',
-            shortDescription: '국가 시설 C 출입통제 프로그램 SNMP 인터페이스 서버 및 화면 개발',
-            fullDescription: '국가 시설의 출입통제 시스템에 SNMP 프로토콜 기반 네트워크 장비 연동 기능을 추가하고, React 기반의 모던한 관리 화면을 개발한 프로젝트입니다. 기존 시스템과의 통합을 고려하여 안정적인 인터페이스를 구축했습니다.',
+            shortDescription: '국가 시설 C 출입통제 시스템 SNMP 인터페이스 서버 개발',
+            fullDescription: '국가 시설의 출입통제 시스템을 Spring Cloud 기반 마이크로서비스로 구축하는 프로젝트에서 SNMP 인터페이스 서버를 담당했습니다. 각 네트워크 장비에 정해진 OID로 SNMP 호출을 보내 장비 상태 및 허브 포트 상태를 확인하는 마이크로서비스를 개발했습니다.',
             startYear: 2024,
             endYear: 2024,
             startMonth: 7,
             endMonth: 11,
             experienceId: 'exp-2',
             teamSize: 4,
-            role: '풀스택 개발 (SNMP 서버 및 React 프론트엔드)',
+            role: 'SNMP 인터페이스 서버 개발 (마이크로서비스)',
             skills: [
                 {
                     id: 'springboot-snmp',
                     name: 'Spring Boot',
                     category: 'backend',
-                    usage: 'SNMP 인터페이스 서버 개발, REST API 구현',
-                    experience: 'advanced'
-                },
-                {
-                    id: 'react-access',
-                    name: 'React',
-                    category: 'frontend',
-                    usage: '관리자 대시보드, 실시간 모니터링 UI 개발',
+                    usage: 'SNMP 인터페이스 마이크로서비스 개발, REST API 구현',
                     experience: 'intermediate'
                 },
                 {
                     id: 'snmp-protocol',
                     name: 'SNMP',
                     category: 'other',
-                    usage: '네트워크 장비 모니터링, 데이터 수집 및 제어',
+                    usage: 'OID 기반 장비 상태 조회, 허브 포트 모니터링',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'spring-cloud',
+                    name: 'Spring Cloud',
+                    category: 'backend',
+                    usage: '마이크로서비스 아키텍처, 서비스 간 통신',
                     experience: 'beginner'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: 'SNMP 인터페이스 서버 개발',
-                    description: '네트워크 장비와 통신하기 위한 SNMP 프로토콜 기반 인터페이스 서버를 개발했습니다.',
-                    challenges: 'SNMP 프로토콜에 대한 이해 부족과 다양한 장비 호환성',
-                    solution: 'SNMP 라이브러리 활용과 단계적 테스트를 통한 호환성 확보'
+                    title: 'OID 기반 SNMP 장비 상태 조회 서비스',
+                    description: '각 네트워크 장비에 정해진 OID로 SNMP GET 요청을 보내 장비가 살아있는지 확인하는 서비스를 개발했습니다.',
+                    challenges: 'SNMP OID 체계 이해와 다양한 장비별 응답 처리',
+                    solution: 'SNMP4J 라이브러리 활용'
                 },
                 {
                     id: 'impl-2',
-                    title: 'React 기반 관리 대시보드 구축',
-                    description: '실시간 장비 상태 모니터링과 제어가 가능한 React 기반 대시보드를 구축했습니다.',
-                    challenges: '실시간 데이터 업데이트와 복잡한 상태 관리',
-                    solution: 'WebSocket 연동과 Redux를 활용한 상태 관리'
-                },
-                {
-                    id: 'impl-3',
-                    title: '기존 시스템과의 통합',
-                    description: '기존 출입통제 시스템과 새로운 SNMP 기능을 seamless하게 통합했습니다.',
-                    challenges: '레거시 시스템과의 데이터 호환성과 동기화',
-                    solution: '어댑터 패턴과 이벤트 기반 아키텍처 적용'
+                    title: '허브 포트 상태 모니터링 시스템',
+                    description: '허브 장비의 각 포트 상태를 SNMP로 조회하여 포트 연결 상태를 확인하는 시스템을 구축했습니다.',
+                    challenges: '대상 허브별 상이한 포트 상태 OID와 응답 값 해석',
+                    solution: '장비 제조사별 MIB 분석과 표준화된 응답 처리를 통해 포트 상태 모니터링 시스템 구축'
                 }
             ],
             challenges: [
-                'SNMP 프로토콜 학습과 구현',
-                '실시간 데이터 처리 성능 최적화',
-                '정부 보안 요구사항 준수',
-                '다양한 네트워크 장비 호환성 확보'
+                'SNMP OID 체계와 MIB 구조 이해',
+                '다양한 장비 제조사별 SNMP 응답 차이 처리',
+                '실시간 장비 상태 모니터링 성능 최적화'
             ],
             achievements: [
-                '네트워크 장비 자동 모니터링 시스템 구축',
-                '시스템 장애 감지 시간 80% 단축',
-                '관리자 업무 효율성 60% 향상',
-                '99.9% 시스템 가용성 달성'
+                'SNMP 기반 장비 상태 모니터링 마이크로서비스 구축',
+                '허브 포트 상태 실시간 조회 시스템 완성',
+                '장비 장애 감지 시간 대폭 단축'
             ],
             retrospective: {
                 whatWentWell: [
-                    'React 기반 모던 프론트엔드 개발 역량 강화',
-                    'SNMP 프로토콜과 네트워크 프로그래밍 경험 습득',
-                    '풀스택 개발 경험을 통한 전체적 시각 확보'
+                    'SNMP 프로토콜과 네트워크 장비 모니터링 전문성 습득',
+                    '다양한 장비 제조사별 호환성 문제 해결 능력 향상'
                 ],
                 whatCouldBeImproved: [
-                    '네트워크 보안 측면 고려 부족',
-                    '로드 테스트 및 성능 측정 미흡'
+                    'MIB 구조에 대한 더 깊은 이해 필요',
+                    '장비 장애 상황에 대한 예외 처리 강화'
                 ],
                 lessonsLearned: [
-                    '새로운 프로토콜 학습과 적용 방법',
-                    '실시간 시스템 개발의 복잡성',
-                    '레거시 시스템 통합의 어려움과 해결 방법'
+                    'SNMP 프로토콜의 실무 적용과 한계',
+                    '마이크로서비스 간 통신의 복잡성',
+                    '네트워크 장비 모니터링의 중요성과 구현 방법'
                 ]
             }
         },
@@ -578,95 +566,84 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '국가 시설 C 통합 출입통제 개발 프로그램',
-            shortDescription: '국가 시설 C 통합 출입통제 시스템 화면 개발',
-            fullDescription: '국가 시설의 모든 출입통제 시스템을 통합 관리할 수 있는 웹 기반 플랫폼의 프론트엔드를 개발했습니다. React, Tailwind CSS, Zustand, React Query 등 모던 기술 스택을 활용하여 사용자 친화적이고 성능 최적화된 인터페이스를 구축했습니다.',
+            shortDescription: '국가 시설 C 통합 출입통제 시스템 WebSocket 및 도면 기반 경보 화면 개발',
+            fullDescription: '국가 시설의 통합 출입통제 시스템에서 WebSocket을 통한 생체인식 장치 실시간 모니터링, 장치 제어 인터페이스, 그리고 Konva 라이브러리를 활용한 도면 기반 경보 시스템을 개발했습니다. 지문인식 장치 등의 생체인식 장비 상태를 실시간으로 받아 처리하고, 도면 위에 문 객체를 배치하여 경보 발생 시 시각적 표시와 경보음을 제공하는 시스템을 구축했습니다.',
             startYear: 2025,
             endYear: 2025,
             startMonth: 1,
             endMonth: 9,
             experienceId: 'exp-2',
             teamSize: 5,
-            role: '프론트엔드 개발 리드',
+            role: 'WebSocket 통신 및 도면 기반 UI 개발',
             skills: [
                 {
                     id: 'react-integrated',
                     name: 'React',
                     category: 'frontend',
-                    usage: '컴포넌트 아키텍처 설계, 복잡한 UI 구현, 성능 최적화',
+                    usage: '실시간 데이터 처리 컴포넌트, 장치 제어 UI 구현',
                     experience: 'advanced'
+                },
+                {
+                    id: 'websocket-client',
+                    name: 'WebSocket',
+                    category: 'frontend',
+                    usage: '생체인식 장치 실시간 상태 수신, 장비 이벤트 처리',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'konva-canvas',
+                    name: 'Konva.js',
+                    category: 'frontend',
+                    usage: '도면 기반 인터페이스, 문 객체 배치, 경보 시각화',
+                    experience: 'intermediate'
                 },
                 {
                     id: 'tailwind-integrated',
                     name: 'Tailwind CSS',
                     category: 'frontend',
-                    usage: '디자인 시스템 구축, 반응형 UI, 커스텀 컴포넌트 스타일링',
+                    usage: '장치 제어 패널 UI, 경보 화면 스타일링',
                     experience: 'advanced'
-                },
-                {
-                    id: 'zustand-state',
-                    name: 'Zustand',
-                    category: 'frontend',
-                    usage: '전역 상태 관리, 복잡한 데이터 플로우 관리',
-                    experience: 'intermediate'
-                },
-                {
-                    id: 'react-query-data',
-                    name: 'React Query',
-                    category: 'frontend',
-                    usage: '서버 상태 관리, 캐싱, 실시간 데이터 동기화',
-                    experience: 'intermediate'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: '모던 React 아키텍처 설계',
-                    description: '확장 가능하고 유지보수가 용이한 React 애플리케이션 아키텍처를 설계했습니다.',
-                    challenges: '복잡한 출입통제 도메인을 컴포넌트로 추상화하는 어려움',
-                    solution: '도메인 주도 설계 원칙을 적용한 컴포넌트 구조화'
+                    title: 'WebSocket 기반 생체인식 장치 모니터링',
+                    description: '지문인식 장치 등 생체인식 장비의 상태를 WebSocket으로 실시간 수신하여 처리하는 시스템을 구현했습니다.',
+                    challenges: '다양한 생체인식 장치의 상이한 데이터 포맷과 실시간 처리',
+                    solution: 'WebSocket 연결 관리와 장치별 데이터 파싱 로직 구현'
                 },
                 {
                     id: 'impl-2',
-                    title: '실시간 데이터 동기화 시스템',
-                    description: 'React Query를 활용하여 실시간 출입 현황과 시스템 상태를 동기화했습니다.',
-                    challenges: '대량의 실시간 데이터 처리와 성능 최적화',
-                    solution: '적절한 캐싱 전략과 optimistic updates 적용'
-                },
-                {
-                    id: 'impl-3',
-                    title: '통합 대시보드 구현',
-                    description: '여러 시설의 출입통제 현황을 한눈에 볼 수 있는 통합 대시보드를 구현했습니다.',
-                    challenges: '복잡한 데이터 시각화와 사용자 경험 최적화',
-                    solution: '인터랙티브 차트와 직관적인 UI/UX 디자인 적용'
+                    title: 'Konva 기반 도면 경보 시스템',
+                    description: 'Konva 라이브러리를 활용하여 도면 위에 문 객체를 배치하고, 경보 발생 시 시각적 표시와 경보음을 제공하는 시스템을 구현했습니다.',
+                    challenges: '복잡한 도면 데이터의 인터랙티브 렌더링과 실시간 경보 표시',
+                    solution: 'Canvas 기반 도면 렌더링과 오디오 API를 활용한 경보 시스템 구축'
                 }
             ],
             challenges: [
-                '정부 웹 접근성 지침 준수',
-                '대용량 실시간 데이터 처리',
-                '복잡한 권한 관리 시스템 구현',
-                '크로스 브라우저 호환성 확보'
+                'WebSocket 연결 안정성과 재연결 메커니즘 구현',
+                'Konva를 활용한 복잡한 도면 렌더링 최적화',
+                '실시간 경보 처리와 오디오 재생 동기화'
             ],
             achievements: [
-                '통합 관리 시스템을 통한 운영 효율성 70% 향상',
-                '웹 접근성 AA 등급 인증 획득',
-                '페이지 로드 시간 2초 이내 달성',
-                '사용자 만족도 조사 90% 이상 긍정적 평가'
+                'WebSocket 기반 실시간 장치 모니터링 시스템 구축',
+                'Konva 라이브러리를 활용한 도면 기반 경보 시스템 완성',
+                '경보 발생 시 시각적/청각적 알림 시스템 구축',
+                '사용자 친화적인 통합 관리 화면 제공'
             ],
             retrospective: {
                 whatWentWell: [
-                    '모던 React 생태계에 대한 전문성 확보',
-                    '대규모 프론트엔드 프로젝트 아키텍처 설계 경험',
-                    '팀 리드 역할을 통한 협업 및 멘토링 경험'
+                    'WebSocket을 활용한 실시간 통신 기술 습득',
+                    'Konva 라이브러리를 통한 Canvas 기반 UI 개발 경험',
                 ],
                 whatCouldBeImproved: [
-                    '자동화된 테스트 커버리지 부족',
-                    'CI/CD 파이프라인 최적화 필요'
+                    'WebSocket 연결 장애 상황에 대한 더 견고한 처리 필요',
+                    'cavas 렌더링 성능 최적화 개선 여지'
                 ],
                 lessonsLearned: [
-                    '대규모 프론트엔드 애플리케이션 아키텍처 설계 원칙',
-                    '정부 프로젝트의 접근성과 보안 요구사항',
-                    '팀 리드로서의 기술적 의사결정과 팀 관리'
+                    '실시간 통신의 복잡성과 안정성 확보 방법',
+                    'Canvas 기반 인터페이스 개발의 장점과 한계',
                 ]
             }
         },
@@ -675,81 +652,71 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '온실가스 차트 웹페이지',
-            shortDescription: '웹 개발 연습용 차트 페이지',
-            fullDescription: '환경 데이터 시각화에 관심을 가지고 개발한 개인 프로젝트로, 전 세계 온실가스 배출량 데이터를 인터랙티브한 차트로 표현하는 웹페이지입니다. React와 Chart.js를 활용하여 다양한 형태의 데이터 시각화를 구현했습니다.',
+            shortDescription: '한국 온실가스 배출량 데이터 시각화 웹페이지',
+            fullDescription: '친구의 아이디어로 시작한 개인 프로젝트로, 한국의 온실가스 배출량 데이터를 시각화하는 웹페이지를 제작했습니다. 웹 개발 연습을 목적으로 React, Chart.js, shadcn/ui를 활용하여 깔끔하고 직관적인 데이터 시각화 인터페이스를 구현했습니다.',
             startYear: 2024,
             endYear: 2024,
             startMonth: 11,
             endMonth: 11,
             teamSize: 1,
             role: '개인 개발자',
-            repository: 'https://github.com/readmekym/greenhouse-gas-chart',
-            liveDemo: 'https://greenhouse-gas-chart.vercel.app',
+            repository: 'https://github.com/EPIGEXE/greenhouseGasFront',
+            SeeMore: 'https://befitting-silica-24b.notion.site/14568d63fcbd805d892ec3cac520690f?pvs=74',
             skills: [
                 {
                     id: 'react-chart',
                     name: 'React',
                     category: 'frontend',
-                    usage: '컴포넌트 기반 UI 구현, 상태 관리',
+                    usage: '컴포넌트 기반 UI 구현, 차트 데이터 상태 관리',
                     experience: 'intermediate'
                 },
                 {
-                    id: 'tailwind-chart',
-                    name: 'Tailwind CSS',
+                    id: 'shadcn-ui',
+                    name: 'shadcn/ui',
                     category: 'frontend',
-                    usage: '반응형 레이아웃, 컴포넌트 스타일링',
-                    experience: 'intermediate'
-                },
-                {
-                    id: 'chartjs',
-                    name: 'Chart.js',
-                    category: 'frontend',
-                    usage: '인터랙티브 차트 구현, 데이터 시각화',
+                    usage: '모던한 UI 컴포넌트, 일관된 디자인 시스템',
                     experience: 'beginner'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: '데이터 수집 및 처리',
-                    description: '공개 API를 통해 온실가스 배출량 데이터를 수집하고 차트에 적합한 형태로 가공했습니다.',
-                    challenges: '다양한 형태의 환경 데이터 통합과 정제',
-                    solution: '데이터 파이프라인 구축과 정규화 과정 구현'
+                    title: '한국 온실가스 데이터 수집 및 처리',
+                    description: '한국 환경공단 등의 공개 데이터를 활용하여 국내 온실가스 배출량 데이터를 수집하고 차트에 적합한 형태로 가공했습니다.',
+                    challenges: '한국 특화 환경 데이터의 포맷 이해와 정제',
+                    solution: '한국 데이터 특성에 맞는 파싱 로직과 데이터 구조화'
                 },
                 {
                     id: 'impl-2',
-                    title: '인터랙티브 차트 구현',
-                    description: '사용자가 국가별, 연도별로 데이터를 필터링하고 비교할 수 있는 인터랙티브 차트를 구현했습니다.',
-                    challenges: 'Chart.js 라이브러리 학습과 커스터마이징',
-                    solution: '단계적 학습과 공식 문서 활용'
+                    title: 'shadcn/ui 기반 모던 인터페이스 구축',
+                    description: 'shadcn/ui 컴포넌트 라이브러리를 활용하여 깔끔하고 일관성 있는 사용자 인터페이스를 구축했습니다.',
+                    challenges: 'shadcn/ui 컴포넌트 시스템 학습과 커스터마이징',
+                    solution: '공식 문서와 예제를 통한 컴포넌트 활용법 습득'
                 }
             ],
             challenges: [
-                '데이터 시각화 라이브러리 학습',
-                '대용량 환경 데이터 처리',
-                '사용자 친화적인 인터페이스 설계'
+                'shadcn/ui 컴포넌트 시스템 학습과 적용',
+                '한국 환경 데이터 특성 이해와 처리',
             ],
             achievements: [
-                '첫 번째 데이터 시각화 프로젝트 완성',
-                'Chart.js 라이브러리 숙련도 확보',
-                '환경 데이터에 대한 이해도 향상',
-                '개인 포트폴리오 확장'
+                '친구 아이디어를 바탕으로 한 첫 데이터 시각화 프로젝트 완성',
+                'shadcn/ui 컴포넌트 라이브러리 활용 경험 습득',
+                '웹 개발 연습 목표 달성'
             ],
             retrospective: {
                 whatWentWell: [
-                    '새로운 라이브러리 빠른 학습과 적용',
-                    '데이터 처리 및 시각화 경험 습득',
-                    '개인 프로젝트를 통한 자기주도적 학습'
+                    'shadcn/ui를 통한 모던 UI 컴포넌트 시스템 경험',
+                    '친구 아이디어를 실제 구현으로 발전시키는 협업 경험',
+                    '한국 특화 데이터를 활용한 의미있는 시각화 완성'
                 ],
                 whatCouldBeImproved: [
-                    '코드 구조화와 재사용성 고려 부족',
-                    '성능 최적화 미흡'
+                    '더 다양한 차트 타입과 인터랙션 구현',
+                    '데이터 업데이트 자동화 메커니즘 부족'
                 ],
                 lessonsLearned: [
-                    '데이터 시각화의 중요성과 효과',
-                    '사용자 관점에서의 정보 전달 방법',
-                    '개인 프로젝트의 학습 효과'
+                    'shadcn/ui의 효율성과 디자인 시스템의 중요성',
+                    '데이터 시각화를 통한 정보 전달의 효과',
+                    '아이디어 공유와 실행의 가치'
                 ]
             }
         },
@@ -758,15 +725,16 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '가계부 프로그램',
-            shortDescription: '데스크탑 가계부 애플리케이션',
-            fullDescription: '개인 재정 관리의 필요성을 느껴 개발한 Electron 기반 데스크탑 애플리케이션입니다. React로 UI를 구성하고 SQLite로 로컬 데이터를 관리하여, 개인정보 보호와 편의성을 모두 고려한 가계부 프로그램을 만들었습니다.',
+            shortDescription: '개인 연습용 데스크탑 가계부 애플리케이션',
+            fullDescription: '온실가스 차트 웹사이트보다 더 유용한 프로그램을 만들고 싶어서 시작한 개인 연습 프로젝트입니다. Electron 기반 데스크탑 애플리케이션으로 React와 SQLite를 활용하여 실제로 사용할 수 있는 가계부 프로그램을 개발했습니다. 웹 개발 기술을 데스크탑 환경에 적용해보는 학습 목적도 있었습니다.',
             startYear: 2024,
             endYear: 2025,
             startMonth: 12,
             endMonth: 1,
             teamSize: 1,
             role: '개인 개발자',
-            repository: 'https://github.com/readmekym/personal-budget-app',
+            repository: 'https://github.com/EPIGEXE/save_wise',
+            SeeMore: 'https://befitting-silica-24b.notion.site/14568d63fcbd80358cedf5082ec66fff?pvs=74',
             skills: [
                 {
                     id: 'electron-desktop',
@@ -790,7 +758,6 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'beginner'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
@@ -804,7 +771,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     title: 'SQLite 데이터베이스 설계',
                     description: '가계부 데이터를 효율적으로 저장하고 조회할 수 있는 SQLite 데이터베이스를 설계했습니다.',
                     challenges: 'SQL 쿼리 최적화와 데이터 무결성 보장',
-                    solution: '정규화 원칙 적용과 인덱스 활용'
+                    solution: 'SQLite 데이터베이스 설계 및 관리'
                 },
                 {
                     id: 'impl-3',
@@ -818,28 +785,25 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 'Electron 프레임워크 학습',
                 '로컬 데이터베이스 관리',
                 '크로스 플랫폼 호환성 확보',
-                '데이터 백업 및 복구 기능'
             ],
             achievements: [
-                '개인용 가계부 프로그램 완성',
-                'Electron 개발 경험 습득',
-                'SQLite 데이터베이스 설계 능력 향상',
-                '개인 재정 관리 효율성 향상'
+                '실제 사용 가능한 유용한 프로그램 연습습',
+                'Electron을 통한 웹 기술의 데스크탑 확장 경험',
+                'SQLite 데이터베이스 설계 및 관리 능력 향상',
+                '개인 연습 프로젝트로서의 학습 목표 달성'
             ],
             retrospective: {
                 whatWentWell: [
-                    '데스크탑 애플리케이션 개발 경험 확보',
-                    '실제 사용할 수 있는 실용적인 프로그램 완성',
-                    '로컬 데이터베이스 활용 능력 습득'
+                    '이전 프로젝트보다 더 실용적이고 유용한 프로그램 완성',
+                    'Electron을 통한 웹 기술의 데스크탑 확장 경험',
                 ],
                 whatCouldBeImproved: [
-                    '앱 배포와 업데이트 메커니즘 구현 부족',
-                    '보안 측면 고려 미흡'
+                    '사용자 경험(UX) 개선 여지',
                 ],
                 lessonsLearned: [
-                    '개인의 실제 니즈를 해결하는 프로그램의 가치',
-                    'Electron을 통한 웹 기술의 데스크탑 확장',
-                    '로컬 우선 애플리케이션의 장점'
+                    '연습용 프로젝트도 실용성을 고려하면 더 의미있는 학습 효과',
+                    'Electron 생태계와 데스크탑 앱 개발의 특성',
+                    '점진적으로 더 복잡하고 유용한 프로젝트에 도전하는 것의 가치'
                 ]
             }
         },
@@ -849,21 +813,21 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             itemType: 'project',
             title: '온라인 스캠 방지 사이트',
             shortDescription: '스캠 방지 교육 사이트',
-            fullDescription: '최근 증가하는 온라인 스캠 피해를 예방하기 위해 개발한 교육용 웹사이트입니다. Next.js와 TypeScript를 활용하여 SEO 최적화된 정적 사이트를 구축하고, 다양한 스캠 유형과 대응 방법을 시나리오 기반으로 제공합니다.',
+            fullDescription: '최근 증가하는 온라인 스캠 피해를 예방하기 위해 개발한 교육용 웹사이트입니다. Next.js와 TypeScript를 활용하여 구축하고, 다양한 스캠 유형과 대응 방법을 시나리오 기반으로 제공합니다.',
             startYear: 2025,
             endYear: 2025,
             startMonth: 7,
             endMonth: 7,
             teamSize: 1,
             role: '개인 개발자',
-            repository: 'https://github.com/readmekym/scam-prevention-site',
-            liveDemo: 'https://scam-prevention.vercel.app',
+            repository: 'https://github.com/EPIGEXE/FonziGuard',
+            live: 'https://fonzi-detector.thebrothers.dev/ko',
             skills: [
                 {
                     id: 'nextjs-ssg',
                     name: 'Next.js',
                     category: 'frontend',
-                    usage: 'SSG(Static Site Generation), SEO 최적화, 라우팅',
+                    usage: 'SEO 최적화, 라우팅',
                     experience: 'intermediate'
                 },
                 {
@@ -881,17 +845,9 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'advanced'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: 'Next.js SSG 기반 정적 사이트 구축',
-                    description: 'SEO 최적화와 빠른 로딩을 위해 Next.js의 Static Site Generation을 활용했습니다.',
-                    challenges: 'SEO 최적화와 정적 사이트 구조 설계',
-                    solution: 'Next.js의 getStaticProps와 메타데이터 최적화'
-                },
-                {
-                    id: 'impl-2',
                     title: '스캠 시나리오 기반 교육 콘텐츠 구현',
                     description: '실제 스캠 사례를 바탕으로 한 인터랙티브 교육 콘텐츠를 구현했습니다.',
                     challenges: '복잡한 시나리오의 단순하고 이해하기 쉬운 표현',
@@ -900,11 +856,10 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             ],
             challenges: [
                 'SEO 최적화와 웹 접근성 확보',
-                '복잡한 보안 개념의 쉬운 설명',
                 '다양한 연령층을 고려한 UI/UX'
             ],
             achievements: [
-                'Next.js SSG 기반 사이트 완성',
+                'Next.js 사이트 완성',
                 'TypeScript 활용 능력 향상',
                 '사회적 가치 창출 프로젝트 완성',
                 'SEO 최적화 경험 습득'
@@ -931,15 +886,15 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             itemType: 'project',
             title: '다국어 멀티 블로그 포스팅 프로그램',
-            shortDescription: '자동화된 멀티 블로그 관리 툴',
-            fullDescription: '개발 경험과 지식을 여러 플랫폼에 효율적으로 공유하기 위해 개발한 데스크탑 애플리케이션입니다. Electron, React, TypeScript, TypeORM을 활용하여 다국어 지원과 여러 블로그 플랫폼에 동시 포스팅이 가능한 도구를 만들었습니다.',
+            shortDescription: 'LLM 자동 번역 및 다중 블로그 플랫폼 포스팅 도구',
+            fullDescription: '개발 경험과 지식을 여러 플랫폼에 효율적으로 공유하기 위해 개발한 데스크탑 애플리케이션입니다. LLM API를 활용한 자동 번역 기능과 dev.to, Google Blogger, Qiita 세 개의 블로그 플랫폼 API를 연동하여 다국어 콘텐츠를 동시에 포스팅할 수 있는 도구를 구축했습니다.',
             startYear: 2025,
             endYear: 2025,
             startMonth: 8,
             endMonth: 9,
             teamSize: 1,
             role: '개인 개발자',
-            repository: 'https://github.com/readmekym/multi-blog-publisher',
+            repository: 'https://github.com/EPIGEXE/loudSelf',
             skills: [
                 {
                     id: 'electron-advanced',
@@ -970,77 +925,90 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     experience: 'advanced'
                 },
                 {
+                    id: 'llm-api',
+                    name: 'LLM API',
+                    category: 'backend',
+                    usage: '다국어 자동 번역, 콘텐츠 처리',
+                    experience: 'beginner'
+                },
+                {
+                    id: 'blog-apis',
+                    name: 'Blog Platform APIs',
+                    category: 'backend',
+                    usage: 'dev.to, Google Blogger, Qiita API 연동 및 포스팅',
+                    experience: 'intermediate'
+                },
+                {
                     id: 'typeorm-database',
                     name: 'TypeORM',
                     category: 'backend',
-                    usage: '엔티티 설계, 관계 매핑, 마이그레이션 관리',
+                    usage: '블로그 포스트 데이터 엔티티 설계, 관계 매핑',
                     experience: 'beginner'
                 },
                 {
                     id: 'sqlite-advanced',
                     name: 'SQLite',
                     category: 'backend',
-                    usage: '복잡한 쿼리, 성능 최적화, 데이터 무결성',
+                    usage: '포스트 메타데이터 저장, 번역 이력 관리',
                     experience: 'intermediate'
                 }
             ],
-            images: [],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: 'TypeORM 기반 데이터 모델링',
-                    description: '블로그 포스트, 플랫폼 설정, 다국어 콘텐츠를 관리하는 데이터 모델을 TypeORM으로 설계했습니다.',
-                    challenges: '복잡한 관계형 데이터의 ORM 매핑과 성능 최적화',
-                    solution: '엔티티 관계 최적화와 lazy loading 활용'
+                    title: 'LLM API 기반 자동 번역 시스템',
+                    description: 'LLM API를 활용하여 작성한 콘텐츠를 자동으로 다국어로 번역하는 시스템을 구축했습니다.',
+                    challenges: 'LLM API 호출 최적화와 번역 품질 관리',
+                    solution: 'LLM API 연동과 번역 결과 후처리 로직 구현'
                 },
                 {
                     id: 'impl-2',
-                    title: '다국어 지원 시스템 구축',
-                    description: '한국어, 영어, 일본어 콘텐츠를 효율적으로 관리하고 번역할 수 있는 시스템을 구축했습니다.',
-                    challenges: '다국어 콘텐츠의 동기화와 번역 품질 관리',
-                    solution: 'i18n 라이브러리와 번역 API 연동'
+                    title: '다중 블로그 플랫폼 API 연동',
+                    description: 'dev.to, Google Blogger, Qiita 세 개 플랫폼의 API를 연동하여 동시 포스팅이 가능한 시스템을 구축했습니다.',
+                    challenges: '각 플랫폼별 상이한 API 스펙과 인증 방식 처리',
+                    solution: '플랫폼별 어댑터 패턴 적용과 통합 포스팅 인터페이스 구축'
                 },
                 {
                     id: 'impl-3',
-                    title: '멀티 플랫폼 API 연동',
-                    description: 'WordPress, Medium, Tistory 등 다양한 블로그 플랫폼의 API를 연동했습니다.',
-                    challenges: '각 플랫폼별 상이한 API 스펙과 인증 방식',
-                    solution: '어댑터 패턴을 활용한 통합 인터페이스 구축'
+                    title: 'TypeORM 기반 콘텐츠 관리',
+                    description: '블로그 포스트, 번역 이력, 플랫폼별 메타데이터를 관리하는 데이터 모델을 설계했습니다.',
+                    challenges: '복잡한 다국어 콘텐츠와 플랫폼별 데이터의 효율적 관리',
+                    solution: 'TypeORM 엔티티 관계 설계와 데이터 무결성 보장'
                 },
                 {
                     id: 'impl-4',
-                    title: '리치 텍스트 에디터 구현',
-                    description: '마크다운과 WYSIWYG를 지원하는 리치 텍스트 에디터를 구현했습니다.',
-                    challenges: '복잡한 텍스트 포맷팅과 실시간 미리보기',
-                    solution: 'Draft.js와 마크다운 파서 활용'
+                    title: '통합 포스팅 워크플로우 구현',
+                    description: '콘텐츠 작성부터 번역, 다중 플랫폼 포스팅까지의 전체 워크플로우를 구현했습니다.',
+                    challenges: '비동기 처리와 에러 핸들링, 포스팅 상태 관리',
+                    solution: '작업 큐 시스템과 상태 추적 메커니즘 구축'
                 }
             ],
             challenges: [
-                '복잡한 데이터 관계 모델링',
-                '다양한 블로그 플랫폼 API 호환성',
-                '다국어 콘텐츠 동기화',
-                '성능 최적화와 메모리 관리'
+                'LLM API 호출 최적화',
+                'dev.to, Google Blogger, Qiita API의 상이한 스펙 통합',
+                '자동 번역 품질 보장과 후처리',
+                '다중 플랫폼 동시 포스팅 시 에러 핸들링'
             ],
             achievements: [
-                '개인 블로그 운영 효율성 90% 향상',
-                'TypeORM과 고급 데이터베이스 설계 경험 습득',
-                '복잡한 Electron 애플리케이션 완성',
-                '다국어 콘텐츠 관리 시스템 구축'
+                'LLM 기반 자동 번역 시스템 구축',
+                '3개 주요 블로그 플랫폼 API 연동 완료',
+                '다국어 콘텐츠 자동 배포 워크플로우 구현',
+                '개인 블로그 운영 효율성 대폭 향상'
             ],
             retrospective: {
                 whatWentWell: [
-                    '복잡한 요구사항을 체계적으로 분석하고 구현',
-                    'TypeScript와 TypeORM을 통한 타입 안전성 확보',
-                    '실제 업무 효율성을 크게 개선하는 도구 완성'
+                    'LLM API를 활용한 자동 번역 시스템 성공적 구현',
+                    '3개 블로그 플랫폼 API의 효과적인 통합',
+                    '실제 블로그 운영 효율성을 크게 개선하는 도구 완성'
                 ],
                 whatCouldBeImproved: [
-                    '에러 처리와 복구 메커니즘 강화 필요',
-                    '사용자 가이드와 문서화 부족'
+                    'LLM API 비용 최적화 전략 필요',
+                    '번역 품질 검증 및 수정 기능 부족'
                 ],
                 lessonsLearned: [
-                    '복잡한 도메인의 모델링과 추상화 중요성',
-                    'ORM 활용 시 성능 고려사항',
-                    '개인 생산성 도구의 가치와 효과'
+                    'LLM API 활용 시 비용과 품질의 균형점 찾기',
+                    '다양한 외부 API 통합 시 에러 처리의 중요성',
+                    '자동화 도구가 개인 생산성에 미치는 큰 영향'
                 ]
             }
         }

@@ -1,13 +1,9 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { developerData } from '../data/devloperData'
-import { detailedDeveloperData } from '../data/detailedDeveloperData'
-import { SkillBadge } from './ui/SkillBadge'
-import { ProjectDetailPage } from './ProjectDetailPage'
-import { ExperienceDetailPage } from './ExperienceDetailPage'
+import { SkillBadge } from '../components/ui/SkillBadge'
 import { Calendar, Briefcase, Code, User } from 'lucide-react'
-import type { Experience, Project, DetailedItem } from '../types'
-import { isDetailedProject, isDetailedExperience } from '../types'
+import type { Experience, Project } from '../types'
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -28,9 +24,8 @@ type GalleryItem = (Experience | Project) & {
     itemType: 'experience' | 'project'
 }
 
-export function GalleryView() {
-    const [selectedItem, setSelectedItem] = useState<DetailedItem | null>(null)
-    const [showDetailPage, setShowDetailPage] = useState(false)
+export function GalleryPage() {
+    const navigate = useNavigate()
 
     // 모든 아이템을 하나로 합치고 시간순 정렬 (오래된 것부터)
     const allItems: GalleryItem[] = [
@@ -80,36 +75,10 @@ export function GalleryView() {
     }
 
     const handleItemClick = (item: GalleryItem) => {
-        // 기본 아이템 정보로 상세 데이터 찾기
-        let detailedItem: DetailedItem | null = null
-
         if (item.itemType === 'experience') {
-            detailedItem = detailedDeveloperData.experiences.find(exp => exp.id === item.id) || null
+            navigate(`/experience/${item.id}`)
         } else {
-            detailedItem = detailedDeveloperData.projects.find(proj => proj.id === item.id) || null
-        }
-
-        if (detailedItem) {
-            setSelectedItem(detailedItem)
-            setShowDetailPage(true)
-        } else {
-            console.log('상세 데이터가 없습니다:', item.id)
-        }
-    }
-
-    const handleBackToGallery = () => {
-        setShowDetailPage(false)
-        setSelectedItem(null)
-    }
-
-
-
-    // 상세 페이지가 표시되는 경우
-    if (showDetailPage && selectedItem) {
-        if (isDetailedProject(selectedItem)) {
-            return <ProjectDetailPage project={selectedItem} onBack={handleBackToGallery} />
-        } else if (isDetailedExperience(selectedItem)) {
-            return <ExperienceDetailPage experience={selectedItem} onBack={handleBackToGallery} />
+            navigate(`/project/${item.id}`)
         }
     }
 

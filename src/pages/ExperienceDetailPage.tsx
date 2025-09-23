@@ -1,13 +1,9 @@
 import { useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Calendar, Building } from 'lucide-react'
-import type { DetailedExperience } from '../types'
-import { SkillBadge } from './ui/SkillBadge'
-
-interface ExperienceDetailPageProps {
-    experience: DetailedExperience
-    onBack: () => void
-}
+import { detailedDeveloperData } from '../data/detailedDeveloperData'
+import { SkillBadge } from '../components/ui/SkillBadge'
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -24,10 +20,30 @@ const staggerContainer = {
     }
 }
 
-export function ExperienceDetailPage({ experience, onBack }: ExperienceDetailPageProps) {
+export function ExperienceDetailPage() {
+    const { id } = useParams<{ id: string }>()
+    const navigate = useNavigate()
+    const experience = detailedDeveloperData.experiences.find(e => e.id === id)
+
     useEffect(() => {
         window.scrollTo(0, 0)
     }, [])
+
+    if (!experience) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-4">Experience not found</h2>
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="text-gray-500 hover:text-gray-700"
+                    >
+                        ← Back
+                    </button>
+                </div>
+            </div>
+        )
+    }
 
     const formatPeriod = (startYear: number, startMonth: number, endYear: number, endMonth: number) => {
         return `${startYear}.${String(startMonth).padStart(2, '0')} - ${endYear}.${String(endMonth).padStart(2, '0')}`
@@ -46,11 +62,11 @@ export function ExperienceDetailPage({ experience, onBack }: ExperienceDetailPag
                 {/* Back Button */}
                 <motion.button
                     variants={fadeInUp}
-                    onClick={onBack}
+                    onClick={() => navigate(-1)}
                     className="text-lg text-gray-500 tracking-widest uppercase mb-12 hover:text-gray-700 transition-colors"
                     style={{ fontFamily: "'Pretendard', sans-serif" }}
                 >
-                    ← Gallery
+                    ← Back
                 </motion.button>
                         {/* Hero Section */}
                 <motion.section className="mb-24" variants={fadeInUp}>
@@ -95,16 +111,7 @@ export function ExperienceDetailPage({ experience, onBack }: ExperienceDetailPag
                                 </div>
                             )}
                         </div>
-
-                        {/* Right Image Placeholder */}
-                        <div className="lg:col-span-1">
-                            <div className="w-full aspect-square bg-gray-100 flex items-center justify-center">
-                                <div className="text-center text-gray-400">
-                                    <div className="text-4xl mb-2">🏢</div>
-                                    <div className="text-sm font-light">Company Image</div>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
                 </motion.section>
 

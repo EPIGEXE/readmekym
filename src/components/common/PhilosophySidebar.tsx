@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { X } from 'lucide-react'
 import { forwardRef } from 'react'
-import { SkillBadge } from './ui/SkillBadge'
+import { useNavigate } from 'react-router-dom'
+import { SkillBadge } from '../ui/SkillBadge'
 
 interface PhilosophySidebarProps {
     isOpen: boolean
@@ -24,7 +25,8 @@ interface PhilosophySidebarProps {
 }
 
 export const PhilosophySidebar = forwardRef<HTMLDivElement, PhilosophySidebarProps>(
-    ({ isOpen, onClose, onViewDetail, philosophyData }, ref) => {
+    ({ isOpen, onClose, philosophyData }, ref) => {
+        const navigate = useNavigate()
     return (
         <AnimatePresence>
             {isOpen && (
@@ -151,7 +153,12 @@ export const PhilosophySidebar = forwardRef<HTMLDivElement, PhilosophySidebarPro
                                     {/* View Detail Button */}
                                     <div className="pt-6 border-t border-gray-200">
                                         <button
-                                            onClick={onViewDetail}
+                                            onClick={() => {
+                                                if (philosophyData?.type === 'project') {
+                                                    navigate(`/project/${philosophyData.id}`)
+                                                }
+                                                onClose()
+                                            }}
                                             className="w-full py-3 bg-gray-900 text-white hover:bg-gray-800 transition-colors text-sm tracking-wider uppercase font-medium"
                                             style={{ fontFamily: "'Pretendard', sans-serif" }}
                                         >
