@@ -89,53 +89,53 @@ export function GalleryPage() {
             animate="animate"
             variants={staggerContainer}
             key="gallery-content"
-            className="max-w-7xl mx-auto"
+            className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8"
         >
 
             {/* Experience Stories */}
             {experienceItems.length > 0 && (
-                <motion.section className="mb-16" variants={fadeInUp}>
-                    <div className="flex items-center gap-4 mb-8">
-                        <h3 className="text-3xl font-black text-black">
+                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                    <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                        <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam">EXPERIENCE</span>
                         </h3>
                         <div className="flex-1 h-px bg-gray-200"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                         {experienceItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item)
                             return (
                                 <motion.article
                                     key={item.id}
                                     variants={fadeInUp}
-                                    className="group cursor-pointer relative p-4 border-drawing"
+                                    className="group cursor-pointer relative p-3 md:p-4 border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-2 md:space-y-3">
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-bold tracking-widest ${color}`}>{label}</span>
-                                            <span className="text-xs text-gray-400">#{String(index + 1).padStart(2, '0')}</span>
+                                            <span className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}>{label}</span>
+                                            <span className="text-[10px] md:text-xs text-gray-400">#{String(index + 1).padStart(2, '0')}</span>
                                         </div>
 
-                                        <h4 className="text-xl font-bold text-black leading-tight transition-colors">
+                                        <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
                                             <span className="crayon-hover crayon-hover-red">
                                                 {item.title}
                                             </span>
                                         </h4>
 
                                         {'subtitle' in item && item.subtitle && (
-                                            <p className="text-sm text-gray-600 font-medium">
+                                            <p className="text-xs md:text-sm text-gray-600 font-medium">
                                                 {item.subtitle}
                                             </p>
                                         )}
 
-                                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">
+                                        <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
                                             {item.description}
                                         </p>
 
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                                        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
                                             <Calendar className="w-3 h-3" />
                                             <span>{formatPeriod(item.startYear, item.startMonth, item.endYear, item.endMonth)}</span>
                                         </div>
@@ -149,15 +149,15 @@ export function GalleryPage() {
 
             {/* Work Projects Stories */}
             {workProjectItems.length > 0 && (
-                <motion.section className="mb-16" variants={fadeInUp}>
-                    <div className="flex items-center gap-4 mb-8">
-                        <h3 className="text-3xl font-black text-black">
+                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                    <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                        <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-forest font-cafe24-gowoonbam">WORK PROJECTS</span>
                         </h3>
                         <div className="flex-1 h-px bg-gray-200"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                         {workProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item)
                             const globalIndex = experienceItems.length + index + 1
@@ -165,27 +165,27 @@ export function GalleryPage() {
                                 <motion.article
                                     key={item.id}
                                     variants={fadeInUp}
-                                    className="group cursor-pointer relative p-4 border-drawing"
+                                    className="group cursor-pointer relative p-3 md:p-4 border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-2 md:space-y-3">
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-bold tracking-widest ${color}`}>{label}</span>
-                                            <span className="text-xs text-gray-400">#{String(globalIndex).padStart(2, '0')}</span>
+                                            <span className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}>{label}</span>
+                                            <span className="text-[10px] md:text-xs text-gray-400">#{String(globalIndex).padStart(2, '0')}</span>
                                         </div>
 
-                                        <h4 className="text-xl font-bold text-black leading-tight transition-colors">
+                                        <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
                                             <span className="crayon-hover crayon-hover-red">
                                                 {item.title}
                                             </span>
                                         </h4>
 
-                                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">
+                                        <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
                                             {item.description}
                                         </p>
 
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                                        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
                                             <Calendar className="w-3 h-3" />
                                             <span>{formatPeriod(item.startYear, item.startMonth, item.endYear, item.endMonth)}</span>
                                         </div>
@@ -196,7 +196,7 @@ export function GalleryPage() {
                                                     <SkillBadge key={idx} skill={skill} size="sm" />
                                                 ))}
                                                 {item.skills.length > 3 && (
-                                                    <span className="text-xs text-gray-500 px-2 py-1">
+                                                    <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
                                                         +{item.skills.length - 3}
                                                     </span>
                                                 )}
@@ -212,15 +212,15 @@ export function GalleryPage() {
 
             {/* Personal Projects Stories */}
             {personalProjectItems.length > 0 && (
-                <motion.section className="mb-16" variants={fadeInUp}>
-                    <div className="flex items-center gap-4 mb-8">
-                        <h3 className="text-3xl font-black text-black">
+                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                    <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+                        <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam">PERSONAL PROJECTS</span>
                         </h3>
                         <div className="flex-1 h-px bg-gray-200"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                         {personalProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item)
                             const globalIndex = experienceItems.length + workProjectItems.length + index + 1
@@ -228,27 +228,27 @@ export function GalleryPage() {
                                 <motion.article
                                     key={item.id}
                                     variants={fadeInUp}
-                                    className="group cursor-pointer relative p-4 border-drawing"
+                                    className="group cursor-pointer relative p-3 md:p-4 border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
 
-                                    <div className="space-y-3">
+                                    <div className="space-y-2 md:space-y-3">
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-bold tracking-widest ${color}`}>{label}</span>
-                                            <span className="text-xs text-gray-400">#{String(globalIndex).padStart(2, '0')}</span>
+                                            <span className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}>{label}</span>
+                                            <span className="text-[10px] md:text-xs text-gray-400">#{String(globalIndex).padStart(2, '0')}</span>
                                         </div>
 
-                                        <h4 className="text-xl font-bold text-black leading-tight transition-colors">
+                                        <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
                                             <span className="crayon-hover crayon-hover-red">
                                                 {item.title}
                                             </span>
                                         </h4>
 
-                                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-3">
+                                        <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
                                             {item.description}
                                         </p>
 
-                                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                                        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
                                             <Calendar className="w-3 h-3" />
                                             <span>{formatPeriod(item.startYear, item.startMonth, item.endYear, item.endMonth)}</span>
                                         </div>
@@ -259,7 +259,7 @@ export function GalleryPage() {
                                                     <SkillBadge key={idx} skill={skill} size="sm" />
                                                 ))}
                                                 {item.skills.length > 3 && (
-                                                    <span className="text-xs text-gray-500 px-2 py-1">
+                                                    <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
                                                         +{item.skills.length - 3}
                                                     </span>
                                                 )}

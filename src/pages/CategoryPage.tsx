@@ -1,9 +1,9 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { developerData } from "../data/devloperData";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
 import type { SkillTag } from "../types";
 import { SkillBadge } from "../components/ui/SkillBadge";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown, Menu, X, Signpost } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
 import { PhilosophyModal } from "../components/common/PhilosophyModal";
@@ -15,7 +15,7 @@ interface SidebarData {
     description: string;
     color: string;
     details: string;
-    type?: "philosophy" | "project";
+    type?: "project";
     role?: string;
     teamSize?: number;
     skills?: Array<{ id: string; name: string; category: string; experience: string }>;
@@ -23,28 +23,41 @@ interface SidebarData {
     fullDescription?: string;
 }
 
+interface PhilosophyData {
+    id: string;
+    number: string;
+    title: string;
+    description: string;
+    color: string;
+}
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut" }, // 0.8에서 0.4로 줄여서 더 빠르게
+    transition: { duration: 0.4, ease: "easeOut" }, 
 };
 
 const staggerContainer = {
     initial: {},
     animate: {
         transition: {
-            staggerChildren: 0.1, // 0.15에서 0.05로 줄여서 더 빠르게
+            staggerChildren: 0.1,
         },
     },
 };
 
 export function CategoryPage() {
-    const [selectedPhilosophy, setSelectedPhilosophy] = useState<SidebarData | null>(null);
+    const [selectedPhilosophy, setSelectedPhilosophy] = useState<PhilosophyData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
+    const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
+    const [isNavOpen, setIsNavOpen] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);
+    const experienceSectionRef = useRef<HTMLDivElement>(null);
+    const workProjectsSectionRef = useRef<HTMLDivElement>(null);
+    const personalProjectsSectionRef = useRef<HTMLDivElement>(null);
 
     const philosophyData = [
         {
@@ -53,7 +66,6 @@ export function CategoryPage() {
             title: "만드는 개발자",
             description: "계속해서 새로운 아이디어를\n코드로 구현합니다.",
             color: "text-blue-500",
-            details: "공사 중...",
         },
         {
             id: "02",
@@ -61,7 +73,6 @@ export function CategoryPage() {
             title: "성장하는 개발자",
             description: "매일매일 항상 개발하며\n새로운 기술을 익히고 성장합니다.",
             color: "text-green-500",
-            details: "공사 중...",
         },
         {
             id: "03",
@@ -69,53 +80,78 @@ export function CategoryPage() {
             title: "정리하는 개발자",
             description: "솔루션 엔지니어부터 지금까지\n공부한 것을 정리하며 기록합니다.",
             color: "text-purple-500",
-            details: "공사 중...",
         },
     ];
 
     const handlePhilosophyClick = (id: string) => {
         const philosophy = philosophyData.find((p) => p.id === id);
         if (philosophy) {
-            setSelectedPhilosophy({
-                ...philosophy,
-                type: "philosophy" as const,
-            });
+            setSelectedPhilosophy(philosophy);
             setIsModalOpen(true);
         }
     };
 
     const handleProjectClick = (projectId: string) => {
-        const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
-        if (detailedProject) {
-            const projectSummary = {
-                id: detailedProject.id,
-                number: detailedProject.id.split("-")[1].padStart(2, "0"),
-                title: detailedProject.title,
-                description: detailedProject.shortDescription,
-                color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
-                details: "",
-                type: "project" as const,
-                role: detailedProject.role,
-                teamSize: detailedProject.teamSize,
-                skills: detailedProject.skills.map((skill) => ({
-                    id: skill.id,
-                    name: skill.name,
-                    category: skill.category,
-                    experience:
-                        skill.experience === "beginner"
-                            ? "Beginner"
-                            : skill.experience === "intermediate"
-                            ? "Intermediate"
-                            : "Advanced",
-                })),
-                achievements: detailedProject.achievements.slice(0, 4),
-                fullDescription: detailedProject.fullDescription,
-            };
-            setSelectedProjectSummary(projectSummary);
-            setSelectedPhilosophy(null);
-            setIsSidebarOpen(true);
+        if (isMobile) {
+            // Mobile: toggle expand/collapse
+            setExpandedProjectId(expandedProjectId === projectId ? null : projectId);
+        } else {
+            // Desktop: open sidebar
+            const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
+            if (detailedProject) {
+                const projectSummary = {
+                    id: detailedProject.id,
+                    number: detailedProject.id.split("-")[1].padStart(2, "0"),
+                    title: detailedProject.title,
+                    description: detailedProject.shortDescription,
+                    color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
+                    details: "",
+                    type: "project" as const,
+                    role: detailedProject.role,
+                    teamSize: detailedProject.teamSize,
+                    skills: detailedProject.skills.map((skill) => ({
+                        id: skill.id,
+                        name: skill.name,
+                        category: skill.category,
+                        experience:
+                            skill.experience === "beginner"
+                                ? "Beginner"
+                                : skill.experience === "intermediate"
+                                ? "Intermediate"
+                                : "Advanced",
+                    })),
+                    achievements: detailedProject.achievements.slice(0, 4),
+                    fullDescription: detailedProject.fullDescription,
+                };
+                setSelectedProjectSummary(projectSummary);
+                setSelectedPhilosophy(null);
+                setIsSidebarOpen(true);
+            }
         }
     };
+
+    const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
+        if (ref.current) {
+            const offsetTop = ref.current.offsetTop - 80; // 헤더 높이만큼 오프셋
+            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        }
+        setIsNavOpen(false); // 스크롤 후 메뉴 닫기
+    };
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Check mobile
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 767px)');
+        const checkMobile = () => {
+            setIsMobile(mediaQuery.matches);
+        };
+        checkMobile();
+        mediaQuery.addEventListener('change', checkMobile);
+        return () => mediaQuery.removeEventListener('change', checkMobile);
+    }, []);
 
     // 사이드 바 클릭 밖에서 닫기
     useEffect(() => {
@@ -288,6 +324,7 @@ export function CategoryPage() {
 
             {/* Experience Section */}
             <motion.section
+                ref={experienceSectionRef}
                 className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
@@ -329,6 +366,7 @@ export function CategoryPage() {
 
             {/* Work Projects Section */}
             <motion.section
+                ref={workProjectsSectionRef}
                 className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
@@ -346,46 +384,115 @@ export function CategoryPage() {
                 <motion.div className="space-y-4 md:space-y-6" variants={staggerContainer}>
                     {developerData.projects
                         .filter((p) => p.experienceId)
-                        .map((project) => (
-                            <motion.div
-                                key={project.id}
-                                className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 cursor-pointer group p-2 md:p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
-                                variants={fadeInUp}
-                                onClick={() => handleProjectClick(project.id)}
-                            >
-                                <div className="text-xs md:text-sm text-gray-600">
-                                    {formatPeriod(
-                                        project.startYear,
-                                        project.startMonth,
-                                        project.endYear,
-                                        project.endMonth
-                                    )}
-                                </div>
-                                <div className="md:col-span-3">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="text-base md:text-lg font-medium mb-1">
-                                            <span className="crayon-hover crayon-hover-red">{project.title}</span>
-                                        </h3>
-                                        <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
+                        .map((project) => {
+                            const detailedProject = detailedDeveloperData.projects.find(p => p.id === project.id);
+                            const isExpanded = expandedProjectId === project.id;
+
+                            return (
+                                <motion.div
+                                    key={project.id}
+                                    className="cursor-pointer group rounded-lg transition-all duration-300"
+                                    variants={fadeInUp}
+                                >
+                                    <div
+                                        className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-3 md:hover:translate-x-2 transition-all duration-300"
+                                        onClick={() => handleProjectClick(project.id)}
+                                    >
+                                        <div className="text-xs md:text-sm text-gray-600">
+                                            {formatPeriod(
+                                                project.startYear,
+                                                project.startMonth,
+                                                project.endYear,
+                                                project.endMonth
+                                            )}
+                                        </div>
+                                        <div className="md:col-span-3">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-base md:text-lg font-medium mb-1">
+                                                    <span className="crayon-hover crayon-hover-red">{project.title}</span>
+                                                </h3>
+                                                {isMobile ? (
+                                                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                                ) : (
+                                                    <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
+                                                )}
+                                            </div>
+                                            {!isMobile && project.description && (
+                                                <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
+                                                    {project.description}
+                                                </p>
+                                            )}
+                                            {!isMobile && (
+                                                <div className="flex flex-wrap gap-1 text-xs">
+                                                    {project.skills.map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    {project.description && (
-                                        <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
-                                            {project.description}
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap gap-1 text-xs">
-                                        {project.skills.map((skill, idx) => (
-                                            <SkillBadge key={idx} skill={skill} size="sm" />
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
+
+                                    {/* Mobile Expanded Content */}
+                                    <AnimatePresence initial={false}>
+                                        {isMobile && isExpanded && detailedProject && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden px-2 pb-4 space-y-3"
+                                            >
+                                            <p className="text-xs text-gray-700 leading-relaxed">
+                                                {detailedProject.fullDescription}
+                                            </p>
+
+                                            {detailedProject.role && (
+                                                <div className="text-xs">
+                                                    <span className="font-medium text-gray-700">Role:</span>
+                                                    <span className="text-gray-600 ml-2">{detailedProject.role}</span>
+                                                </div>
+                                            )}
+
+                                            {detailedProject.teamSize && (
+                                                <div className="text-xs">
+                                                    <span className="font-medium text-gray-700">Team Size:</span>
+                                                    <span className="text-gray-600 ml-2">{detailedProject.teamSize}명</span>
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <div className="text-xs font-medium text-gray-700 mb-1.5">Skills</div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {detailedProject.skills.map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {detailedProject.achievements.length > 0 && (
+                                                <div>
+                                                    <div className="text-xs font-medium text-gray-700 mb-1.5">Achievements</div>
+                                                    <ul className="space-y-1">
+                                                        {detailedProject.achievements.slice(0, 3).map((achievement, idx) => (
+                                                            <li key={idx} className="text-xs text-gray-600 leading-relaxed">
+                                                                • {achievement}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
                 </motion.div>
             </motion.section>
 
             {/* Personal Projects Section */}
             <motion.section
+                ref={personalProjectsSectionRef}
                 className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
@@ -403,47 +510,115 @@ export function CategoryPage() {
                 <motion.div className="space-y-4 md:space-y-6" variants={staggerContainer}>
                     {developerData.projects
                         .filter((p) => !p.experienceId)
-                        .map((project) => (
-                            <motion.div
-                                key={project.id}
-                                className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 cursor-pointer group p-2 md:p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
-                                variants={fadeInUp}
-                                onClick={() => handleProjectClick(project.id)}
-                            >
-                                <div className="text-xs md:text-sm text-gray-600">
-                                    {formatPeriod(
-                                        project.startYear,
-                                        project.startMonth,
-                                        project.endYear,
-                                        project.endMonth
-                                    )}
-                                </div>
-                                <div className="md:col-span-3">
-                                    <div className="flex items-center gap-2">
-                                        <h3 className="text-base md:text-lg font-medium mb-1">
-                                            <span className="crayon-hover crayon-hover-red">{project.title}</span>
-                                        </h3>
-                                        <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
+                        .map((project) => {
+                            const detailedProject = detailedDeveloperData.projects.find(p => p.id === project.id);
+                            const isExpanded = expandedProjectId === project.id;
+
+                            return (
+                                <motion.div
+                                    key={project.id}
+                                    className="cursor-pointer group rounded-lg transition-all duration-300"
+                                    variants={fadeInUp}
+                                >
+                                    <div
+                                        className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-3 md:hover:translate-x-2 transition-all duration-300"
+                                        onClick={() => handleProjectClick(project.id)}
+                                    >
+                                        <div className="text-xs md:text-sm text-gray-600">
+                                            {formatPeriod(
+                                                project.startYear,
+                                                project.startMonth,
+                                                project.endYear,
+                                                project.endMonth
+                                            )}
+                                        </div>
+                                        <div className="md:col-span-3">
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-base md:text-lg font-medium mb-1">
+                                                    <span className="crayon-hover crayon-hover-red">{project.title}</span>
+                                                </h3>
+                                                {isMobile ? (
+                                                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                                                ) : (
+                                                    <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
+                                                )}
+                                            </div>
+                                            {!isMobile && project.description && (
+                                                <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
+                                                    {project.description}
+                                                </p>
+                                            )}
+                                            {!isMobile && (
+                                                <div className="flex flex-wrap gap-1 text-xs">
+                                                    {project.skills.map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    {project.description && (
-                                        <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
-                                            {project.description}
-                                        </p>
-                                    )}
-                                    <div className="flex flex-wrap gap-1 text-xs">
-                                        {project.skills.map((skill, idx) => (
-                                            <SkillBadge key={idx} skill={skill} size="sm" />
-                                        ))}
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
+
+                                    {/* Mobile Expanded Content */}
+                                    <AnimatePresence initial={false}>
+                                        {isMobile && isExpanded && detailedProject && (
+                                            <motion.div
+                                                initial={{ height: 0, opacity: 0 }}
+                                                animate={{ height: 'auto', opacity: 1 }}
+                                                exit={{ height: 0, opacity: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                className="overflow-hidden px-2 pb-4 space-y-3"
+                                            >
+                                            <p className="text-xs text-gray-700 leading-relaxed">
+                                                {detailedProject.fullDescription}
+                                            </p>
+
+                                            {detailedProject.role && (
+                                                <div className="text-xs">
+                                                    <span className="font-medium text-gray-700">Role:</span>
+                                                    <span className="text-gray-600 ml-2">{detailedProject.role}</span>
+                                                </div>
+                                            )}
+
+                                            {detailedProject.teamSize && (
+                                                <div className="text-xs">
+                                                    <span className="font-medium text-gray-700">Team Size:</span>
+                                                    <span className="text-gray-600 ml-2">{detailedProject.teamSize}명</span>
+                                                </div>
+                                            )}
+
+                                            <div>
+                                                <div className="text-xs font-medium text-gray-700 mb-1.5">Skills</div>
+                                                <div className="flex flex-wrap gap-1">
+                                                    {detailedProject.skills.map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {detailedProject.achievements.length > 0 && (
+                                                <div>
+                                                    <div className="text-xs font-medium text-gray-700 mb-1.5">Achievements</div>
+                                                    <ul className="space-y-1">
+                                                        {detailedProject.achievements.slice(0, 3).map((achievement, idx) => (
+                                                            <li key={idx} className="text-xs text-gray-600 leading-relaxed">
+                                                                • {achievement}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                        )}
+                                    </AnimatePresence>
+                                </motion.div>
+                            );
+                        })}
                 </motion.div>
             </motion.section>
 
             {/* Skills Section */}
             <motion.section
-                className="mb-8 md:mb-12 px-4 md:px-0"
+                className="mb-20 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}>
@@ -498,6 +673,68 @@ export function CategoryPage() {
                     )}
                 </motion.div>
             </motion.section>
+
+            {/* Mobile Floating Navigation */}
+            {isMobile && (
+                <div className="fixed bottom-6 right-4 z-50">
+                    {/* Navigation Menu */}
+                    <AnimatePresence>
+                        {isNavOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute bottom-16 right-0 flex flex-col gap-2 mb-2"
+                            >
+                                <motion.button
+                                    onClick={() => {
+                                        scrollToTop();
+                                        setIsNavOpen(false);
+                                    }}
+                                    className="px-4 py-2 rounded-full bg-gray-700 text-white shadow-lg text-sm font-medium whitespace-nowrap hover:bg-gray-600 transition-colors"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    맨 위로
+                                </motion.button>
+                                <motion.button
+                                    onClick={() => scrollToSection(experienceSectionRef)}
+                                    className="px-4 py-2 rounded-full bg-white border border-gray-300 text-gray-700 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-gray-50 transition-colors"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    경력
+                                </motion.button>
+                                <motion.button
+                                    onClick={() => scrollToSection(workProjectsSectionRef)}
+                                    className="px-4 py-2 rounded-full bg-white border border-emerald-400 text-emerald-600 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-emerald-50 transition-colors"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    회사
+                                </motion.button>
+                                <motion.button
+                                    onClick={() => scrollToSection(personalProjectsSectionRef)}
+                                    className="px-4 py-2 rounded-full bg-white border border-orange-400 text-orange-600 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-orange-50 transition-colors"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    개인
+                                </motion.button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Toggle Button */}
+                    <motion.button
+                        onClick={() => setIsNavOpen(!isNavOpen)}
+                        className="w-14 h-14 rounded-full bg-gray-800 text-white shadow-xl flex items-center justify-center"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        animate={{ rotate: isNavOpen ? 90 : 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {isNavOpen ? <X className="w-6 h-6" /> : <Signpost className="w-6 h-6" />}
+                    </motion.button>
+                </div>
+            )}
         </div>
     );
 }

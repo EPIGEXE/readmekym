@@ -11,7 +11,6 @@ interface PhilosophyModalProps {
         title: string;
         description: string;
         color: string;
-        details: string;
     } | null;
 }
 
