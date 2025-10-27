@@ -6,6 +6,7 @@ import { SkillBadge } from "../components/ui/SkillBadge";
 import { ChevronRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
+import { PhilosophyModal } from "../components/common/PhilosophyModal";
 
 interface SidebarData {
     id: string;
@@ -41,6 +42,7 @@ const staggerContainer = {
 export function CategoryPage() {
     const [selectedPhilosophy, setSelectedPhilosophy] = useState<SidebarData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
     const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -48,8 +50,8 @@ export function CategoryPage() {
         {
             id: "01",
             number: "01",
-            title: "만들어내는 개발자",
-            description: "개인 프로젝트를 통해 계속해서\n새로운 것을 만들어내고 구현해봅니다.",
+            title: "만드는 개발자",
+            description: "계속해서 새로운 아이디어를\n코드로 구현합니다.",
             color: "text-blue-500",
             details: "공사 중...",
         },
@@ -57,7 +59,7 @@ export function CategoryPage() {
             id: "02",
             number: "02",
             title: "성장하는 개발자",
-            description: "매일매일 항상 개발하며\n개인 프로젝트의 품질이 지속적으로 향상됩니다.",
+            description: "매일매일 항상 개발하며\n새로운 기술을 익히고 성장합니다.",
             color: "text-green-500",
             details: "공사 중...",
         },
@@ -78,8 +80,7 @@ export function CategoryPage() {
                 ...philosophy,
                 type: "philosophy" as const,
             });
-            setSelectedProjectSummary(null);
-            setIsSidebarOpen(true);
+            setIsModalOpen(true);
         }
     };
 
@@ -116,7 +117,7 @@ export function CategoryPage() {
         }
     };
 
-    // Click outside to close sidebar - Best Practice
+    // 사이드 바 클릭 밖에서 닫기
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
@@ -159,27 +160,27 @@ export function CategoryPage() {
         <div key="category-content">
             {/* Hero Section */}
             <motion.section
-                className="py-15 mb-24"
+                className="py-8 md:py-15 mb-12 md:mb-24"
                 initial="initial"
                 animate="animate"
                 variants={fadeInUp}>
-                <div className="max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+                <div className="max-w-6xl mx-auto px-4 md:px-0">
+                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-start">
                         {/* Left Content */}
-                        <motion.div className="lg:col-span-3 space-y-16" variants={staggerContainer}>
+                        <motion.div className="lg:col-span-3 space-y-8 md:space-y-16" variants={staggerContainer}>
                             <motion.div variants={fadeInUp}>
                                 <div
-                                    className="text-lg text-gray-500 mb-6 tracking-widest uppercase"
+                                    className="text-sm md:text-lg text-gray-500 mb-4 md:mb-6 tracking-widest uppercase"
                                     style={{ fontFamily: "'Pretendard', sans-serif" }}
                                 >
                                     Web Developer
                                 </div>
-                                <h1 className="text-7xl text-gray-900 leading-none mb-8 font-cafe24-gowoonbam">
+                                <h1 className="text-5xl md:text-7xl text-gray-900 leading-none mb-6 md:mb-8 font-cafe24-gowoonbam">
                                     김영민
                                 </h1>
-                                <div className="w-24 h-px bg-gray-300 mb-8"></div>
+                                <div className="w-16 md:w-24 h-px bg-gray-300 mb-6 md:mb-8"></div>
                                 <p
-                                    className="text-2xl font-light text-gray-800 leading-relaxed max-w-2xl"
+                                    className="text-base md:text-2xl font-light text-gray-800 leading-relaxed max-w-2xl"
                                     style={{ fontFamily: "'Noto Sans KR', sans-serif" }}
                                 >
                                     끊임없이 아이디어를 코드로 구현하며,
@@ -193,7 +194,7 @@ export function CategoryPage() {
 
                         {/* Right Photo */}
                         <motion.div className="lg:col-span-2 flex justify-center lg:justify-end" variants={fadeInUp}>
-                            <div className="w-80 h-80 bg-gray-100 overflow-hidden">
+                            <div className="w-64 h-64 md:w-80 md:h-80 bg-gray-100 overflow-hidden">
                                 <img src="/kym.jpg" alt="김영민 프로필" className="w-full h-full object-cover" />
                             </div>
                         </motion.div>
@@ -201,96 +202,97 @@ export function CategoryPage() {
                 </div>
 
                 {/* Philosophy Section - Full Width */}
-                <motion.div variants={fadeInUp} className="mt-20 space-y-12">
+                <motion.div variants={fadeInUp} className="mt-12 md:mt-20 space-y-8 md:space-y-12">
                     <div className="text-center">
                         <div
-                            className="text-base text-gray-500 uppercase tracking-widest mb-8"
+                            className="text-sm md:text-base text-gray-500 uppercase tracking-widest mb-6 md:mb-8"
                             style={{ fontFamily: "'Pretendard', sans-serif" }}
                         >
                             Philosophy
                         </div>
-                        <div className="w-16 h-px bg-gray-300 mx-auto"></div>
+                        <div className="w-12 md:w-16 h-px bg-gray-300 mx-auto"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-16 max-w-6xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-16 max-w-6xl mx-auto px-4 md:px-0">
                         <button
                             onClick={() => handlePhilosophyClick("01")}
-                            className="text-left group cursor-pointer transition-all duration-300 hover:-translate-y-2"
+                            className="text-left md:text-left group cursor-pointer transition-all duration-300 hover:-translate-y-2"
                         >
-                            <span className="text-4xl font-light text-gray-300 group-hover:text-blue-500 transition-colors block mb-6 translate-x-[70px]">
+                            <span className="text-3xl md:text-4xl font-light text-gray-300 group-hover:text-blue-500 transition-colors block mb-4 md:mb-6 md:translate-x-[70px]">
                                 01
                             </span>
-                            <h3 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center ">
+                            <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 flex items-center">
                                 <span className="crayon-hover crayon-hover-blue font-cafe24-gowoonbam">
-                                    만들어내는 개발자
+                                    {philosophyData.find((p) => p.id === "01")?.title}
                                 </span>
-                                <ChevronRight className="ml-2 w-5 h-5 text-gray-400" />
+                                <ChevronRight className="ml-2 w-4 md:w-5 h-4 md:h-5 text-gray-400" />
                             </h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                개인 프로젝트를 통해 계속해서
-                                <br />
-                                새로운 것을 만들어내고 구현해봅니다.
+                            <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+                                {philosophyData.find((p) => p.id === "01")?.description}
                             </p>
                         </button>
 
                         <button
                             onClick={() => handlePhilosophyClick("02")}
-                            className="text-center group cursor-pointer transition-all duration-300 hover:-translate-y-2"
+                            className="text-left md:text-center group cursor-pointer transition-all duration-300 hover:-translate-y-2"
                         >
-                            <span className="text-4xl font-light text-gray-300 group-hover:text-green-500 transition-colors block mb-6">
+                            <span className="text-3xl md:text-4xl font-light text-gray-300 group-hover:text-green-500 transition-colors block mb-4 md:mb-6">
                                 02
                             </span>
-                            <h3 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center justify-center font-cafe24-gowoonbam">
+                            <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 flex items-center md:justify-center font-cafe24-gowoonbam">
                                 <span className="crayon-hover crayon-hover-green font-cafe24-gowoonbam">
-                                    성장하는 개발자
+                                    {philosophyData.find((p) => p.id === "02")?.title}
                                 </span>
-                                <ChevronRight className="ml-2 w-5 h-5 text-gray-400" />
+                                <ChevronRight className="ml-2 w-4 md:w-5 h-4 md:h-5 text-gray-400" />
                             </h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                매일매일 항상 개발하며
-                                <br />
-                                개인 프로젝트의 품질이 지속적으로 향상됩니다.
+                            <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+                                {philosophyData.find((p) => p.id === "02")?.description}
                             </p>
                         </button>
 
                         <button
                             onClick={() => handlePhilosophyClick("03")}
-                            className="text-right group cursor-pointer transition-all duration-300 hover:-translate-y-2"
+                            className="text-left md:text-right group cursor-pointer transition-all duration-300 hover:-translate-y-2"
                         >
-                            <span className="text-4xl font-light text-gray-300 group-hover:text-purple-500 transition-colors block mb-6 -translate-x-[70px]">
+                            <span className="text-3xl md:text-4xl font-light text-gray-300 group-hover:text-purple-500 transition-colors block mb-4 md:mb-6 md:-translate-x-[70px]">
                                 03
                             </span>
-                            <h3 className="text-2xl font-semibold text-gray-900 mb-4 flex items-center justify-end font-cafe24-gowoonbam">
+                            <h3 className="text-xl md:text-2xl font-semibold text-gray-900 mb-3 md:mb-4 flex items-center md:justify-end font-cafe24-gowoonbam">
                                 <span className="crayon-hover crayon-hover-purple font-cafe24-gowoonbam">
-                                    정리하는 개발자
+                                    {philosophyData.find((p) => p.id === "03")?.title}
                                 </span>
-                                <ChevronRight className="ml-2 w-5 h-5 text-gray-400" />
+                                <ChevronRight className="ml-2 w-4 md:w-5 h-4 md:h-5 text-gray-400" />
                             </h3>
-                            <p className="text-gray-600 leading-relaxed">
-                                솔루션 엔지니어부터 지금까지
-                                <br />
-                                공부한 것을 정리하며 기록합니다.
+                            <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
+                                {philosophyData.find((p) => p.id === "03")?.description}
                             </p>
                         </button>
                     </div>
                 </motion.div>
             </motion.section>
 
-            {/* Philosophy Sidebar */}
+            {/* Philosophy Modal */}
+            <PhilosophyModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                philosophyData={selectedPhilosophy}
+            />
+
+            {/* Project Sidebar */}
             <PhilosophySidebar
                 ref={sidebarRef}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
-                philosophyData={selectedPhilosophy || selectedProjectSummary}
+                philosophyData={selectedProjectSummary}
             />
 
             {/* Experience Section */}
             <motion.section
-                className="mb-12"
+                className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}>
-                <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
+                <h2 className="text-2xl md:text-[28px] font-semibold mb-4 md:mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block"
                         initial={{ opacity: 1 }}
@@ -300,14 +302,14 @@ export function CategoryPage() {
                         EXPERIENCE
                     </motion.span>
                 </h2>
-                <motion.div className="space-y-6" variants={staggerContainer}>
+                <motion.div className="space-y-4 md:space-y-6" variants={staggerContainer}>
                     {developerData.experiences.map((experience) => (
                         <motion.div
                             key={experience.id}
-                            className="grid grid-cols-1 md:grid-cols-4 gap-4"
+                            className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4"
                             variants={fadeInUp}
                         >
-                            <div className="text-sm text-gray-600">
+                            <div className="text-xs md:text-sm text-gray-600">
                                 {formatPeriod(
                                     experience.startYear,
                                     experience.startMonth,
@@ -316,9 +318,9 @@ export function CategoryPage() {
                                 )}
                             </div>
                             <div className="md:col-span-3">
-                                <h3 className="font-medium mb-1">{experience.title}</h3>
-                                <p className="text-sm text-gray-600 mb-2">{experience.subtitle}</p>
-                                <p className="text-sm leading-relaxed">{experience.description}</p>
+                                <h3 className="text-base md:text-lg font-medium mb-1">{experience.title}</h3>
+                                <p className="text-xs md:text-sm text-gray-600 mb-2">{experience.subtitle}</p>
+                                <p className="text-xs md:text-sm leading-relaxed">{experience.description}</p>
                             </div>
                         </motion.div>
                     ))}
@@ -327,11 +329,11 @@ export function CategoryPage() {
 
             {/* Work Projects Section */}
             <motion.section
-                className="mb-12"
+                className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}>
-                <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
+                <h2 className="text-2xl md:text-[28px] font-semibold mb-4 md:mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-forest font-cafe24-gowoonbam inline-block"
                         initial={{ opacity: 1 }}
@@ -341,17 +343,17 @@ export function CategoryPage() {
                         WORK PROJECTS
                     </motion.span>
                 </h2>
-                <motion.div className="space-y-6" variants={staggerContainer}>
+                <motion.div className="space-y-4 md:space-y-6" variants={staggerContainer}>
                     {developerData.projects
                         .filter((p) => p.experienceId)
                         .map((project) => (
                             <motion.div
                                 key={project.id}
-                                className="grid grid-cols-1 md:grid-cols-4 gap-4 cursor-pointer group p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
+                                className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 cursor-pointer group p-2 md:p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
                                 variants={fadeInUp}
                                 onClick={() => handleProjectClick(project.id)}
                             >
-                                <div className="text-sm text-gray-600">
+                                <div className="text-xs md:text-sm text-gray-600">
                                     {formatPeriod(
                                         project.startYear,
                                         project.startMonth,
@@ -361,13 +363,13 @@ export function CategoryPage() {
                                 </div>
                                 <div className="md:col-span-3">
                                     <div className="flex items-center gap-2">
-                                        <h3 className="font-medium mb-1">
+                                        <h3 className="text-base md:text-lg font-medium mb-1">
                                             <span className="crayon-hover crayon-hover-red">{project.title}</span>
                                         </h3>
-                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                        <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
                                     </div>
                                     {project.description && (
-                                        <p className="text-sm leading-relaxed text-gray-600 mb-2">
+                                        <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
                                             {project.description}
                                         </p>
                                     )}
@@ -384,11 +386,11 @@ export function CategoryPage() {
 
             {/* Personal Projects Section */}
             <motion.section
-                className="mb-12"
+                className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}>
-                <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
+                <h2 className="text-2xl md:text-[28px] font-semibold mb-4 md:mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam inline-block"
                         initial={{ opacity: 1 }}
@@ -398,17 +400,17 @@ export function CategoryPage() {
                         PERSONAL PROJECTS
                     </motion.span>
                 </h2>
-                <motion.div className="space-y-6" variants={staggerContainer}>
+                <motion.div className="space-y-4 md:space-y-6" variants={staggerContainer}>
                     {developerData.projects
                         .filter((p) => !p.experienceId)
                         .map((project) => (
                             <motion.div
                                 key={project.id}
-                                className="grid grid-cols-1 md:grid-cols-4 gap-4 cursor-pointer group p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
+                                className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 cursor-pointer group p-2 md:p-3 rounded-lg transition-all duration-300 hover:translate-x-2"
                                 variants={fadeInUp}
                                 onClick={() => handleProjectClick(project.id)}
                             >
-                                <div className="text-sm text-gray-600">
+                                <div className="text-xs md:text-sm text-gray-600">
                                     {formatPeriod(
                                         project.startYear,
                                         project.startMonth,
@@ -418,13 +420,13 @@ export function CategoryPage() {
                                 </div>
                                 <div className="md:col-span-3">
                                     <div className="flex items-center gap-2">
-                                        <h3 className="font-medium mb-1">
+                                        <h3 className="text-base md:text-lg font-medium mb-1">
                                             <span className="crayon-hover crayon-hover-red">{project.title}</span>
                                         </h3>
-                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                        <ChevronRight className="w-3 md:w-4 h-3 md:h-4 text-gray-400" />
                                     </div>
                                     {project.description && (
-                                        <p className="text-sm leading-relaxed text-gray-600 mb-2">
+                                        <p className="text-xs md:text-sm leading-relaxed text-gray-600 mb-2">
                                             {project.description}
                                         </p>
                                     )}
@@ -441,11 +443,11 @@ export function CategoryPage() {
 
             {/* Skills Section */}
             <motion.section
-                className="mb-12"
+                className="mb-8 md:mb-12 px-4 md:px-0"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}>
-                <h2 className="text-[28px] font-semibold mb-6 border-b border-gray-200 pb-2">
+                <h2 className="text-2xl md:text-[28px] font-semibold mb-4 md:mb-6 border-b border-gray-200 pb-2">
                     <motion.span
                         className="crayon-highlight crayon-highlight-silver font-cafe24-gowoonbam inline-block"
                         initial={{ opacity: 1 }}
@@ -455,12 +457,12 @@ export function CategoryPage() {
                         SKILLS
                     </motion.span>
                 </h2>
-                <motion.div className="space-y-4" variants={staggerContainer}>
+                <motion.div className="space-y-3 md:space-y-4" variants={staggerContainer}>
                     {skillsByCategory.frontend.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-4" variants={fadeInUp}>
-                            <div className="text-sm text-gray-600 font-medium">Frontend</div>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                            <div className="text-xs md:text-sm text-gray-600 font-medium">Frontend</div>
                             <div className="md:col-span-3">
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5 md:gap-2">
                                     {skillsByCategory.frontend.map((skill, idx) => (
                                         <SkillBadge key={idx} skill={skill} />
                                     ))}
@@ -470,10 +472,10 @@ export function CategoryPage() {
                     )}
 
                     {skillsByCategory.backend.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-4" variants={fadeInUp}>
-                            <div className="text-sm text-gray-600 font-medium">Backend</div>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                            <div className="text-xs md:text-sm text-gray-600 font-medium">Backend</div>
                             <div className="md:col-span-3">
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5 md:gap-2">
                                     {skillsByCategory.backend.map((skill, idx) => (
                                         <SkillBadge key={idx} skill={skill} />
                                     ))}
@@ -483,10 +485,10 @@ export function CategoryPage() {
                     )}
 
                     {skillsByCategory.other.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-4" variants={fadeInUp}>
-                            <div className="text-sm text-gray-600 font-medium">Tools & Others</div>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                            <div className="text-xs md:text-sm text-gray-600 font-medium">Tools & Others</div>
                             <div className="md:col-span-3">
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5 md:gap-2">
                                     {skillsByCategory.other.map((skill, idx) => (
                                         <SkillBadge key={idx} skill={skill} />
                                     ))}

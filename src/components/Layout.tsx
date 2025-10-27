@@ -10,23 +10,23 @@ export function Layout() {
     return (
         <div className="min-h-screen bg-[#F8F8F8] text-black">
             <motion.div
-                className="max-w-[1400px] mx-auto px-8 py-16"
+                className="max-w-[1400px] mx-auto px-4 md:px-8 py-8 md:py-16"
                 initial="initial"
                 animate="animate"
                 variants={staggerContainer}
             >
                 {/* Header */}
                 <motion.header className="mb-16" variants={fadeInUp}>
-                    <div className="flex justify-between items-start">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-6">
                         <div>
                             <motion.p
-                                className="text-sm font-light text-gray-600 mb-2"
+                                className="text-xs md:text-sm font-light text-gray-600 mb-2"
                                 variants={fadeInUp}
                             >
                                 ENDLESS EXPLORATION • KIM YOUNGMIN • 1995.02.05
                             </motion.p>
                             <motion.h1
-                                className="text-5xl font-bold tracking-tight font-cafe24-gowoonbam"
+                                className="text-3xl md:text-5xl font-bold tracking-tight font-cafe24-gowoonbam"
                                 variants={fadeInUp}
                             >
                                 README.KYM
@@ -36,12 +36,12 @@ export function Layout() {
                         {/* View Toggle Button */}
                         {isViewPage && (
                             <motion.div
-                                className="flex gap-2 mt-4"
+                                className="flex gap-2 w-full md:w-auto md:mt-4"
                                 variants={fadeInUp}
                             >
-                                <Link to="/">
+                                <Link to="/" className="flex-1 md:flex-none">
                                     <motion.div
-                                        className={`flex items-center gap-2 px-4 py-2 transition-all ${
+                                        className={`flex items-center justify-center gap-2 px-3 md:px-4 py-2 transition-all ${
                                             location.pathname === '/'
                                                 ? 'bg-black text-white'
                                                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
@@ -50,13 +50,13 @@ export function Layout() {
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <Grid3x3 size={16} />
-                                        <span className="text-sm font-medium">Category</span>
+                                        <span className="text-xs md:text-sm font-medium">Category</span>
                                     </motion.div>
                                 </Link>
 
-                                <Link to="/timeline">
+                                <Link to="/timeline" className="flex-1 md:flex-none">
                                     <motion.div
-                                        className={`flex items-center gap-2 px-4 py-2 transition-all ${
+                                        className={`flex items-center justify-center gap-2 px-3 md:px-4 py-2 transition-all ${
                                             location.pathname === '/timeline'
                                                 ? 'bg-black text-white'
                                                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
@@ -65,13 +65,13 @@ export function Layout() {
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <Calendar size={16} />
-                                        <span className="text-sm font-medium">Timeline</span>
+                                        <span className="text-xs md:text-sm font-medium">Timeline</span>
                                     </motion.div>
                                 </Link>
 
-                                <Link to="/gallery">
+                                <Link to="/gallery" className="flex-1 md:flex-none">
                                     <motion.div
-                                        className={`flex items-center gap-2 px-4 py-2 transition-all ${
+                                        className={`flex items-center justify-center gap-2 px-3 md:px-4 py-2 transition-all ${
                                             location.pathname === '/gallery'
                                                 ? 'bg-black text-white'
                                                 : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
@@ -80,7 +80,7 @@ export function Layout() {
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <Image size={16} />
-                                        <span className="text-sm font-medium">Gallery</span>
+                                        <span className="text-xs md:text-sm font-medium">Gallery</span>
                                     </motion.div>
                                 </Link>
                             </motion.div>
