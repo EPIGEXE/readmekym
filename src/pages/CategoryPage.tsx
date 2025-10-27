@@ -3,7 +3,7 @@ import { developerData } from "../data/devloperData";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
 import type { SkillTag } from "../types";
 import { SkillBadge } from "../components/ui/SkillBadge";
-import { ChevronRight, ChevronDown, Menu, X, Signpost } from "lucide-react";
+import { ChevronRight, ChevronDown, X, Signpost } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
 import { PhilosophyModal } from "../components/common/PhilosophyModal";

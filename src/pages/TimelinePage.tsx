@@ -6,7 +6,7 @@ import type { SkillTag, StackedSkills, Project, Experience } from "../types";
 import { YearDivider } from "../components/YearDivider";
 import { SkillBadge } from "../components/ui/SkillBadge";
 import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
-import { Menu, Signpost, X } from "lucide-react";
+import { Signpost, X } from "lucide-react";
 
 // 애니메이션 설정
 const staggerContainer = {
