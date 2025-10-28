@@ -51,7 +51,12 @@ export function CategoryPage() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return window.matchMedia('(max-width: 767px)').matches;
+        }
+        return false;
+    });
     const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
     const [isNavOpen, setIsNavOpen] = useState(false);
     const sidebarRef = useRef<HTMLDivElement>(null);

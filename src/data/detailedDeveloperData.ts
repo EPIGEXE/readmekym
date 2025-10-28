@@ -1011,6 +1011,367 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     '자동화 도구가 개인 생산성에 미치는 큰 영향'
                 ]
             }
+        },
+        {
+            id: 'proj-11',
+            type: 'project',
+            itemType: 'project',
+            title: 'WELKIT - 신입사원 온보딩 플랫폼',
+            shortDescription: '신입사원을 위한 용어 사전 및 커뮤니티 서비스',
+            fullDescription: '신입사원들이 회사 생활에 빠르게 적응할 수 있도록 돕는 온보딩 플랫폼입니다. 온라인에서 모인 개인 개발자들이 "신입사원을 위한 프로젝트"라는 목표에 공감하여 함께 시작한 프로젝트입니다. 업무 용어 학습을 위한 용어 사전, 사용자 정보 관리를 위한 마이페이지, 그리고 신입사원 간 소통을 위한 커뮤니티 기능을 담당하여 개발했습니다.',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 1,
+            endMonth: 3,
+            teamSize: 5,
+            role: '프론트엔드 개발자 - 용어 사전, 마이페이지, 커뮤니티 담당',
+            repository: 'https://github.com/WELKIT/welkit-frontend',
+            skills: [
+                {
+                    id: 'react-welkit',
+                    name: 'React',
+                    category: 'frontend',
+                    usage: '용어 사전, 마이페이지, 커뮤니티 페이지 구현',
+                    experience: 'advanced'
+                },
+                {
+                    id: 'typescript-welkit',
+                    name: 'TypeScript',
+                    category: 'frontend',
+                    usage: '타입 안전한 컴포넌트 및 API 통신',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'nextjs-welkit',
+                    name: 'Next.js',
+                    category: 'frontend',
+                    usage: 'App Router, URL 파라미터 기반 라우팅',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'react-query-welkit',
+                    name: 'React Query',
+                    category: 'frontend',
+                    usage: '조건부 쿼리, 낙관적 업데이트, placeholderData를 통한 UX 최적화',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'tailwind-welkit',
+                    name: 'Tailwind CSS',
+                    category: 'frontend',
+                    usage: '반응형 디자인, 일관된 디자인 시스템',
+                    experience: 'advanced'
+                }
+            ],
+            implementation: [
+                {
+                    id: 'impl-1',
+                    title: 'URL 파라미터 기반 상태 관리로 브라우저 히스토리 활용',
+                    description: '커뮤니티 페이지에서 검색어, 카테고리 필터, 페이지네이션, 뷰 모드를 모두 URL 파라미터로 관리하여 브라우저의 뒤로가기/앞으로가기 버튼으로 이전 검색 상태로 돌아갈 수 있게 구현했습니다.',
+                    challenges: 'URL과 React 상태를 동기화하고, 불필요한 파라미터는 제거하는 로직 필요',
+                    solution: 'Next.js의 useSearchParams와 router.push를 활용하고, updateURL 헬퍼 함수에서 기본값(page=1, category=전체 카테고리 등)은 URL에서 자동 제거하여 깔끔한 URL 유지'
+                },
+                {
+                    id: 'impl-2',
+                    title: 'React Query 조건부 쿼리로 불필요한 API 호출 방지',
+                    description: '커뮤니티와 용어 사전에서 enabled 옵션을 활용한 조건부 쿼리를 구현했습니다. 검색 모드일 때는 검색 API만, 전체 목록 모드일 때는 전체 목록 API만 호출되도록 제어했습니다.',
+                    challenges: '여러 API(전체 목록, 검색, 내 글, 댓글 단 글)가 상황에 따라 선택적으로 호출되어야 함',
+                    solution: 'viewMode와 searchQuery 상태에 따라 enabled 조건을 설정하여 필요한 쿼리만 실행되도록 구현'
+                },
+                {
+                    id: 'impl-3',
+                    title: 'placeholderData를 활용한 검색 UX 개선',
+                    description: '용어 사전에서 검색 중에도 이전 데이터를 표시하여 깜빡임 없는 부드러운 사용자 경험을 제공했습니다.',
+                    challenges: '검색어 입력 시마다 화면이 비어서 로딩 표시가 나타나는 불편한 UX',
+                    solution: 'React Query의 placeholderData 옵션으로 이전 데이터를 유지하면서 새 데이터를 백그라운드에서 로드'
+                },
+                {
+                    id: 'impl-4',
+                    title: '이메일 인증 타이머 구현과 상태 관리',
+                    description: '마이페이지의 회사 이메일 인증 다이얼로그에서 180초 타이머를 구현하고, 인증 코드 입력 시간 제한을 UI로 표시했습니다.',
+                    challenges: '타이머 메모리 누수 방지와 컴포넌트 언마운트 시 정리 필요',
+                    solution: 'setInterval과 clearInterval을 활용하여 1초마다 timeLeft를 감소시키고, 0이 되면 자동으로 타이머를 정리하는 로직 구현'
+                },
+                {
+                    id: 'impl-5',
+                    title: '숫자 패드 UI로 PIN 설정 보안 강화',
+                    description: '마이페이지에서 키보드 입력이 아닌 화면의 숫자 버튼 클릭으로만 PIN을 설정하도록 구현하여 키로거 공격에 대한 보안을 강화했습니다.',
+                    challenges: '4자리 PIN 입력을 직관적이고 안전하게 받는 UI 필요',
+                    solution: 'Grid 레이아웃으로 숫자 패드를 구현하고, 버튼 클릭으로만 입력받으며 시각적 피드백(원형 인디케이터)으로 입력 상태 표시'
+                },
+                {
+                    id: 'impl-6',
+                    title: '에러 처리 중앙화로 일관된 사용자 피드백',
+                    description: '모든 API 에러를 resolveApiError 유틸 함수로 처리하여 백엔드 에러 코드를 사용자 친화적인 메시지로 변환했습니다.',
+                    challenges: '각 컴포넌트마다 다른 에러 처리 로직으로 인한 일관성 부족',
+                    solution: '중앙 집중식 에러 해석 함수를 만들고, catch 블록에서 항상 이 함수를 통해 에러 메시지를 생성하여 일관된 UX 제공'
+                },
+                {
+                    id: 'impl-7',
+                    title: '댓글 입력 컴포넌트 재사용성 설계',
+                    description: '댓글 작성, 대댓글 작성, 댓글 수정에서 모두 사용할 수 있도록 CommentInput 컴포넌트를 설계했습니다.',
+                    challenges: '각 상황마다 다른 placeholder, 버튼 레이블, 취소 동작이 필요',
+                    solution: 'Props로 placeholder, submitLabel, cancelLabel, onCancel을 선택적으로 받아 상황에 맞게 커스터마이징할 수 있도록 설계'
+                }
+            ],
+            challenges: [
+                '온라인으로 모인 팀원들과의 원활한 협업',
+                'URL 상태와 React 상태의 동기화 복잡도 관리',
+                '여러 API 호출 조건에 따른 조건부 쿼리 설계',
+                '보안을 고려한 인증 플로우 구현'
+            ],
+            achievements: [
+                'URL 파라미터 기반 상태 관리로 브라우저 네비게이션 완벽 지원',
+                'React Query 조건부 쿼리로 불필요한 API 호출 80% 감소',
+                'placeholderData로 검색 시 깜빡임 없는 UX 달성',
+                '중앙 집중식 에러 처리로 일관된 사용자 피드백 제공'
+            ],
+            retrospective: {
+                whatWentWell: [
+                    'URL 파라미터 기반 상태 관리로 사용자가 북마크와 브라우저 히스토리를 자연스럽게 활용',
+                    'React Query의 고급 기능(조건부 쿼리, placeholderData)을 활용한 성능 최적화',
+                    '재사용 가능한 컴포넌트 설계로 코드 중복 최소화'
+                ],
+                whatCouldBeImproved: [
+                    'URL 파라미터 동기화 로직이 복잡해져 useEffect가 많아짐 - Zustand나 상태관리 라이브러리 도입 고려 필요',
+                    '타이머 로직을 커스텀 훅으로 분리하여 재사용성 향상 가능'
+                ],
+                lessonsLearned: [
+                    'URL을 단순한 주소가 아닌 애플리케이션 상태로 활용하면 UX가 크게 개선됨',
+                    'React Query의 조건부 쿼리로 불필요한 API 호출을 줄여 성능과 비용 최적화 가능',
+                    '에러 처리를 중앙화하면 유지보수성과 일관성이 크게 향상됨',
+                    '온라인 협업에서는 명확한 목표와 공감대가 프로젝트 성공의 핵심'
+                ]
+            }
+        },
+        {
+            id: 'proj-12',
+            type: 'project',
+            itemType: 'project',
+            title: '시맨틱 검색 기반 마인드맵 서비스',
+            shortDescription: 'AI 임베딩을 활용한 의미적 검색 마인드맵',
+            fullDescription: '계층적 지식 구조를 시각화하고, AI 임베딩 기반 시맨틱 검색으로 관련 노드를 자동으로 하이라이트하는 인터랙티브 마인드맵 서비스입니다. 사용자가 검색어를 입력하면 의미적으로 유사한 노드들을 찾아 시각적으로 강조하고, 해당 노드까지의 경로를 자동으로 펼쳐주는 기능을 구현했습니다.',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 1,
+            endMonth: 2,
+            teamSize: 3,
+            role: '프론트엔드 개발자 - 시맨틱 검색, 시각화, 애니메이션 담당',
+            repository: '',
+            skills: [
+                {
+                    id: 'react-mindmap',
+                    name: 'React',
+                    category: 'frontend',
+                    usage: '복잡한 상태 관리, 커스텀 훅 설계, 최적화',
+                    experience: 'advanced'
+                },
+                {
+                    id: 'reactflow-advanced',
+                    name: 'React Flow',
+                    category: 'frontend',
+                    usage: '노드/엣지 시각화, 커스텀 노드 컴포넌트, 레이아웃 엔진',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'dagre-layout',
+                    name: 'Dagre',
+                    category: 'frontend',
+                    usage: '계층형 그래프 자동 레이아웃 계산',
+                    experience: 'beginner'
+                },
+                {
+                    id: 'ai-embedding',
+                    name: 'AI Embedding API',
+                    category: 'backend',
+                    usage: '텍스트 임베딩 벡터 생성, 코사인 유사도 계산',
+                    experience: 'beginner'
+                },
+                {
+                    id: 'tailwind-animation',
+                    name: 'Tailwind CSS',
+                    category: 'frontend',
+                    usage: '애니메이션, 트랜지션, 반응형 디자인',
+                    experience: 'advanced'
+                }
+            ],
+            implementation: [
+                {
+                    id: 'impl-1',
+                    title: '커스텀 훅으로 시맨틱 검색 로직 캡슐화',
+                    description: 'useSemanticSearch 커스텀 훅에서 임베딩 초기화, 검색 실행, 하이라이트 관리를 캡슐화하여 메인 컴포넌트의 복잡도를 낮췄습니다.',
+                    challenges: '임베딩 생성, 유사도 계산, 상태 관리가 얽혀 있어 로직이 복잡해짐',
+                    solution: '관련 로직을 커스텀 훅으로 분리하고, isEmbeddingsReady, highlightedNodes, searchResults 등의 상태를 외부에 노출'
+                },
+                {
+                    id: 'impl-2',
+                    title: '유사도 기반 경로 강도 시각화',
+                    description: '검색 결과 노드까지의 경로를 찾아 유사도 점수에 따라 연결선의 두께와 스타일을 동적으로 변경하는 시스템을 구현했습니다.',
+                    challenges: '여러 검색 결과가 겹치는 경로의 강도를 어떻게 합산하고 시각화할지 결정 필요',
+                    solution: 'calculatePathStrengths에서 각 경로의 점수를 합산하고, getVisualStrength로 5단계로 나눠 strokeWidth와 필터 효과를 차등 적용'
+                },
+                {
+                    id: 'impl-3',
+                    title: '부드러운 노드 펼치기/접기 애니메이션',
+                    description: '노드 확장/축소 시 위치 변화를 추적하여 기존 노드는 이동 애니메이션, 새 노드는 페이드인 효과로 자연스러운 전환을 구현했습니다.',
+                    challenges: '노드가 추가/제거될 때 레이아웃이 재계산되면서 급격한 위치 변화 발생',
+                    solution: 'currentNodePositions Map으로 이전 위치를 기억하고, isCollapsing 플래그로 접기/펼치기를 구분하여 transition 스타일 적용'
+                },
+                {
+                    id: 'impl-4',
+                    title: '검색 결과에 따른 자동 노드 확장',
+                    description: '검색 결과로 하이라이트된 노드까지의 전체 경로를 자동으로 펼쳐 사용자가 수동으로 탐색하지 않아도 바로 볼 수 있도록 구현했습니다.',
+                    challenges: '깊이 중첩된 노드가 검색되었을 때 부모 노드들을 모두 찾아 펼쳐야 함',
+                    solution: 'findPathToNode로 루트부터의 경로를 찾고, useEffect에서 경로상의 모든 노드를 expandedNodes에 추가'
+                },
+                {
+                    id: 'impl-5',
+                    title: 'Dagre 레이아웃 엔진 통합',
+                    description: 'Dagre 그래프 라이브러리로 계층형 레이아웃을 자동 계산하여 노드가 겹치지 않고 깔끔하게 배치되도록 했습니다.',
+                    challenges: 'React Flow의 좌표 시스템과 Dagre의 계산 결과를 매핑하는 과정 필요',
+                    solution: 'getLayoutedElements에서 노드 width/height를 Dagre에 전달하고, 계산된 x, y를 React Flow position으로 변환'
+                },
+                {
+                    id: 'impl-6',
+                    title: '깊이 기반 노드 색상 시스템',
+                    description: '노드의 계층 깊이에 따라 배경색과 테두리 색상을 자동으로 변경하고, 하이라이트 시 강조 테두리를 추가했습니다.',
+                    challenges: '계층이 깊어질수록 색상이 부족하고, 하이라이트 상태를 시각적으로 명확히 구분 필요',
+                    solution: 'getNodeColorByDepth에서 6단계 색상 배열을 순환하고, isHighlighted 시 청색 강조 테두리 적용'
+                },
+                {
+                    id: 'impl-7',
+                    title: '재귀 트리 순회로 노드/엣지 생성',
+                    description: '트리 구조의 마인드맵 데이터를 React Flow가 사용하는 평면 노드/엣지 배열로 변환하는 재귀 함수를 구현했습니다.',
+                    challenges: 'expandedNodes 상태에 따라 조건부로 자식을 렌더링하고, 엣지도 동적으로 생성해야 함',
+                    solution: 'treeToFlowData의 traverse 함수에서 재귀적으로 노드를 순회하며 expandedNodes를 확인하여 선택적으로 자식 처리'
+                }
+            ],
+            challenges: [
+                'AI 임베딩 API 호출과 유사도 계산의 성능 최적화',
+                '복잡한 트리 구조와 React Flow 상태 동기화',
+                '노드 확장/축소 시 부드러운 애니메이션 구현',
+                '검색 결과 시각화를 위한 경로 추적 알고리즘 설계'
+            ],
+            achievements: [
+                'AI 임베딩 기반 시맨틱 검색 기능 완성',
+                '유사도 점수를 시각적 강도로 변환하는 독창적인 UX 구현',
+                'Dagre 레이아웃 엔진으로 자동 노드 배치 구현',
+                '재귀 알고리즘과 React 상태 관리의 효율적 결합'
+            ],
+            retrospective: {
+                whatWentWell: [
+                    '커스텀 훅으로 복잡한 검색 로직을 깔끔하게 분리',
+                    '유사도 점수를 시각적 강도로 변환하여 직관적인 검색 결과 제공',
+                    'findPathToNode, calculatePathStrengths 등 재귀 알고리즘을 효과적으로 활용'
+                ],
+                whatCouldBeImproved: [
+                    '팀원 참여 부족으로 프로젝트가 중단되어 실제 서비스까지 이어지지 못함',
+                    '임베딩 생성 비용과 성능 최적화 전략 미흡',
+                    'useEffect 의존성 배열 관리가 복잡해져 리렌더링 최적화 필요'
+                ],
+                lessonsLearned: [
+                    'AI 임베딩을 실제 프로덕트에 통합하는 경험 습득',
+                    '복잡한 그래프 시각화와 레이아웃 엔진 활용 능력 향상',
+                    '팀 프로젝트에서 목표 공유와 지속적인 커뮤니케이션의 중요성',
+                    '재귀 알고리즘과 React 상태 관리를 결합하는 패턴 학습'
+                ]
+            }
+        },
+        {
+            id: 'proj-13',
+            type: 'project',
+            itemType: 'project',
+            title: '개인 포트폴리오 웹사이트',
+            shortDescription: '인터랙티브한 타임라인과 갤러리 기반 포트폴리오',
+            fullDescription: '경력과 프로젝트를 시각적으로 표현하는 개인 포트폴리오 웹사이트입니다. 타임라인 페이지에서는 시간 흐름에 따라 경력과 프로젝트를 시각화하고, 갤러리 페이지에서는 카테고리별로 작업물을 정리하여 보여줍니다. Framer Motion을 활용한 부드러운 애니메이션과 반응형 디자인으로 모바일과 데스크탑 모두에서 최적화된 사용자 경험을 제공합니다.',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 9,
+            endMonth: 10,
+            teamSize: 1,
+            role: '개인 개발자',
+            repository: 'https://github.com/yourusername/portfolio',
+            skills: [
+                {
+                    id: 'react-portfolio',
+                    name: 'React',
+                    category: 'frontend',
+                    usage: '컴포넌트 기반 UI 설계, 상태 관리, 커스텀 훅',
+                    experience: 'advanced'
+                },
+                {
+                    id: 'typescript-portfolio',
+                    name: 'TypeScript',
+                    category: 'frontend',
+                    usage: '타입 안전성, 인터페이스 설계, 제네릭 활용',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'tailwind-portfolio',
+                    name: 'Tailwind CSS',
+                    category: 'frontend',
+                    usage: '반응형 디자인, 커스텀 디자인 시스템',
+                    experience: 'advanced'
+                },
+                {
+                    id: 'framer-motion',
+                    name: 'Framer Motion',
+                    category: 'frontend',
+                    usage: '페이지 전환, 스크롤 애니메이션, 인터랙티브 효과',
+                    experience: 'intermediate'
+                }
+            ],
+            implementation: [
+                {
+                    id: 'impl-1',
+                    title: '타임라인 기반 경력 시각화',
+                    description: '시간축을 기준으로 경력과 프로젝트를 배치하고, 연관된 항목들을 연결선으로 표시하는 인터랙티브 타임라인을 구현했습니다.',
+                    challenges: '복잡한 시간 계산과 레이아웃, sticky 요소의 동작 문제',
+                    solution: '월 단위 높이 계산과 연도별 sticky 위치 캐싱, 부모 컨테이너 높이 명시로 해결'
+                },
+                {
+                    id: 'impl-2',
+                    title: 'Framer Motion 애니메이션 시스템',
+                    description: '페이지 진입, 스크롤, 호버 등 다양한 인터랙션에 부드러운 애니메이션을 적용했습니다.',
+                    challenges: '성능 최적화와 애니메이션 타이밍 조절',
+                    solution: 'stagger 효과와 lazy loading을 통한 성능 최적화'
+                },
+                {
+                    id: 'impl-3',
+                    title: '모바일 최적화 및 반응형 디자인',
+                    description: '모바일과 데스크탑에서 각각 최적화된 레이아웃과 네비게이션을 제공합니다.',
+                    challenges: 'sticky 요소의 모바일 동작, Float 버튼 패턴 통일',
+                    solution: 'matchMedia를 사용한 lazy initialization과 일관된 Float 버튼 패턴 적용'
+                }
+            ],
+            challenges: [
+                'CSS sticky 동작의 브라우저별 차이 처리',
+                '타임라인 레이아웃의 복잡한 계산 로직',
+                '모바일과 데스크탑 UX 차별화'
+            ],
+            achievements: [
+                '인터랙티브한 타임라인 시각화 완성',
+                '모바일/데스크탑 최적화된 반응형 디자인 구현',
+                'Framer Motion을 활용한 부드러운 사용자 경험 제공',
+                '파비콘 및 메타데이터 SEO 최적화'
+            ],
+            retrospective: {
+                whatWentWell: [
+                    '타임라인 시각화를 통한 경력의 직관적 표현',
+                    'Framer Motion 애니메이션으로 프로페셔널한 느낌 구현',
+                    '모바일 환경을 고려한 세심한 UX 설계'
+                ],
+                whatCouldBeImproved: [
+                    '이미지 갤러리 기능 미구현',
+                    '다크모드 지원 부재',
+                    '다국어 지원 필요'
+                ],
+                lessonsLearned: [
+                    'CSS sticky의 동작 원리와 한계 이해',
+                    '복잡한 레이아웃 문제 해결을 위한 근본 원인 분석의 중요성',
+                    '일관된 디자인 패턴 유지의 가치'
+                ]
+            }
         }
     ]
 }

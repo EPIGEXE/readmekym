@@ -1,9 +1,10 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 import { developerData } from '../data/devloperData'
 import { SkillBadge } from '../components/ui/SkillBadge'
-import { Calendar, Briefcase, Code, User } from 'lucide-react'
+import { Calendar, Briefcase, Code, User, Signpost, X } from 'lucide-react'
 import type { Experience, Project } from '../types'
+import { useState, useEffect, useRef } from 'react'
 
 const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -26,6 +27,16 @@ type GalleryItem = (Experience | Project) & {
 
 export function GalleryPage() {
     const navigate = useNavigate()
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return window.matchMedia('(max-width: 767px)').matches;
+        }
+        return false;
+    })
+    const [isNavOpen, setIsNavOpen] = useState(false)
+    const experienceSectionRef = useRef<HTMLDivElement>(null)
+    const workProjectsSectionRef = useRef<HTMLDivElement>(null)
+    const personalProjectsSectionRef = useRef<HTMLDivElement>(null)
 
     // 모든 아이템을 하나로 합치고 시간순 정렬 (오래된 것부터)
     const allItems: GalleryItem[] = [
@@ -44,6 +55,31 @@ export function GalleryPage() {
     const personalProjectItems = allItems.filter(item =>
         item.itemType === 'project' && (!('experienceId' in item) || !item.experienceId)
     )
+
+    // 모바일 감지
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 767px)')
+        const checkMobile = () => {
+            setIsMobile(mediaQuery.matches)
+        }
+        checkMobile()
+        mediaQuery.addEventListener('change', checkMobile)
+        return () => mediaQuery.removeEventListener('change', checkMobile)
+    }, [])
+
+    // 스크롤 헬퍼
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setIsNavOpen(false)
+    }
+
+    const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
+        if (ref.current) {
+            const offsetTop = ref.current.offsetTop
+            window.scrollTo({ top: offsetTop - 80, behavior: 'smooth' })
+        }
+        setIsNavOpen(false)
+    }
 
     const formatPeriod = (startYear: number, startMonth: number, endYear: number, endMonth: number) => {
         return `${startYear}.${String(startMonth).padStart(2, '0')} - ${endYear}.${String(endMonth).padStart(2, '0')}`
@@ -94,7 +130,7 @@ export function GalleryPage() {
 
             {/* Experience Stories */}
             {experienceItems.length > 0 && (
-                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                <motion.section ref={experienceSectionRef} className="mb-12 md:mb-16" variants={fadeInUp}>
                     <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
                         <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam">EXPERIENCE</span>
@@ -149,7 +185,7 @@ export function GalleryPage() {
 
             {/* Work Projects Stories */}
             {workProjectItems.length > 0 && (
-                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                <motion.section ref={workProjectsSectionRef} className="mb-12 md:mb-16" variants={fadeInUp}>
                     <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
                         <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-forest font-cafe24-gowoonbam">WORK PROJECTS</span>
@@ -212,7 +248,7 @@ export function GalleryPage() {
 
             {/* Personal Projects Stories */}
             {personalProjectItems.length > 0 && (
-                <motion.section className="mb-12 md:mb-16" variants={fadeInUp}>
+                <motion.section ref={personalProjectsSectionRef} className="mb-12 md:mb-16" variants={fadeInUp}>
                     <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
                         <h3 className="text-2xl md:text-3xl font-black text-black">
                             <span className="crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam">PERSONAL PROJECTS</span>
@@ -271,6 +307,71 @@ export function GalleryPage() {
                         })}
                     </div>
                 </motion.section>
+            )}
+
+            {/* Float Navigation Button (Mobile Only) */}
+            {isMobile && (
+                <div className="fixed bottom-6 right-4 z-50">
+                    {/* Navigation Menu */}
+                    <AnimatePresence>
+                        {isNavOpen && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 20 }}
+                                transition={{ duration: 0.2 }}
+                                className="absolute bottom-16 right-0 flex flex-col gap-2 mb-2"
+                            >
+                                <motion.button
+                                    onClick={scrollToTop}
+                                    className="px-4 py-2 rounded-full bg-gray-700 text-white shadow-lg text-sm font-medium whitespace-nowrap hover:bg-gray-600 transition-colors"
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    맨 위로
+                                </motion.button>
+                                {experienceItems.length > 0 && (
+                                    <motion.button
+                                        onClick={() => scrollToSection(experienceSectionRef)}
+                                        className="px-4 py-2 rounded-full bg-white border border-amber-400 text-amber-600 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-amber-50 transition-colors"
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        경력
+                                    </motion.button>
+                                )}
+                                {workProjectItems.length > 0 && (
+                                    <motion.button
+                                        onClick={() => scrollToSection(workProjectsSectionRef)}
+                                        className="px-4 py-2 rounded-full bg-white border border-emerald-400 text-emerald-600 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-emerald-50 transition-colors"
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        회사
+                                    </motion.button>
+                                )}
+                                {personalProjectItems.length > 0 && (
+                                    <motion.button
+                                        onClick={() => scrollToSection(personalProjectsSectionRef)}
+                                        className="px-4 py-2 rounded-full bg-white border border-orange-400 text-orange-600 shadow-lg text-sm font-medium whitespace-nowrap hover:bg-orange-50 transition-colors"
+                                        whileTap={{ scale: 0.95 }}
+                                    >
+                                        개인
+                                    </motion.button>
+                                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Toggle Button */}
+                    <motion.button
+                        onClick={() => setIsNavOpen(!isNavOpen)}
+                        className="w-14 h-14 rounded-full bg-gray-800 text-white shadow-xl flex items-center justify-center"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        animate={{ rotate: isNavOpen ? 90 : 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {isNavOpen ? <X className="w-6 h-6" /> : <Signpost className="w-6 h-6" />}
+                    </motion.button>
+                </div>
             )}
 
         </motion.div>

@@ -22,7 +22,7 @@ export const developerData: DeveloperData = {
             startYear: 2024,
             endYear: 2025,
             startMonth: 1,
-            endMonth: 9
+            endMonth: 12
         }
     ],
     projects: [
@@ -182,6 +182,53 @@ export const developerData: DeveloperData = {
                 { id: 'proj-10-tailwind', name: 'Tailwind CSS', category: 'frontend' },
                 { id: 'proj-10-typeorm', name: 'TypeORM', category: 'backend' },
                 { id: 'proj-10-sqlite', name: 'SQLite', category: 'backend' },
+            ]
+        },
+        {
+            id: 'proj-11',
+            type: 'project',
+            title: '신입사원 커뮤니티 WELKIT',
+            description: '신입사원에게 필요한 정보를 제공하는 커뮤니티 사이트',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 10,
+            endMonth: 11,
+            skills: [
+                { id: 'proj-11-nextjs', name: 'Next.js', category: 'frontend' },
+                { id: 'proj-11-typescript', name: 'TypeScript', category: 'frontend' },
+                { id: 'proj-11-tailwind', name: 'Tailwind CSS', category: 'frontend' },
+            ]
+        },
+        {
+            id: 'proj-12',
+            type: 'project',
+            title: 'AI 시맨틱 검색 마인드맵',
+            description: '임베딩 기반 의미적 검색 지식 시각화 도구',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 4,
+            endMonth: 5,
+            skills: [
+                { id: 'proj-12-react', name: 'React', category: 'frontend' },
+                { id: 'proj-12-reactflow', name: 'React Flow', category: 'frontend' },
+                { id: 'proj-12-dagre', name: 'Dagre', category: 'frontend' },
+                { id: 'proj-12-tailwind', name: 'Tailwind CSS', category: 'frontend' },
+            ]
+        },
+        {
+            id: 'proj-13',
+            type: 'project',
+            title: '개인 포트폴리오 웹사이트',
+            description: '인터랙티브한 타임라인과 갤러리로 구성된 포트폴리오',
+            startYear: 2025,
+            endYear: 2025,
+            startMonth: 9,
+            endMonth: 10,
+            skills: [
+                { id: 'proj-13-react', name: 'React', category: 'frontend' },
+                { id: 'proj-13-typescript', name: 'TypeScript', category: 'frontend' },
+                { id: 'proj-13-tailwind', name: 'Tailwind CSS', category: 'frontend' },
+                { id: 'proj-13-framer', name: 'Framer Motion', category: 'frontend' },
             ]
         }
     ],

@@ -18,16 +18,6 @@ const staggerContainer = {
     },
 };
 
-// 연결선 타입 정의
-interface Connection {
-    id: string;
-    fromX: number;
-    fromY: number;
-    toX: number;
-    toY: number;
-    color: string;
-}
-
 interface SidebarData {
     id: string;
     number: string;
@@ -52,10 +42,14 @@ export function TimelinePage() {
     });
 
     const [isAllSkillsStacked, setIsAllSkillsStacked] = useState<boolean>(false);
-    const [connections, setConnections] = useState<Connection[]>([]);
     const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window !== "undefined") {
+            return window.matchMedia("(max-width: 767px)").matches;
+        }
+        return false;
+    });
     const [isNavOpen, setIsNavOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const sidebarRef = useRef<HTMLDivElement>(null);
@@ -64,6 +58,7 @@ export function TimelinePage() {
     const year2023Ref = useRef<HTMLDivElement>(null);
     const year2024Ref = useRef<HTMLDivElement>(null);
     const year2025Ref = useRef<HTMLDivElement>(null);
+    const yearPositionsRef = useRef<{ [key: number]: number }>({});
 
     // ===== 상수 정의 =====
     // 데스크톱 기준
@@ -157,13 +152,6 @@ export function TimelinePage() {
         };
     };
 
-    // ===== 색상 헬퍼 함수들 =====
-
-    const getEventColor = () => {
-        // 흰색 배경 + 테두리로 명확한 구분
-        return "bg-white border border-gray-200 border-l-4 !border-l-gray-400 shadow-sm";
-    };
-
     // ===== 데이터 처리 함수들 =====
 
     /**
@@ -188,18 +176,32 @@ export function TimelinePage() {
         2025: year2025Ref,
     };
 
+    // 연도 위치 초기화 (최초 렌더링 시 저장)
+    useEffect(() => {
+        const saveYearPositions = () => {
+            Object.entries(yearRefMap).forEach(([year, ref]) => {
+                if (ref.current) {
+                    yearPositionsRef.current[Number(year)] = ref.current.offsetTop;
+                }
+            });
+        };
+
+        // 레이아웃이 완료된 후 위치 저장
+        const timer = setTimeout(saveYearPositions, 100);
+        return () => clearTimeout(timer);
+    }, [isMobile]); // isMobile 변경 시 재계산
+
     // 스크롤 함수
     const scrollToYear = (year: number) => {
-        const ref = yearRefMap[year];
-        if (ref && ref.current) {
-            const offsetTop = ref.current.offsetTop - 100; // 헤더 높이만큼 오프셋
-            window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+        const savedPosition = yearPositionsRef.current[year];
+        if (savedPosition !== undefined) {
+            window.scrollTo({ top: savedPosition - 80, behavior: "smooth" });
         }
         setIsNavOpen(false);
     };
 
     const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setIsNavOpen(false);
     };
 
@@ -238,10 +240,10 @@ export function TimelinePage() {
 
     // 반응형 화면 감지 (matchMedia 사용 - 개발자 도구 반응형 모드 대응)
     useEffect(() => {
-        const mediaQuery = window.matchMedia('(max-width: 767px)'); // md breakpoint (모바일)
+        const mediaQuery = window.matchMedia("(max-width: 767px)"); // md breakpoint (모바일)
 
         const checkMobile = () => {
-            console.log('Screen width (matchMedia):', mediaQuery.matches);
+            console.log("Screen width (matchMedia):", mediaQuery.matches);
             setIsMobile(mediaQuery.matches);
         };
 
@@ -250,14 +252,14 @@ export function TimelinePage() {
 
         // 미디어 쿼리 변경 감지
         const handler = (e: MediaQueryListEvent) => {
-            console.log('Media query changed:', e.matches);
+            console.log("Media query changed:", e.matches);
             setIsMobile(e.matches);
         };
 
-        mediaQuery.addEventListener('change', handler);
+        mediaQuery.addEventListener("change", handler);
 
         return () => {
-            mediaQuery.removeEventListener('change', handler);
+            mediaQuery.removeEventListener("change", handler);
         };
     }, []);
 
@@ -296,7 +298,7 @@ export function TimelinePage() {
         // 각 프로젝트를 경력/개인에 따라 레인 배치
         sortedProjects.forEach((project, index) => {
             // 모바일에서는 모두 0번 레인, 데스크톱에서는 경력/개인 구분
-            const laneIndex = isMobile ? 0 : (project.experienceId ? 0 : 1);
+            const laneIndex = isMobile ? 0 : project.experienceId ? 0 : 1;
 
             // 겹침 감지 및 오프셋 계산 (모바일/데스크톱 모두)
             let offset = 0;
@@ -304,7 +306,7 @@ export function TimelinePage() {
 
             if (index > 0) {
                 // 같은 레인의 직전 프로젝트 찾기
-                const sameLaneProjects = allProjects.filter(p => p.laneIndex === laneIndex);
+                const sameLaneProjects = allProjects.filter((p) => p.laneIndex === laneIndex);
 
                 if (sameLaneProjects.length > 0) {
                     const prevProject = sameLaneProjects[sameLaneProjects.length - 1];
@@ -335,74 +337,6 @@ export function TimelinePage() {
     };
 
     // ===== 이펙트 훅들 =====
-
-    /**
-     * 경력과 프로젝트 간의 연결선을 계산하고 생성하는 이펙트
-     * 개인 프로젝트(experienceId가 없는)는 연결선 제외
-     * 모바일에서는 연결선 표시 안 함
-     */
-    useEffect(() => {
-        const calculateConnections = () => {
-            if (!containerRef.current || isMobile) {
-                setConnections([]);
-                return;
-            }
-
-            const newConnections: Connection[] = [];
-            const container = containerRef.current;
-            const containerRect = container.getBoundingClientRect();
-
-            // DOM 요소들 찾기
-            const experienceElements = container.querySelectorAll('[data-type="experience"]');
-            const projectElements = container.querySelectorAll('[data-type="project"]');
-
-            // 각 경력에 대해 연결된 프로젝트들과 연결선 생성
-            experienceElements.forEach((expEl) => {
-                const expId = expEl.getAttribute("data-id");
-                const expRect = expEl.getBoundingClientRect();
-                const expRightX = expRect.right - containerRect.left;
-
-                // 해당 경력의 프로젝트들과 연결 (개인 프로젝트 제외)
-                projectElements.forEach((projEl) => {
-                    const projExpId = projEl.getAttribute("data-experience-id");
-
-                    // 경력과 연관된 프로젝트만 연결선 생성 (개인 프로젝트는 data-experience-id 속성 없음)
-                    if (expId === projExpId && projExpId) {
-                        const projRect = projEl.getBoundingClientRect();
-                        const projCenterY = projRect.top + projRect.height / 2 - containerRect.top;
-                        const projLeftX = projRect.left - containerRect.left;
-
-                        newConnections.push({
-                            id: `exp-${expId}-proj-${projEl.getAttribute("data-id")}`,
-                            fromX: expRightX + 8,
-                            fromY: projCenterY,
-                            toX: projLeftX - 8,
-                            toY: projCenterY,
-                            color: "#dc2626",
-                        });
-                    }
-                });
-            });
-
-            setConnections(newConnections);
-        };
-
-        // 초기 계산
-        const timer = setTimeout(calculateConnections, 100);
-
-        // 윈도우 리사이즈 시 재계산
-        const handleResize = () => {
-            calculateConnections();
-        };
-
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            clearTimeout(timer);
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [developerData, isMobile]);
-
     /**
      * Intersection Observer를 사용해 프로젝트가 뷰포트에 들어올 때 스킬 누적
      */
@@ -598,32 +532,46 @@ export function TimelinePage() {
      */
     const renderYearLabels = () => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
+        const yearHeight = isMobile ? 60 : 40;
+        const height = isMobile ? MOBILE_TOTAL_HEIGHT : TOTAL_HEIGHT;
 
         return (
-            <div className={isMobile ? "w-6" : "w-20"}>
-                {yearsArray.map((year, yearIndex) => (
-                    <div
-                        key={year}
-                        ref={yearRefMap[year]}
-                        className="sticky bg-[#F8F8F8] border border-gray-200 rounded shadow-sm flex items-center justify-center"
-                        style={{
-                            top: isMobile ? "80px" : "100px",
-                            height: isMobile ? "60px" : "40px",
-                            marginBottom: `${yearIndex === 0 ? monthHeight * 4 - (isMobile ? 50 : 40) : monthHeight * 12 - (isMobile ? 50 : 40)}px`,
-                        }}
-                    >
+            <div className={isMobile ? "w-6" : "w-20"} style={{ height: `${height}px` }}>
+                {yearsArray.map((year, yearIndex) => {
+                    const isLastYear = yearIndex === yearsArray.length - 1;
+
+                    return (
                         <div
-                            className={`${isMobile ? "text-xs" : "text-2xl"} font-bold text-gray-900`}
-                            style={isMobile ? {
-                                writingMode: 'vertical-rl',
-                                textOrientation: 'upright',
-                                letterSpacing: '-1px'
-                            } : {}}
+                            key={year}
+                            ref={yearRefMap[year]}
+                            className="sticky bg-[#F8F8F8] border border-gray-200 rounded shadow-sm flex items-center justify-center"
+                            style={{
+                                top: isMobile ? "80px" : "100px",
+                                height: `${yearHeight}px`,
+                                marginBottom: isLastYear
+                                    ? "0px"
+                                    : `${
+                                          yearIndex === 0 ? monthHeight * 4 - yearHeight : monthHeight * 12 - yearHeight
+                                      }px`,
+                            }}
                         >
-                            {year}
+                            <div
+                                className={`${isMobile ? "text-xs" : "text-2xl"} font-bold text-gray-900`}
+                                style={
+                                    isMobile
+                                        ? {
+                                              writingMode: "vertical-rl",
+                                              textOrientation: "upright",
+                                              letterSpacing: "-1px",
+                                          }
+                                        : {}
+                                }
+                            >
+                                {year}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         );
     };
@@ -645,7 +593,9 @@ export function TimelinePage() {
                             return (
                                 <div
                                     key={`${yearIndex}-${month}`}
-                                    className={`${isMobile ? "text-[9px]" : "text-sm"} text-gray-500 font-medium text-center border-b border-gray-50`}
+                                    className={`${
+                                        isMobile ? "text-[9px]" : "text-sm"
+                                    } text-gray-500 font-medium text-center border-b border-gray-50`}
                                     style={{
                                         height: `${monthHeight}px`,
                                         lineHeight: `${monthHeight}px`,
@@ -662,32 +612,6 @@ export function TimelinePage() {
     };
 
     /**
-     * 연결선 SVG를 렌더링
-     */
-    const renderConnections = () => (
-        <svg className="absolute inset-0 pointer-events-none z-10" style={{ width: "100%", height: "100%" }}>
-            {connections.map((conn) => (
-                <g key={conn.id}>
-                    {/* 시작점 원형 */}
-                    <circle cx={conn.fromX} cy={conn.fromY} r="5" fill={conn.color} stroke="white" strokeWidth="2" />
-                    {/* 연결선 */}
-                    <line
-                        x1={conn.fromX + 5}
-                        y1={conn.fromY}
-                        x2={conn.toX - 5}
-                        y2={conn.toY}
-                        stroke={conn.color}
-                        strokeWidth="2"
-                        strokeDasharray="4,2"
-                    />
-                    {/* 끝점 원형 */}
-                    <circle cx={conn.toX} cy={conn.toY} r="5" fill={conn.color} stroke="white" strokeWidth="2" />
-                </g>
-            ))}
-        </svg>
-    );
-
-    /**
      * 경력 컬럼을 렌더링
      */
     const renderExperienceColumn = () => {
@@ -702,7 +626,7 @@ export function TimelinePage() {
                     <motion.div
                         key={experience.id}
                         className="absolute px-2 group"
-                        style={{ ...getExperienceBarStyle(experience), width: `${width - 16}px` }}
+                        style={{ ...getExperienceBarStyle(experience), width: `${isMobile ? width : width - 16}px` }}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
@@ -712,12 +636,22 @@ export function TimelinePage() {
                         }}
                     >
                         <div
-                            className={`h-full ${isMobile ? "bg-transparent border-l-4 !border-l-gray-400" : getEventColor()} relative ${isMobile ? "" : "border-l-4"}`}
+                            className={`h-full "bg-transparent border-l-4 !border-l-gray-400" relative ${
+                                isMobile ? "" : "border-l-4"
+                            }`}
                             data-type="experience"
                             data-id={experience.id}
                         >
-                            <div className={`${isMobile ? "sticky top-[80px]" : "sticky top-20"} ${isMobile ? "p-1" : "p-3"} z-10`}>
-                                <div className={`${isMobile ? "text-xs leading-snug" : "text-sm"} font-bold text-gray-900 tracking-wide drop-shadow-sm ${isMobile ? "break-words" : ""}`}>
+                            <div
+                                className={`${isMobile ? "sticky top-[80px]" : "sticky top-20"} ${
+                                    isMobile ? "p-1" : "p-3"
+                                } z-10 bg-[#F8F8F8]`}
+                            >
+                                <div
+                                    className={`${
+                                        isMobile ? "text-xs" : "text-sm"
+                                    } font-bold text-gray-900 tracking-wide drop-shadow-sm leading-snug break-words`}
+                                >
                                     • {experience.title}
                                 </div>
                                 {experience.subtitle && !isMobile && (
@@ -758,7 +692,7 @@ export function TimelinePage() {
                         style={{
                             ...getProjectBarStyle(project),
                             left: `${project.laneIndex * laneWidth + project.offset}px`,
-                            width: `${laneWidth - 16 - project.offset}px`,
+                            width: `${isMobile ? laneWidth - project.offset : laneWidth - 16 - project.offset}px`,
                             zIndex: project.zIndex,
                         }}
                         initial={{ opacity: 0, y: 20 }}
@@ -772,21 +706,23 @@ export function TimelinePage() {
                         onClick={() => handleProjectClick(project.id)}
                     >
                         <div
-                            className={`h-full ${isMobile ? "bg-transparent border-0" : "bg-white border border-gray-200"} relative border-l-4 transition-all duration-200 ${
-                                isMobile ? "" : "shadow-sm"
-                            } ${
-                                isMobile ? "" : "group-hover:shadow-lg"
-                            } ${
-                                project.experienceId
-                                    ? "!border-l-emerald-500"
-                                    : "!border-l-orange-500"
+                            className={`h-full "bg-transparent border-0" relative border-l-4 transition-all duration-200 ${
+                                project.experienceId ? "!border-l-emerald-500" : "!border-l-orange-500"
                             }`}
                             data-type="project"
                             data-id={project.id}
                             {...(project.experienceId && { "data-experience-id": project.experienceId })}
                         >
-                            <div className={`${isMobile ? "sticky top-[80px]" : "sticky top-20"} ${isMobile ? "p-1" : "p-3"} z-10`}>
-                                <div className={`${isMobile ? "text-xs leading-snug" : "text-sm"} font-bold text-gray-900 tracking-wide ${isMobile ? "break-words" : ""}`}>
+                            <div
+                                className={`${isMobile ? "sticky top-[80px]" : "sticky top-20"} ${
+                                    isMobile ? "p-1" : "p-3"
+                                } z-10 bg-[#F8F8F8]`}
+                            >
+                                <div
+                                    className={`${
+                                        isMobile ? "text-xs" : "text-sm"
+                                    } font-bold text-gray-900 tracking-wide break-words leading-snug`}
+                                >
                                     <span className="crayon-hover crayon-hover-red tracking-wide drop-shadow-sm">
                                         • {project.title}
                                     </span>
@@ -860,12 +796,18 @@ export function TimelinePage() {
     return (
         <motion.section className="mb-12" initial="initial" animate="animate" variants={staggerContainer}>
             {/* 컬럼 헤더 */}
-            <div className={`flex ${isMobile ? "gap-2" : "gap-4"} mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4 ${isMobile ? "overflow-x-hidden" : ""}`}>
+            <div
+                className={`flex ${isMobile ? "gap-2" : "gap-4"} mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4 ${
+                    isMobile ? "overflow-x-hidden" : ""
+                }`}
+            >
                 <div className={isMobile ? "w-6" : "w-20"}></div>
                 <div className={isMobile ? "w-5" : "w-12"}></div>
                 <div className={`flex ${isMobile ? "gap-2" : "gap-8"}`}>
                     <div
-                        className={`${isMobile ? "text-sm" : "text-[28px]"} font-semibold crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block`}
+                        className={`${
+                            isMobile ? "text-sm" : "text-[28px]"
+                        } font-semibold crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block`}
                         style={{ width: `${isMobile ? MOBILE_EXPERIENCE_WIDTH : EXPERIENCE_WIDTH}px` }}
                     >
                         {isMobile ? "EXP" : "EXPERIENCE"}
@@ -925,7 +867,6 @@ export function TimelinePage() {
                                     yearsArray={yearsArray}
                                 />
                             )}
-                            {!isMobile && renderConnections()}
                             {renderExperienceColumn()}
                             {renderProjectsColumn()}
                             {!isMobile && renderSkillsColumn()}

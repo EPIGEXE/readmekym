@@ -1,6 +1,9 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { Drawer } from "vaul";
 import { X } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface PhilosophyModalProps {
     isOpen: boolean;
@@ -18,32 +21,53 @@ interface PhilosophyModalProps {
 function Philosophy01Content() {
     const projects = [
         {
-            title: '다국어 멀티 블로그 포스팅 프로그램',
-            tech: 'Electron · React · TypeScript · TypeORM · SQLite',
-            year: '2025',
-            description: 'LLM API 자동 번역과 dev.to, Google Blogger, Qiita 3개 플랫폼 동시 포스팅 도구',
-            image: '/loudSelf.png',
-        },
-        {
-            title: '온라인 스캠 방지 사이트',
-            tech: 'Next.js · TypeScript · Tailwind CSS',
-            year: '2025',
-            description: '증가하는 온라인 스캠 피해 예방을 위한 교육용 웹사이트',
-            image: '/fonzi.png',
+            title: '온실가스 차트 웹페이지',
+            tech: 'React · Chart.js · shadcn/ui',
+            year: '2024.11',
+            description: '한국 온실가스 배출량 데이터 시각화 웹페이지',
+            image: '/greengas.png',
         },
         {
             title: '가계부 프로그램',
             tech: 'Electron · React · SQLite',
-            year: '2024-2025',
+            year: '2024.12-2025.01',
             description: '데스크탑 가계부 애플리케이션',
             image: '/save.png',
         },
         {
-            title: '온실가스 차트 웹페이지',
-            tech: 'React · Chart.js · shadcn/ui',
-            year: '2024',
-            description: '한국 온실가스 배출량 데이터 시각화 웹페이지',
-            image: '/greengas.png',
+            title: '시맨틱 검색 기반 마인드맵 서비스',
+            tech: 'React · React Flow · Dagre · AI Embedding API · Tailwind CSS',
+            year: '2025.01-02',
+            description: 'AI 임베딩을 활용한 의미적 검색 마인드맵',
+            image: '/mindmap.png',
+        },
+        {
+            title: 'WELKIT - 신입사원 온보딩 플랫폼',
+            tech: 'React · TypeScript · Next.js · React Query · Tailwind CSS',
+            year: '2025.01-03',
+            description: '신입사원을 위한 용어 사전 및 커뮤니티 서비스',
+            image: '/welkit.png',
+        },
+        {
+            title: '온라인 스캠 방지 사이트',
+            tech: 'Next.js · TypeScript · Tailwind CSS',
+            year: '2025.07',
+            description: '증가하는 온라인 스캠 피해 예방을 위한 교육용 웹사이트',
+            image: '/fonzi.png',
+        },
+        {
+            title: '다국어 멀티 블로그 포스팅 프로그램',
+            tech: 'Electron · React · TypeScript · TypeORM · SQLite',
+            year: '2025.08-09',
+            description: 'LLM API 자동 번역과 dev.to, Google Blogger, Qiita 3개 플랫폼 동시 포스팅 도구',
+            image: '/loudSelf.png',
+        },
+        {
+            title: '개인 포트폴리오 웹사이트',
+            tech: 'React · TypeScript · Tailwind CSS · Framer Motion',
+            year: '2025.10',
+            description: '인터랙티브한 타임라인과 갤러리로 구성된 포트폴리오',
+            image: '/portfolio.png',
         },
     ];
 
@@ -51,10 +75,10 @@ function Philosophy01Content() {
         <div className="space-y-8 md:space-y-12">
             {/* 인트로 */}
             <div className="border-l-4 border-blue-500 pl-4 md:pl-6 py-2 md:py-3">
-                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2">
                     아이디어가 떠오르면 바로 구현합니다
                 </p>
-                <p className="text-xs md:text-sm text-gray-600 leading-relaxed" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
                     실무에서 배운 기술과 새롭게 익힌 스택을 활용해 유용한 프로그램을 만들기 위해 노력합니다.
                 </p>
             </div>
@@ -127,61 +151,145 @@ function Philosophy01Content() {
     );
 }
 
-// 성장하는 개발자 - 초기 vs 후기 프로젝트 비교
+// 성장하는 개발자 - 빠른 학습과 실전 적용
 function Philosophy02Content() {
-    const timeline = [
-        { year: '2021', level: 25, label: 'PLM 엔지니어', color: 'from-orange-300 to-orange-400' },
-        { year: '2024 초', level: 50, label: 'C# & Spring Boot', color: 'from-yellow-400 to-yellow-500' },
-        { year: '2024 말', level: 75, label: 'React 전문화', color: 'from-lime-400 to-lime-500' },
-        { year: '2025', level: 90, label: '풀스택 개발자', color: 'from-green-400 to-green-600' },
+    // 기술 성장 타임라인 차트 데이터
+    const growthChartData = [
+        { date: '2021.09', frontend: 0, backend: 0, others: 10 },
+        { date: '2022.06', frontend: 0, backend: 0, others: 25 },
+        { date: '2023.12', frontend: 0, backend: 0, others: 35 },
+        { date: '2024.01', frontend: 8, backend: 20, others: 38 },
+        { date: '2024.04', frontend: 15, backend: 40, others: 42 },
+        { date: '2024.07', frontend: 28, backend: 50, others: 46 },
+        { date: '2024.11', frontend: 48, backend: 53, others: 48 },
+        { date: '2024.12', frontend: 58, backend: 55, others: 50 },
+        { date: '2025.01', frontend: 70, backend: 57, others: 52 },
+        { date: '2025.02', frontend: 75, backend: 58, others: 53 },
+        { date: '2025.07', frontend: 80, backend: 60, others: 54 },
+        { date: '2025.08', frontend: 83, backend: 62, others: 55 },
+        { date: '2025.10', frontend: 85, backend: 63, others: 55 },
     ];
 
-    const improvements = [
-        { category: 'Frontend', before: 'Thymeleaf', after: 'React + TypeScript' },
-        { category: 'Styling', before: 'Bootstrap', after: 'Tailwind CSS' },
-        { category: 'State Management', before: 'Props Drilling', after: 'Zustand + React Query' },
-        { category: 'Backend', before: '.NET Framework', after: 'Spring Boot + Microservices' },
-        { category: 'Database', before: 'MS SQL', after: 'PostgreSQL + TypeORM + SQLite' },
+    // 성장 근거 (프로젝트 기반)
+    const growthEvidence = [
+        { period: '2021.09', event: 'PLM 엔지니어 시작', tech: 'Teamcenter BOM 설계', category: 'others' },
+        { period: '2022.06', event: 'PLM 전문화', tech: 'A사/B사 프로젝트 완수', category: 'others' },
+        { period: '2024.01', event: 'C# .NET 레거시 개선', tech: 'Windows Forms 개선', category: 'backend' },
+        { period: '2024.04', event: 'Spring Boot 첫 프로젝트', tech: 'Thymeleaf UI 재구축', category: 'backend' },
+        { period: '2024.07', event: 'SNMP 마이크로서비스', tech: 'Spring Cloud 구축', category: 'backend' },
+        { period: '2024.07', event: 'React 전환 시작', tech: 'SNMP 인터페이스 서버', category: 'frontend' },
+        { period: '2024.11', event: '차트 시각화 프로젝트', tech: 'Chart.js + shadcn/ui', category: 'frontend' },
+        { period: '2024.12', event: 'Electron 데스크탑 앱', tech: 'React + SQLite 가계부', category: 'frontend' },
+        { period: '2025.01', event: 'WebSocket 실시간 통신', tech: 'Konva 도면 기반 UI', category: 'frontend' },
+        { period: '2025.01', event: '팀 협업 프로젝트', tech: 'Next.js + React Query', category: 'frontend' },
+        { period: '2025.02', event: 'AI 그래프 시각화', tech: 'React Flow + Dagre', category: 'frontend' },
+        { period: '2025.07', event: 'Next.js SSG 마스터', tech: 'SEO 최적화 스캠 방지', category: 'frontend' },
+        { period: '2025.08', event: 'LLM API 통합', tech: 'TypeORM + 다국어 자동번역', category: 'backend' },
+        { period: '2025.10', event: 'Framer Motion 애니메이션', tech: '인터랙티브 포트폴리오', category: 'frontend' },
     ];
 
     return (
         <div className="space-y-8 md:space-y-12">
             {/* 인트로 */}
             <div className="border-l-4 border-green-500 pl-4 md:pl-6 py-2 md:py-3">
-                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
-                    매일의 개발이 곧 성장입니다
+                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2">
+                    빠르게 배우고 바로 적용합니다
                 </p>
-                <p className="text-xs md:text-sm text-gray-600 leading-relaxed" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
-                    초기 프로젝트와 최근 프로젝트를 비교하면 코드 품질과 설계 능력의 성장이 명확히 보입니다.
+                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
+                    새로운 기술을 학습하고 실전 프로젝트로 검증하는 사이클을 반복합니다.
                 </p>
             </div>
 
-            {/* 타임라인 */}
+            {/* 기술 성장 차트 */}
             <div className="space-y-4 md:space-y-6">
-                <div className="flex items-baseline justify-between border-b border-gray-200 pb-2 md:pb-3">
+                <div className="border-b border-gray-200 pb-2 md:pb-3">
                     <h4 className="text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                        Growth Timeline
+                        Skill Growth Timeline
                     </h4>
-                    <span className="text-xs text-gray-400">2021 - 2025</span>
+                </div>
+                <div className="w-full h-64 md:h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={growthChartData} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis
+                                dataKey="date"
+                                tick={{ fontSize: 10, fill: '#9ca3af' }}
+                                stroke="#e5e7eb"
+                            />
+                            <YAxis
+                                tick={{ fontSize: 10, fill: '#9ca3af' }}
+                                stroke="#e5e7eb"
+                                domain={[0, 100]}
+                            />
+                            <Tooltip
+                                contentStyle={{
+                                    backgroundColor: '#fff',
+                                    border: '1px solid #e5e7eb',
+                                    borderRadius: '8px',
+                                    fontSize: '12px'
+                                }}
+                            />
+                            <Legend
+                                wrapperStyle={{ fontSize: '12px' }}
+                                iconType="line"
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="frontend"
+                                stroke="#3b82f6"
+                                strokeWidth={2}
+                                name="Frontend"
+                                dot={{ fill: '#3b82f6', r: 3 }}
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="backend"
+                                stroke="#10b981"
+                                strokeWidth={2}
+                                name="Backend"
+                                dot={{ fill: '#10b981', r: 3 }}
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="others"
+                                stroke="#6b7280"
+                                strokeWidth={2}
+                                name="Tools & Others"
+                                dot={{ fill: '#6b7280', r: 3 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+
+            {/* 성장 근거 타임라인 */}
+            <div className="space-y-4 md:space-y-6">
+                <div className="border-b border-gray-200 pb-2 md:pb-3">
+                    <h4 className="text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                        Growth Evidence
+                    </h4>
                 </div>
                 <div className="space-y-3 md:space-y-4">
-                    {timeline.map((item, idx) => (
-                        <div key={idx} className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-6 items-center">
-                            <div className="space-y-1">
-                                <div className="text-xs md:text-sm text-gray-600 font-medium">
-                                    {item.year}
+                    {growthEvidence.map((item, idx) => (
+                        <div key={idx} className="flex gap-3 md:gap-4 items-start">
+                            <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
+                                item.category === 'frontend' ? 'bg-blue-500' :
+                                item.category === 'backend' ? 'bg-green-600' :
+                                'bg-gray-500'
+                            }`} />
+                            <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-4">
+                                <div className="text-xs text-gray-500 font-medium">
+                                    {item.period}
                                 </div>
-                                <div className="text-xs text-gray-400">{item.label}</div>
-                            </div>
-                            <div className="md:col-span-4 space-y-2">
-                                <div className="flex items-center gap-3 md:gap-4">
-                                    <div className="flex-1 h-2.5 md:h-3 bg-gray-100 rounded-full overflow-hidden">
-                                        <div
-                                            className={`h-full bg-gradient-to-r ${item.color} transition-all duration-500`}
-                                            style={{ width: `${item.level}%` }}
-                                        />
+                                <div className="md:col-span-4">
+                                    <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
+                                        <h5 className="text-sm font-semibold text-gray-900">
+                                            {item.event}
+                                        </h5>
+                                        <span className="text-xs text-gray-500">
+                                            {item.tech}
+                                        </span>
                                     </div>
-                                    <span className="text-xs md:text-sm font-semibold text-gray-900 w-10 md:w-12 text-right">{item.level}%</span>
                                 </div>
                             </div>
                         </div>
@@ -189,63 +297,24 @@ function Philosophy02Content() {
                 </div>
             </div>
 
-            {/* 개선 사항 */}
-            <div className="space-y-4 md:space-y-6">
-                <div className="border-b border-gray-200 pb-2 md:pb-3">
-                    <h4 className="text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                        Key Improvements
-                    </h4>
-                </div>
-                <div className="space-y-3 md:space-y-4">
-                    {improvements.map((row, idx) => (
-                        <div key={idx} className="grid grid-cols-1 md:grid-cols-5 gap-3 md:gap-6 pb-3 md:pb-4 border-b border-gray-100 last:border-0 last:pb-0">
-                            <div className="text-xs md:text-sm text-gray-600 font-medium">{row.category}</div>
-                            <div className="md:col-span-4 grid grid-cols-2 gap-4 md:gap-6">
-                                <div className="space-y-1">
-                                    <div className="text-xs text-gray-400 uppercase tracking-wider" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                                        Before
-                                    </div>
-                                    <div className="text-xs md:text-sm text-gray-500">{row.before}</div>
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="text-xs text-green-600 uppercase tracking-wider font-medium" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                                        After
-                                    </div>
-                                    <div className="text-xs md:text-sm text-green-700 font-semibold">{row.after}</div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* Before/After 비교 이미지 */}
-            <div className="space-y-4 md:space-y-6">
-                <div className="border-b border-gray-200 pb-2 md:pb-3">
-                    <h4 className="text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
-                        Project Comparison
-                    </h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <div className="space-y-2 md:space-y-3">
-                        <div className="flex items-baseline gap-2 md:gap-3">
-                            <span className="text-lg md:text-2xl font-light text-gray-400">Before</span>
-                            <span className="text-xs text-gray-400">2024 초 - Axilog 개선</span>
-                        </div>
-                        {/* Before 이미지 placeholder - 이미지 추가 시 교체 */}
-                        <div className="w-full aspect-video bg-gray-50 border-2 border-gray-200 rounded flex items-center justify-center">
-                            <span className="text-gray-400 text-xs md:text-sm">[ C# .NET 프로젝트 스크린샷 ]</span>
-                        </div>
+            {/* 하단 통계 */}
+            <div className="grid grid-cols-3 gap-4 md:gap-6 pt-6 md:pt-8 border-t border-gray-200">
+                <div className="text-center space-y-1 md:space-y-2">
+                    <div className="text-2xl md:text-3xl font-light text-green-500">85%</div>
+                    <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                        Frontend Skill
                     </div>
-                    <div className="space-y-2 md:space-y-3">
-                        <div className="flex items-baseline gap-2 md:gap-3">
-                            <span className="text-lg md:text-2xl font-light text-green-500">After</span>
-                            <span className="text-xs text-gray-400">2025 - 통합 출입통제</span>
-                        </div>
-                        {/* After 이미지 placeholder - 이미지 추가 시 교체 */}
-                        <div className="w-full aspect-video bg-gray-50 border-2 border-green-200 rounded flex items-center justify-center">
-                            <span className="text-gray-400 text-xs md:text-sm">[ React + Konva 프로젝트 스크린샷 ]</span>
-                        </div>
+                </div>
+                <div className="text-center space-y-1 md:space-y-2">
+                    <div className="text-2xl md:text-3xl font-light text-green-500">14</div>
+                    <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                        Projects
+                    </div>
+                </div>
+                <div className="text-center space-y-1 md:space-y-2">
+                    <div className="text-2xl md:text-3xl font-light text-green-500">1Y</div>
+                    <div className="text-[10px] md:text-xs text-gray-500 uppercase tracking-widest" style={{ fontFamily: "'Pretendard', sans-serif" }}>
+                        React Journey
                     </div>
                 </div>
             </div>
@@ -277,10 +346,10 @@ function Philosophy03Content() {
         <div className="space-y-8 md:space-y-12">
             {/* 인트로 */}
             <div className="border-l-4 border-purple-500 pl-4 md:pl-6 py-2 md:py-3">
-                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+                <p className="text-base md:text-xl text-gray-800 leading-relaxed mb-2">
                     기록하지 않으면 기억되지 않습니다
                 </p>
-                <p className="text-xs md:text-sm text-gray-600 leading-relaxed" style={{ fontFamily: "'Noto Sans KR', sans-serif" }}>
+                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
                     솔루션 엔지니어 시절부터 현재까지 배운 모든 것을 체계적으로 정리하고 있습니다.
                 </p>
             </div>
@@ -369,8 +438,69 @@ function Philosophy03Content() {
 }
 
 export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyModalProps) {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 767px)');
+        const checkMobile = () => {
+            setIsMobile(mediaQuery.matches);
+        };
+        checkMobile();
+        mediaQuery.addEventListener('change', checkMobile);
+        return () => mediaQuery.removeEventListener('change', checkMobile);
+    }, []);
+
     if (!philosophyData) return null;
 
+    const content = (
+        <>
+            {philosophyData.id === "01" && <Philosophy01Content />}
+            {philosophyData.id === "02" && <Philosophy02Content />}
+            {philosophyData.id === "03" && <Philosophy03Content />}
+        </>
+    );
+
+    // Mobile: Bottom Sheet
+    if (isMobile) {
+        return (
+            <Drawer.Root open={isOpen} onOpenChange={onClose}>
+                <Drawer.Portal>
+                    <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
+                    <Drawer.Content className="bg-white flex flex-col rounded-t-[20px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                        {/* Handle */}
+                        <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mt-4 mb-4" />
+
+                        {/* Header */}
+                        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-start justify-between">
+                            <div>
+                                <span className={`text-2xl font-light ${philosophyData.color} block mb-1`}>
+                                    {philosophyData.number}
+                                </span>
+                                <Drawer.Title className="text-lg font-semibold text-gray-900 font-cafe24-gowoonbam">
+                                    {philosophyData.title}
+                                </Drawer.Title>
+                            </div>
+                            <button
+                                onClick={onClose}
+                                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="px-4 py-6 overflow-y-auto flex-1">
+                            <Drawer.Description asChild>
+                                <div>{content}</div>
+                            </Drawer.Description>
+                        </div>
+                    </Drawer.Content>
+                </Drawer.Portal>
+            </Drawer.Root>
+        );
+    }
+
+    // Desktop: Modal
     return (
         <Dialog.Root open={isOpen} onOpenChange={onClose}>
             <Dialog.Portal>
@@ -392,34 +522,30 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 10 }}
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] bg-white rounded-lg md:rounded-lg shadow-2xl max-w-6xl w-[95vw] max-h-[90vh] overflow-hidden"
+                        className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] bg-white rounded-lg shadow-2xl max-w-6xl w-[95vw] max-h-[90vh] overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 md:px-8 py-4 md:py-6 flex items-start justify-between">
+                        <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-start justify-between">
                             <div>
-                                <span className={`text-2xl md:text-4xl font-light ${philosophyData.color} block mb-1 md:mb-2`}>
+                                <span className={`text-4xl font-light ${philosophyData.color} block mb-2`}>
                                     {philosophyData.number}
                                 </span>
-                                <Dialog.Title className="text-lg md:text-2xl font-semibold text-gray-900 font-cafe24-gowoonbam">
+                                <Dialog.Title className="text-2xl font-semibold text-gray-900 font-cafe24-gowoonbam">
                                     {philosophyData.title}
                                 </Dialog.Title>
                             </div>
                             <Dialog.Close asChild>
                                 <button className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100">
-                                    <X className="w-5 md:w-6 h-5 md:h-6" />
+                                    <X className="w-6 h-6" />
                                     <span className="sr-only">Close</span>
                                 </button>
                             </Dialog.Close>
                         </div>
 
                         {/* Content - 스크롤 영역 */}
-                        <div className="px-4 md:px-8 py-6 md:py-8 overflow-y-auto max-h-[calc(90vh-100px)] md:max-h-[calc(90vh-140px)]">
+                        <div className="px-8 py-8 overflow-y-auto max-h-[calc(90vh-140px)]">
                             <Dialog.Description asChild>
-                                <div>
-                                    {philosophyData.id === "01" && <Philosophy01Content />}
-                                    {philosophyData.id === "02" && <Philosophy02Content />}
-                                    {philosophyData.id === "03" && <Philosophy03Content />}
-                                </div>
+                                <div>{content}</div>
                             </Dialog.Description>
                         </div>
                     </motion.div>
