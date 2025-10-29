@@ -5,126 +5,64 @@ import type { SkillTag } from "../types";
 import { SkillBadge } from "../components/ui/SkillBadge";
 import { ChevronRight, ChevronDown, X, Signpost } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
+import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
 import { PhilosophyModal } from "../components/common/PhilosophyModal";
+import { fadeInUpEaseOut, staggerContainer } from "../styles/framerMotion";
+import { philosophyData } from "../const/philosophyData";
+import type { PhilosophyData, SidebarData } from "../types/common";
 
-interface SidebarData {
-    id: string;
-    number: string;
-    title: string;
-    description: string;
-    color: string;
-    details: string;
-    type?: "project";
-    role?: string;
-    teamSize?: number;
-    skills?: Array<{ id: string; name: string; category: string; experience: string }>;
-    achievements?: string[];
-    fullDescription?: string;
-}
-
-interface PhilosophyData {
-    id: string;
-    number: string;
-    title: string;
-    description: string;
-    color: string;
-}
-
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut" }, 
-};
-
-const staggerContainer = {
-    initial: {},
-    animate: {
-        transition: {
-            staggerChildren: 0.1,
-        },
-    },
-};
 
 export function CategoryPage() {
-    const [selectedPhilosophy, setSelectedPhilosophy] = useState<PhilosophyData | null>(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
+    // ============================ 상태 관리 ============================
+    const [selectedPhilosophy, setSelectedPhilosophy] = useState<PhilosophyData | null>(null); // 선택된 Philosophy 데이터
+    const [isPhilosophyModalOpen, setIsPhilosophyModalOpen] = useState(false); // Philosophy 모달 열림 여부
+    const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null); // 선택된 Project 데이터
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 사이드바 열림 여부
+
+    // ----------------------- 모바일 관련 상태 관리 ---------------------
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window !== 'undefined') {
             return window.matchMedia('(max-width: 767px)').matches;
         }
-        return false;
+        return false; // 화면이 모바일인지 여부
     });
-    const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
-    const [isNavOpen, setIsNavOpen] = useState(false);
+    const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null); // 확장된 Project ID
+    const [isNavOpen, setIsNavOpen] = useState(false); // 네비게이션 메뉴 열림 여부
+
+    // ============================ useRef ============================
     const sidebarRef = useRef<HTMLDivElement>(null);
     const experienceSectionRef = useRef<HTMLDivElement>(null);
     const workProjectsSectionRef = useRef<HTMLDivElement>(null);
     const personalProjectsSectionRef = useRef<HTMLDivElement>(null);
 
-    const philosophyData = [
-        {
-            id: "01",
-            number: "01",
-            title: "만드는 개발자",
-            description: "계속해서 새로운 아이디어를\n코드로 구현합니다.",
-            color: "text-blue-500",
-        },
-        {
-            id: "02",
-            number: "02",
-            title: "성장하는 개발자",
-            description: "매일매일 항상 개발하며\n새로운 기술을 익히고 성장합니다.",
-            color: "text-green-500",
-        },
-        {
-            id: "03",
-            number: "03",
-            title: "정리하는 개발자",
-            description: "솔루션 엔지니어부터 지금까지\n공부한 것을 정리하며 기록합니다.",
-            color: "text-purple-500",
-        },
-    ];
-
+    // ============================ 핸들러 ============================
+    // Philosophy 클릭 핸들러
     const handlePhilosophyClick = (id: string) => {
         const philosophy = philosophyData.find((p) => p.id === id);
         if (philosophy) {
             setSelectedPhilosophy(philosophy);
-            setIsModalOpen(true);
+            setIsPhilosophyModalOpen(true);
         }
     };
 
+    // Project 클릭 핸들러
     const handleProjectClick = (projectId: string) => {
         if (isMobile) {
-            // Mobile: toggle expand/collapse
+            // 모바일: 확장/축소 토글
             setExpandedProjectId(expandedProjectId === projectId ? null : projectId);
         } else {
-            // Desktop: open sidebar
+            // 데스크탑: 사이드바 열기
             const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
             if (detailedProject) {
-                const projectSummary = {
+                const projectSummary: SidebarData = {
                     id: detailedProject.id,
                     number: detailedProject.id.split("-")[1].padStart(2, "0"),
                     title: detailedProject.title,
                     description: detailedProject.shortDescription,
                     color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
-                    details: "",
-                    type: "project" as const,
                     role: detailedProject.role,
                     teamSize: detailedProject.teamSize,
-                    skills: detailedProject.skills.map((skill) => ({
-                        id: skill.id,
-                        name: skill.name,
-                        category: skill.category,
-                        experience:
-                            skill.experience === "beginner"
-                                ? "Beginner"
-                                : skill.experience === "intermediate"
-                                ? "Intermediate"
-                                : "Advanced",
-                    })),
+                    skills: detailedProject.skills,
                     achievements: detailedProject.achievements.slice(0, 4),
                     fullDescription: detailedProject.fullDescription,
                 };
@@ -204,12 +142,12 @@ export function CategoryPage() {
                 className="py-8 md:py-15 mb-12 md:mb-24"
                 initial="initial"
                 animate="animate"
-                variants={fadeInUp}>
+                variants={fadeInUpEaseOut}>
                 <div className="max-w-6xl mx-auto px-4 md:px-0">
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12 items-start">
                         {/* Left Content */}
                         <motion.div className="lg:col-span-3 space-y-8 md:space-y-16" variants={staggerContainer}>
-                            <motion.div variants={fadeInUp}>
+                            <motion.div variants={fadeInUpEaseOut}>
                                 <div
                                     className="text-sm md:text-lg text-gray-500 mb-4 md:mb-6 tracking-widest uppercase"
                                     style={{ fontFamily: "'Pretendard', sans-serif" }}
@@ -234,7 +172,7 @@ export function CategoryPage() {
                         </motion.div>
 
                         {/* Right Photo */}
-                        <motion.div className="lg:col-span-2 flex justify-center lg:justify-end" variants={fadeInUp}>
+                        <motion.div className="lg:col-span-2 flex justify-center lg:justify-end" variants={fadeInUpEaseOut}>
                             <div className="w-64 h-64 md:w-80 md:h-80 bg-gray-100 overflow-hidden">
                                 <img src="/kym.jpg" alt="김영민 프로필" className="w-full h-full object-cover" />
                             </div>
@@ -243,7 +181,7 @@ export function CategoryPage() {
                 </div>
 
                 {/* Philosophy Section - Full Width */}
-                <motion.div variants={fadeInUp} className="mt-12 md:mt-20 space-y-8 md:space-y-12">
+                <motion.div variants={fadeInUpEaseOut} className="mt-12 md:mt-20 space-y-8 md:space-y-12">
                     <div className="text-center">
                         <div
                             className="text-sm md:text-base text-gray-500 uppercase tracking-widest mb-6 md:mb-8"
@@ -314,17 +252,17 @@ export function CategoryPage() {
 
             {/* Philosophy Modal */}
             <PhilosophyModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                isOpen={isPhilosophyModalOpen}
+                onClose={() => setIsPhilosophyModalOpen(false)}
                 philosophyData={selectedPhilosophy}
             />
 
             {/* Project Sidebar */}
-            <PhilosophySidebar
+            <ProjectSummarySidebar
                 ref={sidebarRef}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
-                philosophyData={selectedProjectSummary}
+                projectSummaryData={selectedProjectSummary}
             />
 
             {/* Experience Section */}
@@ -349,7 +287,7 @@ export function CategoryPage() {
                         <motion.div
                             key={experience.id}
                             className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4"
-                            variants={fadeInUp}
+                            variants={fadeInUpEaseOut}
                         >
                             <div className="text-xs md:text-sm text-gray-600">
                                 {formatPeriod(
@@ -397,7 +335,7 @@ export function CategoryPage() {
                                 <motion.div
                                     key={project.id}
                                     className="cursor-pointer group rounded-lg transition-all duration-300"
-                                    variants={fadeInUp}
+                                    variants={fadeInUpEaseOut}
                                 >
                                     <div
                                         className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-3 md:hover:translate-x-2 transition-all duration-300"
@@ -523,7 +461,7 @@ export function CategoryPage() {
                                 <motion.div
                                     key={project.id}
                                     className="cursor-pointer group rounded-lg transition-all duration-300"
-                                    variants={fadeInUp}
+                                    variants={fadeInUpEaseOut}
                                 >
                                     <div
                                         className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-3 md:hover:translate-x-2 transition-all duration-300"
@@ -639,7 +577,7 @@ export function CategoryPage() {
                 </h2>
                 <motion.div className="space-y-3 md:space-y-4" variants={staggerContainer}>
                     {skillsByCategory.frontend.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUpEaseOut}>
                             <div className="text-xs md:text-sm text-gray-600 font-medium">Frontend</div>
                             <div className="md:col-span-3">
                                 <div className="flex flex-wrap gap-1.5 md:gap-2">
@@ -652,7 +590,7 @@ export function CategoryPage() {
                     )}
 
                     {skillsByCategory.backend.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUpEaseOut}>
                             <div className="text-xs md:text-sm text-gray-600 font-medium">Backend</div>
                             <div className="md:col-span-3">
                                 <div className="flex flex-wrap gap-1.5 md:gap-2">
@@ -665,7 +603,7 @@ export function CategoryPage() {
                     )}
 
                     {skillsByCategory.other.length > 0 && (
-                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUp}>
+                        <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4" variants={fadeInUpEaseOut}>
                             <div className="text-xs md:text-sm text-gray-600 font-medium">Tools & Others</div>
                             <div className="md:col-span-3">
                                 <div className="flex flex-wrap gap-1.5 md:gap-2">

@@ -1,0 +1,211 @@
+
+/* Crayon Highlight 기본 색연필 효과 */
+.crayon-highlight {
+    position: relative; /* 가상 요소(::after)의 기준 점 */
+    display: inline-block; /* 텍스트 크기만큼 영역 차지 */
+    z-index: 1; /* 하이라이트보다 텍스트가 위에 */
+}
+
+/* Crayon Highlight 실제 색연필 배경 */
+.crayon-highlight::after {
+    content: "";
+    position: absolute; /* 부모 요소를 기준으로 위치 */
+    left: -4px;
+    right: -4px;
+    top: 50%;
+    bottom: -2px;
+    z-index: -1; /* 텍스트 뒤로 */
+    opacity: 0.7;
+    transform: skewX(-5deg) rotate(-0.5deg); /* 기울임처리 손 그림 처럼 */
+    border-radius: 3px;
+    pointer-events: none; /* 포인터 이벤트 무시 */
+    will-change: transform; /* 변형 성능 최적화 */
+}
+
+/* Crayon Hover 호버 색연필 효과 */
+.crayon-hover {
+    position: relative; /* 가상 요소(::after)의 기준 점 */
+    display: inline-block; /* 텍스트 크기만큼 영역 차지 */
+    z-index: 1; /* 하이라이트보다 텍스트가 위에 */
+}
+
+/* Crayon Hover 실제 색연필 배경 */
+.crayon-hover::before {
+    content: "";
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    top: 45%;
+    bottom: -4px;
+    z-index: -1;
+    transform: skewX(-3deg) rotate(-0.5deg) scaleX(0); /* 초기 상태 scaleX(0)로 안보이게 */
+    transform-origin: left center; /* 왼쪽 중앙을 기준으로 변형 색칠하는 느낌으로 */
+    border-radius: 3px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 애니메이션 */
+    pointer-events: none; /* 포인터 이벤트 무시 */
+}
+
+/* Crayon Hover 호버 시 색연필 효과 활성화 */
+.group:hover .crayon-hover::before {
+    transform: skewX(-3deg) rotate(-0.5deg) scaleX(1); /* 호버 시 scaleX(1)로 원래 크기로 확장 - 색연필로 칠하는 효과 */
+}
+
+/* 빨간색 호버 효과 - 공용 강조 효과 */
+.crayon-hover-red::before {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(252, 165, 165, 0.4) 2px,
+            rgba(252, 165, 165, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(252, 165, 165, 0.3) 1px,
+            rgba(252, 165, 165, 0.3) 2px
+        );
+    background-color: rgba(252, 165, 165, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 파란색 호버 효과 - 만들어내는 개발자 */
+.crayon-hover-blue::before {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(147, 197, 253, 0.4) 2px,
+            rgba(147, 197, 253, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(147, 197, 253, 0.3) 1px,
+            rgba(147, 197, 253, 0.3) 2px
+        );
+    background-color: rgba(147, 197, 253, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 초록색 호버 효과 - 성장하는 개발자 */
+.crayon-hover-green::before {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(134, 239, 172, 0.4) 2px,
+            rgba(134, 239, 172, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(134, 239, 172, 0.3) 1px,
+            rgba(134, 239, 172, 0.3) 2px
+        );
+    background-color: rgba(134, 239, 172, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 보라색 호버 효과 - 정리하는 개발자 */
+.crayon-hover-purple::before {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(196, 181, 253, 0.4) 2px,
+            rgba(196, 181, 253, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(196, 181, 253, 0.3) 1px,
+            rgba(196, 181, 253, 0.3) 2px
+        );
+    background-color: rgba(196, 181, 253, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 황금색 - EXPERIENCE (귀중한 경험의 축적) */
+.crayon-highlight-gold::after {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(251, 191, 36, 0.4) 2px,
+            rgba(251, 191, 36, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(251, 191, 36, 0.3) 1px,
+            rgba(251, 191, 36, 0.3) 2px
+        );
+    background-color: rgba(251, 191, 36, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 진한 초록 - WORK PROJECTS (조직 내 성장) */
+.crayon-highlight-forest::after {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(34, 197, 94, 0.4) 2px,
+            rgba(34, 197, 94, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(34, 197, 94, 0.3) 1px,
+            rgba(34, 197, 94, 0.3) 2px
+        );
+    background-color: rgba(34, 197, 94, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 주황색 - PERSONAL PROJECTS (열정과 창의성) */
+.crayon-highlight-orange::after {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(251, 146, 60, 0.4) 2px,
+            rgba(251, 146, 60, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(251, 146, 60, 0.3) 1px,
+            rgba(251, 146, 60, 0.3) 2px
+        );
+    background-color: rgba(251, 146, 60, 0.25);
+    filter: blur(0.5px);
+}
+
+/* 은색 - SKILLS (연마된 기술력) */
+.crayon-highlight-silver::after {
+    background-image: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(148, 163, 184, 0.4) 2px,
+            rgba(148, 163, 184, 0.4) 4px
+        ),
+        repeating-linear-gradient(
+            180deg,
+            transparent,
+            transparent 1px,
+            rgba(148, 163, 184, 0.3) 1px,
+            rgba(148, 163, 184, 0.3) 2px
+        );
+    background-color: rgba(148, 163, 184, 0.25);
+    filter: blur(0.5px);
+}

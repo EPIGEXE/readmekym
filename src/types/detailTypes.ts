@@ -1,3 +1,4 @@
+import type { DetailedProject } from './common'
 import type { SkillTag } from './index'
 
 export interface DetailedSkill extends SkillTag {
@@ -12,43 +13,6 @@ export interface ImplementationDetail {
     code?: string // 코드 예시 (선택사항)
     challenges?: string // 구현 중 어려웠던 점
     solution?: string // 해결 방법
-}
-
-export interface DetailedProject {
-    id: string
-    title: string
-    subtitle?: string
-    shortDescription: string // 기존 description
-    fullDescription: string // 상세 설명
-    startYear: number
-    endYear: number
-    startMonth: number
-    endMonth: number
-
-    // 새로운 상세 정보
-    skills: DetailedSkill[]
-    implementation: ImplementationDetail[]
-    challenges: string[] // 전체 프로젝트 도전 과제들
-    achievements: string[] // 성과/결과
-    retrospective: {
-        whatWentWell: string[] // 잘된 점
-        whatCouldBeImproved: string[] // 개선할 점
-        lessonsLearned: string[] // 배운 점
-        nextSteps?: string[] // 다음 단계 (선택사항)
-    }
-
-    // 추가 메타데이터
-    teamSize?: number // 팀 규모
-    role?: string // 담당 역할
-    repository?: string // GitHub 링크
-    SeeMore?: string // 더 보기 링크
-    live?: string // 라이브 링크
-    documentation?: string // 문서 링크
-
-    // 경력 연관
-    experienceId?: string
-    type: 'project'
-    itemType: 'experience' | 'project'
 }
 
 export interface DetailedExperience {
@@ -90,20 +54,4 @@ export interface DetailedExperience {
     itemType: 'experience'
 }
 
-// 상세 페이지에서 사용할 union type - 완전히 분리된 구조
-export type DetailedItem = DetailedProject | DetailedExperience
-
 // 각각 독립적인 데이터 구조
-export interface DetailedDeveloperData {
-    experiences: DetailedExperience[]
-    projects: DetailedProject[]
-}
-
-// 상세 페이지 컴포넌트에서 사용할 타입 가드
-export function isDetailedProject(item: DetailedItem): item is DetailedProject {
-    return item.itemType === 'project'
-}
-
-export function isDetailedExperience(item: DetailedItem): item is DetailedExperience {
-    return item.itemType === 'experience'
-}

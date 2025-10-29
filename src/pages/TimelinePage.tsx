@@ -5,8 +5,8 @@ import { detailedDeveloperData } from "../data/detailedDeveloperData";
 import type { SkillTag, StackedSkills, Project, Experience } from "../types";
 import { YearDivider } from "../components/YearDivider";
 import { SkillBadge } from "../components/ui/SkillBadge";
-import { PhilosophySidebar } from "../components/common/PhilosophySidebar";
 import { Signpost, X } from "lucide-react";
+import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
 
 // 애니메이션 설정
 const staggerContainer = {
@@ -910,11 +910,11 @@ export function TimelinePage() {
             </div>
 
             {/* Project Sidebar */}
-            <PhilosophySidebar
+            <ProjectSummarySidebar
                 ref={sidebarRef}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
-                philosophyData={selectedProjectSummary}
+                projectSummaryData={selectedProjectSummary}
             />
 
             {/* Mobile Floating Navigation */}

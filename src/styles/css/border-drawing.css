@@ -1,0 +1,40 @@
+
+/* 그려지는 테두리 효과 */
+.border-drawing {
+    position: relative; /* 가상 요소(::before)의 기준 점 */
+}
+
+.border-drawing::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; 
+    border: 3px solid transparent; /* 초기 투명한 테두리 */
+    transition: all 0.6s ease; /* border-color 애니메이션 */
+    pointer-events: none; /* 포인터 이벤트 무시 */
+}
+
+.border-drawing:hover::before {
+    border-color: #374151; /* 호버 시 테두리 색상 */
+    animation: drawBorder 0.6s ease forwards; /* 테두리가 그려지는 애니메이션 */
+}
+
+@keyframes drawBorder {
+    0% {
+        clip-path: polygon(0 100%, 0 100%, 0 100%, 0 100%);
+    }
+    25% {
+        clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%);
+    }
+    50% {
+        clip-path: polygon(0 100%, 100% 100%, 100% 0%, 100% 0%);
+    }
+    75% {
+        clip-path: polygon(0 100%, 100% 100%, 100% 0%, 0 0%);
+    }
+    100% {
+        clip-path: polygon(0 100%, 100% 100%, 100% 0%, 0 0%);
+    }
+}

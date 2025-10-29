@@ -1,4 +1,4 @@
-import type { DetailedDeveloperData } from '../types/detailTypes'
+import type { DetailedDeveloperData } from "../types/common";
 
 export const detailedDeveloperData: DetailedDeveloperData = {
     experiences: [
