@@ -1,0 +1,40 @@
+/* 더 작은 버튼을 위한 스타일 */
+.k-button-xs {
+    font-size: 0.8rem !important;
+    padding: 2px 6px !important;
+    height: auto !important;
+    min-height: 1.5rem !important;
+}
+
+.k-button-xs .k-button-text {
+    font-size: 0.8rem !important;
+}
+
+.k-button-xs .k-icon,
+.k-button-xs .k-svg-icon {
+    font-size: 0.8rem !important;
+    height: 0.8rem !important;
+    width: 0.8rem !important; 
+    margin-right: 3px !important;
+}
+
+.k-button-xs svg {
+    height: 1rem !important;
+    width: 1rem !important;
+}
+
+.blue-text {
+    color: #2563eb !important; /* tailwind blue-600 */
+}
+
+/* ViewArea 오디오 설정 사이드 패널 애니메이션 */
+@keyframes slideInFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

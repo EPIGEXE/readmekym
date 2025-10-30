@@ -1,0 +1,83 @@
+/* 카드 배경 애니메이션 */
+@keyframes alertPulse {
+    0% { background-color: rgba(254, 226, 226, 0.4); }
+    50% { background-color: rgba(254, 226, 226, 0.8); }
+    100% { background-color: rgba(254, 226, 226, 0.4); }
+}
+
+.alert-card {
+    animation: alertPulse 2s infinite;
+}
+
+.selected-card {
+    background-color: rgba(239, 246, 255, 0.5);
+}
+
+/* 테두리 애니메이션 */
+@keyframes borderPulse {
+    0% { border-color: rgba(220, 20, 20, 1); }
+    50% { border-color: rgba(220, 80, 80, 1); }
+    100% { border-color: rgba(220, 20, 20, 1); }
+}
+
+.alert-border {
+    border: 2px solid rgba(220, 38, 38, 0.8);
+    animation: borderPulse 2s infinite;
+}
+
+.normal-border {
+    border: 2px solid #e5e7eb;
+}
+
+/* 경보 표시 애니메이션 */
+@keyframes glowPulse {
+    0% { 
+        background-color: rgba(239, 68, 68, 0.6);
+        box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+    }
+    50% { 
+        background-color: rgba(239, 68, 68, 1);
+        box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+    }
+    100% { 
+        background-color: rgba(239, 68, 68, 0.6);
+        box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+    }
+}
+
+.alert-indicator {
+    animation: glowPulse 2s infinite;
+}
+
+/* 아이콘 배경 애니메이션 */
+@keyframes iconBgPulse {
+    0% { background-color: rgba(255, 100, 100, 0.8); }
+    50% { background-color: rgba(255, 155, 155, 1); }
+    100% { background-color: rgba(255, 100, 100, 0.8); }
+}
+
+.alert-icon-bg {
+    animation: iconBgPulse 2s infinite;
+}
+
+/* 텍스트 색상 애니메이션 */
+@keyframes textPulse {
+    0% { color: rgb(220, 38, 38); }
+    50% { color: rgb(255, 38, 38); }
+    100% { color: rgb(220, 38, 38); }
+}
+
+.alert-text {
+    animation: textPulse 2s infinite;
+}
+
+/* 테두리 점선 애니메이션 */
+@keyframes dash {
+    to {
+        stroke-dashoffset: -16;
+    }
+}
+
+.animate-dash {
+    animation: dash 1s linear infinite;
+}

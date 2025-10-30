@@ -1,0 +1,18 @@
+/* 추가할 CSS */
+.alert-window .k-window-titlebar {
+    background-color: var(--kendo-color-primary-subtle) !important; /* indigo-100 */
+    color: var(--kendo-color-primary) !important; /* indigo-600 */
+    border-bottom: 1px solid var(--kendo-color-primary-subtle) !important; /* indigo-200 */
+}
+
+.alert-window .k-window-titlebar .k-button {
+    color: var(--kendo-color-primary) !important; /* indigo-600 */
+}
+
+.alert-window .k-window-titlebar .k-button:hover {
+    background-color: var(--kendo-color-primary-subtle) !important; /* indigo-200 */
+}
+
+.alert-window .k-window-content {
+    padding: 0 !important;
+}

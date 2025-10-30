@@ -2,13 +2,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { developerData } from "../data/devloperData";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
-import type { StackedSkills, Project } from "../types";
-import { YearDivider } from "../components/YearDivider";
+import { YearDivider } from "../components/ui/YearDivider";
 import { SkillBadge } from "../components/ui/SkillBadge";
 import { Signpost, X } from "lucide-react";
 import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
 import type { SidebarData, SkillTag } from "../types/common";
 import { getYearsArray } from "../utils/utils";
+import type { Project } from "../data/developDataType";
+
+export interface StackedSkills {
+    frontend: SkillTag[];
+    backend: SkillTag[];
+    other: SkillTag[];
+}
 
 export function TimelinePage() {
     // ============================ 상태 관리 ============================
