@@ -1,5 +1,4 @@
-import type { DetailedProject } from './common'
-import type { SkillTag } from './index'
+import type { SkillTag } from './common'
 
 export interface DetailedSkill extends SkillTag {
     usage: string // 어떻게 사용했는지

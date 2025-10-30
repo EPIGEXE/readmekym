@@ -1,9 +1,12 @@
 import { motion } from "framer-motion";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useLocation } from "react-router-dom";
 import { Calendar, Grid3x3, Image, Github, FileText } from "lucide-react";
 import { fadeInUpCustom, staggerContainer } from "../styles/framerMotion";
 
 export function Layout() {
+    // ============================ Hooks ============================
+    const location = useLocation();
+
     return (
         <div className="min-h-screen bg-[#F8F8F8] text-black">
             <motion.div
@@ -37,7 +40,6 @@ export function Layout() {
                                             : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                                     }`}
                                     whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
                                 >
                                     <Grid3x3 size={16} />
                                     <span className="text-xs md:text-sm font-medium">Category</span>
@@ -52,7 +54,6 @@ export function Layout() {
                                             : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                                     }`}
                                     whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
                                 >
                                     <Calendar size={16} />
                                     <span className="text-xs md:text-sm font-medium">Timeline</span>
@@ -67,7 +68,6 @@ export function Layout() {
                                             : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                                     }`}
                                     whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
                                 >
                                     <Image size={16} />
                                     <span className="text-xs md:text-sm font-medium">Gallery</span>

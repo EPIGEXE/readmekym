@@ -2,73 +2,48 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 import { developerData } from "../data/devloperData";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
-import type { SkillTag, StackedSkills, Project, Experience } from "../types";
+import type { StackedSkills, Project } from "../types";
 import { YearDivider } from "../components/YearDivider";
 import { SkillBadge } from "../components/ui/SkillBadge";
 import { Signpost, X } from "lucide-react";
 import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
-
-// 애니메이션 설정
-const staggerContainer = {
-    initial: {},
-    animate: {
-        transition: {
-            staggerChildren: 0.05,
-        },
-    },
-};
-
-interface SidebarData {
-    id: string;
-    number: string;
-    title: string;
-    description: string;
-    color: string;
-    details: string;
-    type?: "philosophy" | "project";
-    role?: string;
-    teamSize?: number;
-    skills?: Array<{ id: string; name: string; category: string; experience: string }>;
-    achievements?: string[];
-    fullDescription?: string;
-}
+import type { SidebarData, SkillTag } from "../types/common";
+import { getYearsArray } from "../utils/utils";
 
 export function TimelinePage() {
-    // ===== 상태 관리 =====
+    // ============================ 상태 관리 ============================
     const [stackedSkills, setStackedSkills] = useState<StackedSkills>({
         frontend: [],
         backend: [],
         other: [],
-    });
+    }); // 스크롤 시 쌓이는 스킬 스택
 
-    const [isAllSkillsStacked, setIsAllSkillsStacked] = useState<boolean>(false);
-    const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isAllSkillsStacked, setIsAllSkillsStacked] = useState<boolean>(false); // 모든 스킬이 쌓였는지 여부: 바닥에 도달 했을 때 모든 스킬을 추가가
+
+    const [selectedProjectSummary, setSelectedProjectSummary] = useState<SidebarData | null>(null); // 선택된 프로젝트 summary 데이터
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // 프로젝트 사이드바 열림 여부
+
+    // ----------------------- 모바일 관련 상태 관리 ---------------------
     const [isMobile, setIsMobile] = useState(() => {
         if (typeof window !== "undefined") {
             return window.matchMedia("(max-width: 767px)").matches;
         }
         return false;
-    });
-    const [isNavOpen, setIsNavOpen] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const sidebarRef = useRef<HTMLDivElement>(null);
-    const year2021Ref = useRef<HTMLDivElement>(null);
-    const year2022Ref = useRef<HTMLDivElement>(null);
-    const year2023Ref = useRef<HTMLDivElement>(null);
-    const year2024Ref = useRef<HTMLDivElement>(null);
-    const year2025Ref = useRef<HTMLDivElement>(null);
-    const yearPositionsRef = useRef<{ [key: number]: number }>({});
+    }); // 화면이 모바일인지 여부
 
-    // ===== 상수 정의 =====
+    const [isNavOpen, setIsNavOpen] = useState(false); // 네비게이션 메뉴 열림 여부
+
+    // ============================ useRef ============================
+    const yearPositionsRef = useRef<{ [key: number]: number }>({}); // 연도별 위치 저장용 ref
+
+    // ============================ 상수 정의 ============================
     // 데스크톱 기준
     const MONTH_HEIGHT = 80;
     const EXPERIENCE_WIDTH = 280;
     const PROJECT_WIDTH = 560; // 2줄 고정 (280px × 2)
     const SKILLS_WIDTH = 200;
-    const PROJECT_LANE_WIDTH = 280; // 각 프로젝트 레인 너비
 
-    // 모바일 기준 (축소)
+    // 모바일 기준
     const MOBILE_MONTH_HEIGHT = 60;
     const MOBILE_EXPERIENCE_WIDTH = 140;
     const MOBILE_PROJECT_WIDTH = 140; // 1레인
@@ -79,270 +54,43 @@ export function TimelinePage() {
     const TOTAL_HEIGHT = totalYears * MONTH_HEIGHT * 12 - 8 * MONTH_HEIGHT;
     const MOBILE_TOTAL_HEIGHT = totalYears * MOBILE_MONTH_HEIGHT * 12 - 8 * MOBILE_MONTH_HEIGHT;
 
-    // ===== 스타일 계산 함수들 =====
+    // 연도 배열 생성
+    const yearsArray = getYearsArray(developerData);
 
-    /**
-     * 경력 바의 스타일을 계산 (연도 넘어가는 경력 지원)
-     */
-    const getExperienceBarStyle = (experience: Experience) => {
-        const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
-        const expStartYear = experience.startYear;
-        const expEndYear = experience.endYear;
-
-        // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
-        const startYearOffset = (expStartYear - developerData.yearRange.start) * monthHeight * 12;
-        const absoluteTop = startYearOffset + (experience.startMonth - 9) * monthHeight;
-
-        // 전체 높이 계산
-        let totalHeight = 0;
-        if (expStartYear === expEndYear) {
-            // 같은 연도 내 경력
-            totalHeight = (experience.endMonth - experience.startMonth + 1) * monthHeight;
-        } else {
-            // 시작 연도 높이
-            totalHeight += (12 - experience.startMonth + 1) * monthHeight;
-            // 중간 연도들 높이
-            for (let year = expStartYear + 1; year < expEndYear; year++) {
-                totalHeight += 12 * monthHeight;
-            }
-            // 종료 연도 높이
-            totalHeight += experience.endMonth * monthHeight;
-        }
-
-        return {
-            top: `${absoluteTop}px`,
-            height: `${Math.max(totalHeight - 8, monthHeight)}px`,
-        };
-    };
-
-    /**
-     * 프로젝트 바의 스타일을 계산 (연도 넘어가는 프로젝트 지원)
-     */
-    const getProjectBarStyle = (project: Project) => {
-        const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
-        const projectStartYear = project.startYear;
-        const projectEndYear = project.endYear;
-
-        // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
-        const startYearOffset = (projectStartYear - developerData.yearRange.start) * monthHeight * 12;
-        const absoluteTop = startYearOffset + (project.startMonth - 9) * monthHeight;
-
-        // 전체 높이 계산
-        let totalHeight = 0;
-
-        if (projectStartYear === projectEndYear) {
-            // 같은 연도 내 프로젝트
-            totalHeight = (project.endMonth - project.startMonth + 1) * monthHeight;
-        } else {
-            // 시작 연도 높이
-            totalHeight += (12 - project.startMonth + 1) * monthHeight;
-
-            // 중간 연도들 높이
-            for (let year = projectStartYear + 1; year < projectEndYear; year++) {
-                totalHeight += 12 * monthHeight;
-            }
-
-            // 종료 연도 높이
-            totalHeight += project.endMonth * monthHeight;
-        }
-
-        return {
-            top: `${absoluteTop}px`,
-            height: `${totalHeight - 8}px`,
-        };
-    };
-
-    // ===== 데이터 처리 함수들 =====
-
-    /**
-     * 연도 배열 생성
-     */
-    const getYearsArray = () => {
-        const years = [];
-        for (let year = developerData.yearRange.start; year <= developerData.yearRange.end; year++) {
-            years.push(year);
-        }
-        return years;
-    };
-
-    const yearsArray = getYearsArray();
-
-    // 연도별 ref 맵핑
-    const yearRefMap: { [key: number]: React.RefObject<HTMLDivElement | null> } = {
-        2021: year2021Ref,
-        2022: year2022Ref,
-        2023: year2023Ref,
-        2024: year2024Ref,
-        2025: year2025Ref,
-    };
-
-    // 연도 위치 초기화 (최초 렌더링 시 저장)
+    // ============================ useEffect ============================
+    // 연도 위치 초기화
+    // 모바일에서 연도별 위치 이동을 위해서 연도 위치를 저장
+    // !important: 연도 위치를 따로 계산해서 저장하는 이유는 연도 라벨들이 sticky기 때문에 움직이기 때문에 저장하는 것임
+    // 따라서 데스크탑에서 모바일로 스크롤 중간에 변경하면 모바일 위치가 잘못 잡히는 문제가 발생하나 매우 예외적인 상황으로 상정하고 처리하지 않음
     useEffect(() => {
         const saveYearPositions = () => {
-            Object.entries(yearRefMap).forEach(([year, ref]) => {
-                if (ref.current) {
-                    yearPositionsRef.current[Number(year)] = ref.current.offsetTop;
+            const yearElements = document.querySelectorAll<HTMLDivElement>("[data-year]");
+            yearElements.forEach((element) => {
+                const year = Number(element.getAttribute("data-year"));
+                if (!isNaN(year)) {
+                    yearPositionsRef.current[year] = element.offsetTop;
                 }
             });
         };
 
         // 레이아웃이 완료된 후 위치 저장
-        const timer = setTimeout(saveYearPositions, 100);
-        return () => clearTimeout(timer);
+        saveYearPositions();
     }, [isMobile]); // isMobile 변경 시 재계산
 
-    // 스크롤 함수
-    const scrollToYear = (year: number) => {
-        const savedPosition = yearPositionsRef.current[year];
-        if (savedPosition !== undefined) {
-            window.scrollTo({ top: savedPosition - 80, behavior: "smooth" });
-        }
-        setIsNavOpen(false);
-    };
-
-    const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setIsNavOpen(false);
-    };
-
-    // 프로젝트 클릭 핸들러
-    const handleProjectClick = (projectId: string) => {
-        const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
-        if (detailedProject) {
-            const projectSummary = {
-                id: detailedProject.id,
-                number: detailedProject.id.split("-")[1].padStart(2, "0"),
-                title: detailedProject.title,
-                description: detailedProject.shortDescription,
-                color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
-                details: "",
-                type: "project" as const,
-                role: detailedProject.role,
-                teamSize: detailedProject.teamSize,
-                skills: detailedProject.skills.map((skill) => ({
-                    id: skill.id,
-                    name: skill.name,
-                    category: skill.category,
-                    experience:
-                        skill.experience === "beginner"
-                            ? "Beginner"
-                            : skill.experience === "intermediate"
-                            ? "Intermediate"
-                            : "Advanced",
-                })),
-                achievements: detailedProject.achievements.slice(0, 4),
-                fullDescription: detailedProject.fullDescription,
-            };
-            setSelectedProjectSummary(projectSummary);
-            setIsSidebarOpen(true);
-        }
-    };
-
-    // 반응형 화면 감지 (matchMedia 사용 - 개발자 도구 반응형 모드 대응)
+    // 화면이 모바일인지 감지
     useEffect(() => {
-        const mediaQuery = window.matchMedia("(max-width: 767px)"); // md breakpoint (모바일)
-
+        const mediaQuery = window.matchMedia("(max-width: 767px)");
         const checkMobile = () => {
-            console.log("Screen width (matchMedia):", mediaQuery.matches);
             setIsMobile(mediaQuery.matches);
         };
-
-        // 초기 체크
         checkMobile();
-
-        // 미디어 쿼리 변경 감지
-        const handler = (e: MediaQueryListEvent) => {
-            console.log("Media query changed:", e.matches);
-            setIsMobile(e.matches);
-        };
-
-        mediaQuery.addEventListener("change", handler);
-
-        return () => {
-            mediaQuery.removeEventListener("change", handler);
-        };
+        mediaQuery.addEventListener("change", checkMobile);
+        return () => mediaQuery.removeEventListener("change", checkMobile);
     }, []);
 
-    // Click outside to close sidebar
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-                setIsSidebarOpen(false);
-            }
-        };
-
-        if (isSidebarOpen) {
-            document.addEventListener("mousedown", handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [isSidebarOpen]);
-
-    /**
-     * 프로젝트를 경력/개인 2개 레인에 배치하는 레이아웃 계산 함수
-     * 0번 레인: 경력 관련 프로젝트 (experienceId 있음)
-     * 1번 레인: 개인 프로젝트 (experienceId 없음)
-     * 모바일에서는 모두 0번 레인에 배치
-     */
-    const calculateProjectLayout = (): Array<Project & { laneIndex: number; offset: number; zIndex: number }> => {
-        const allProjects: Array<Project & { laneIndex: number; offset: number; zIndex: number }> = [];
-
-        // 시작 시점 기준으로 정렬 (연도 우선, 월 보조)
-        const sortedProjects = [...developerData.projects].sort((a, b) => {
-            if (a.startYear !== b.startYear) return a.startYear - b.startYear;
-            return a.startMonth - b.startMonth;
-        });
-
-        // 각 프로젝트를 경력/개인에 따라 레인 배치
-        sortedProjects.forEach((project, index) => {
-            // 모바일에서는 모두 0번 레인, 데스크톱에서는 경력/개인 구분
-            const laneIndex = isMobile ? 0 : project.experienceId ? 0 : 1;
-
-            // 겹침 감지 및 오프셋 계산 (모바일/데스크톱 모두)
-            let offset = 0;
-            const zIndex = 10 + index;
-
-            if (index > 0) {
-                // 같은 레인의 직전 프로젝트 찾기
-                const sameLaneProjects = allProjects.filter((p) => p.laneIndex === laneIndex);
-
-                if (sameLaneProjects.length > 0) {
-                    const prevProject = sameLaneProjects[sameLaneProjects.length - 1];
-
-                    const prevEndTime = prevProject.endYear * 12 + prevProject.endMonth;
-                    const currentStartTime = project.startYear * 12 + project.startMonth;
-
-                    // 직전 프로젝트와 겹치면 들여쓰기
-                    if (prevEndTime >= currentStartTime) {
-                        offset = prevProject.offset + 12; // 직전 프로젝트의 오프셋 + 12px
-                    } else {
-                        // 겹치지 않으면 리셋 (원래대로)
-                        offset = 0;
-                    }
-                }
-            }
-
-            // 결과 배열에 추가
-            allProjects.push({
-                ...project,
-                laneIndex,
-                offset,
-                zIndex,
-            });
-        });
-
-        return allProjects;
-    };
-
-    // ===== 이펙트 훅들 =====
-    /**
-     * Intersection Observer를 사용해 프로젝트가 뷰포트에 들어올 때 스킬 누적
-     */
+    // 스크롤 이벤트로 뷰포트를 지나는 스킬의 추가/제거 처리
     useEffect(() => {
         const stickyPosition = 100; // sticky top position (연도 라벨의 sticky 위치)
-        const passedProjects = new Set<string>();
 
         const handleScroll = () => {
             const projectElements = document.querySelectorAll("[data-skills]");
@@ -356,10 +104,8 @@ export function TimelinePage() {
                 // sticky 위치를 지나갔는지 확인
                 const hasPassedSticky = rect.top <= stickyPosition;
 
-                if (hasPassedSticky && !passedProjects.has(projectId)) {
+                if (hasPassedSticky) {
                     // sticky 위치를 지나감 - 스킬 추가
-                    passedProjects.add(projectId);
-
                     const skillsData = element.getAttribute("data-skills");
                     if (skillsData) {
                         const skills: SkillTag[] = JSON.parse(skillsData);
@@ -376,9 +122,8 @@ export function TimelinePage() {
                             return newStacked;
                         });
                     }
-                } else if (!hasPassedSticky && passedProjects.has(projectId)) {
+                } else if (!hasPassedSticky) {
                     // sticky 위치 위로 다시 올라감 - 이 프로젝트의 스킬만 제거
-                    passedProjects.delete(projectId);
 
                     const skillsData = element.getAttribute("data-skills");
                     if (skillsData) {
@@ -415,13 +160,6 @@ export function TimelinePage() {
             // 바닥에 도달했을 때만 모든 스킬 추가
             if (isNearBottom) {
                 if (!isAllSkillsStacked) {
-                    console.log("바닥 도달 - 모든 스킬 강제 추가");
-
-                    // 모든 프로젝트를 passedProjects에 추가
-                    developerData.projects.forEach((project) => {
-                        passedProjects.add(project.id);
-                    });
-
                     // 모든 스킬 수집 (ID 기반으로 모든 스킬 포함)
                     const allSkills: SkillTag[] = [];
                     developerData.projects.forEach((project) => {
@@ -441,10 +179,7 @@ export function TimelinePage() {
                 }
             } else {
                 if (isAllSkillsStacked) {
-                    console.log("바닥에서 벗어남 - 스킬 초기화");
-
                     // 완전 초기화
-                    passedProjects.clear();
                     setStackedSkills({ frontend: [], backend: [], other: [] });
                     setIsAllSkillsStacked(false);
 
@@ -454,8 +189,6 @@ export function TimelinePage() {
                         const projectId = element.getAttribute("data-project-id");
 
                         if (projectId && rect.top <= stickyPosition) {
-                            passedProjects.add(projectId);
-
                             const skillsData = element.getAttribute("data-skills");
                             if (skillsData) {
                                 const skills: SkillTag[] = JSON.parse(skillsData);
@@ -477,7 +210,7 @@ export function TimelinePage() {
         };
 
         // 초기 체크
-        setTimeout(handleScroll, 100);
+        handleScroll();
 
         // 스크롤 이벤트
         window.addEventListener("scroll", handleScroll, { passive: true });
@@ -487,49 +220,121 @@ export function TimelinePage() {
         };
     }, []);
 
-    // ===== 렌더링 함수들 =====
+    // ============================ 핸들러 ============================
+    // 프로젝트 클릭 핸들러
+    const handleProjectClick = (projectId: string) => {
+        const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
+        if (detailedProject) {
+            const projectSummary: SidebarData = {
+                id: detailedProject.id,
+                number: detailedProject.id.split("-")[1].padStart(2, "0"),
+                title: detailedProject.title,
+                description: detailedProject.shortDescription,
+                color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
+                role: detailedProject.role,
+                teamSize: detailedProject.teamSize,
+                skills: detailedProject.skills,
+                achievements: detailedProject.achievements.slice(0, 4),
+                fullDescription: detailedProject.fullDescription,
+            };
+            setSelectedProjectSummary(projectSummary);
+            setIsSidebarOpen(true);
+        }
+    };
 
-    /**
-     * 월별 그리드 라인을 렌더링
-     */
-    const renderMonthlyGrid = () => {
+    // ============================ 유틸 함수 ============================
+    // --------------------- 레이아웃 관련 유틸 함수 ----------------------------
+    // 경력, 프로젝트 바의 높이 계산
+    const getBarHeight = (startYear: number, endYear: number, startMonth: number, endMonth: number) => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
 
-        return (
-            <div className="absolute inset-0">
-                {yearsArray.map((_, yearIndex) => (
-                    <div key={yearIndex}>
-                        {[...Array(12)].map((_, idx) => {
-                            // 2021년(첫 해) 1-8월은 렌더링하지 않음
-                            if (yearIndex === 0 && idx < 8) return null;
+        // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
+        const startYearOffset = (startYear - developerData.yearRange.start) * monthHeight * 12;
+        const absoluteTop = startYearOffset + (startMonth - 9) * monthHeight;
 
-                            const adjustedTop =
-                                yearIndex === 0
-                                    ? (idx - 8) * monthHeight
-                                    : yearIndex * monthHeight * 12 + idx * monthHeight - 8 * monthHeight;
+        // 전체 높이 계산
+        let totalHeight = 0;
 
-                            return (
-                                <div
-                                    key={`${yearIndex}-${idx}`}
-                                    className="border-b border-gray-50"
-                                    style={{
-                                        position: "absolute",
-                                        top: `${adjustedTop}px`,
-                                        width: "100%",
-                                        height: `${monthHeight}px`,
-                                    }}
-                                />
-                            );
-                        })}
-                    </div>
-                ))}
-            </div>
-        );
+        if (startYear === endYear) {
+            // 같은 연도 내 프로젝트
+            totalHeight = (endMonth - startMonth + 1) * monthHeight;
+        } else {
+            // 시작 연도 높이
+            totalHeight += (12 - startMonth + 1) * monthHeight;
+
+            // 중간 연도들 높이
+            for (let year = startYear + 1; year < endYear; year++) {
+                totalHeight += 12 * monthHeight;
+            }
+
+            // 종료 연도 높이
+            totalHeight += endMonth * monthHeight;
+        }
+
+        return {
+            top: `${absoluteTop}px`,
+            height: `${Math.max(totalHeight - 8, monthHeight)}px`,
+        };
     };
 
     /**
-     * 연도 라벨을 렌더링 (고정 위치)
+     * 프로젝트를 경력/개인 2개 레인에 배치하는 레이아웃 계산 함수
+     * 0번 레인: 경력 관련 프로젝트 (experienceId 있음)
+     * 1번 레인: 개인 프로젝트 (experienceId 없음)
+     * 모바일에서는 모두 0번 레인에 배치
      */
+    const calculateProjectLayout = (): Array<Project & { laneIndex: number; offset: number; zIndex: number }> => {
+        const allProjects: Array<Project & { laneIndex: number; offset: number; zIndex: number }> = [];
+
+        // 시작 시점 기준으로 정렬 (연도 우선, 월 보조)
+        const sortedProjects = [...developerData.projects].sort((a, b) => {
+            if (a.startYear !== b.startYear) return a.startYear - b.startYear;
+            return a.startMonth - b.startMonth;
+        });
+
+        // 각 프로젝트를 경력/개인에 따라 레인 배치
+        sortedProjects.forEach((project, index) => {
+            // 모바일에서는 모두 0번 레인, 데스크톱에서는 경력/개인 구분
+            const laneIndex = isMobile ? 0 : project.experienceId ? 0 : 1;
+
+            // 겹침 감지 및 오프셋 계산
+            let offset = 0;
+            const zIndex = 10 + index;
+
+            if (index > 0) {
+                // 같은 레인의 직전 프로젝트 찾기
+                const sameLaneProjects = allProjects.filter((p) => p.laneIndex === laneIndex);
+
+                if (sameLaneProjects.length > 0) {
+                    const prevProject = sameLaneProjects[sameLaneProjects.length - 1];
+
+                    const prevEndTime = prevProject.endYear * 12 + prevProject.endMonth;
+                    const currentStartTime = project.startYear * 12 + project.startMonth;
+
+                    // 직전 프로젝트와 겹치면 들여쓰기
+                    if (prevEndTime >= currentStartTime) {
+                        offset = prevProject.offset + 12; // 직전 프로젝트의 오프셋 + 12px
+                    } else {
+                        // 겹치지 않으면 리셋 (원래대로)
+                        offset = 0;
+                    }
+                }
+            }
+
+            // 결과 배열에 추가
+            allProjects.push({
+                ...project,
+                laneIndex,
+                offset,
+                zIndex,
+            });
+        });
+
+        return allProjects;
+    };
+
+    // 연도 라벨 렌더링
+    // 이전 연도 라벨과의 간격을 계산해서 marginBottom으로 위치
     const renderYearLabels = () => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
         const yearHeight = isMobile ? 60 : 40;
@@ -543,7 +348,7 @@ export function TimelinePage() {
                     return (
                         <div
                             key={year}
-                            ref={yearRefMap[year]}
+                            data-year={year}
                             className="sticky bg-[#F8F8F8] border border-gray-200 rounded shadow-sm flex items-center justify-center"
                             style={{
                                 top: isMobile ? "80px" : "100px",
@@ -576,9 +381,8 @@ export function TimelinePage() {
         );
     };
 
-    /**
-     * 월 라벨을 렌더링
-     */
+    // 월 라벨 렌더링
+    // 렌더링 해야하는 월의 개수를 계산해서 렌더링
     const renderMonthLabels = () => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
 
@@ -620,13 +424,19 @@ export function TimelinePage() {
 
         return (
             <div className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
-                {renderMonthlyGrid()}
-
                 {developerData.experiences.map((experience) => (
                     <motion.div
                         key={experience.id}
                         className="absolute px-2 group"
-                        style={{ ...getExperienceBarStyle(experience), width: `${isMobile ? width : width - 16}px` }}
+                        style={{
+                            ...getBarHeight(
+                                experience.startYear,
+                                experience.endYear,
+                                experience.startMonth,
+                                experience.endMonth
+                            ),
+                            width: `${isMobile ? width : width - 16}px`,
+                        }}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
@@ -679,18 +489,16 @@ export function TimelinePage() {
         const projectsWithLayout = calculateProjectLayout();
         const width = isMobile ? MOBILE_PROJECT_WIDTH : PROJECT_WIDTH;
         const height = isMobile ? MOBILE_TOTAL_HEIGHT : TOTAL_HEIGHT;
-        const laneWidth = isMobile ? MOBILE_PROJECT_WIDTH : PROJECT_LANE_WIDTH;
+        const laneWidth = isMobile ? MOBILE_PROJECT_WIDTH : PROJECT_WIDTH / 2;
 
         return (
             <div className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
-                {renderMonthlyGrid()}
-
                 {projectsWithLayout.map((project) => (
                     <motion.div
                         key={project.id}
                         className="absolute px-2 group cursor-pointer"
                         style={{
-                            ...getProjectBarStyle(project),
+                            ...getBarHeight(project.startYear, project.endYear, project.startMonth, project.endMonth),
                             left: `${project.laneIndex * laneWidth + project.offset}px`,
                             width: `${isMobile ? laneWidth - project.offset : laneWidth - 16 - project.offset}px`,
                             zIndex: project.zIndex,
@@ -751,8 +559,6 @@ export function TimelinePage() {
 
         return (
             <div className="relative" style={{ width: `${width}px`, height: `${height}px` }}>
-                {renderMonthlyGrid()}
-
                 {/* 타임라인의 각 프로젝트 스킬들 */}
                 {developerData.projects.map((project) => {
                     const yearOffset = (project.startYear - developerData.yearRange.start) * monthHeight * 12;
@@ -792,17 +598,28 @@ export function TimelinePage() {
         );
     };
 
-    // ===== 메인 렌더링 =====
+    // 모바일: 연도별 스크롤 이동
+    const scrollToYear = (year: number) => {
+        const savedPosition = yearPositionsRef.current[year];
+        if (savedPosition !== undefined) {
+            window.scrollTo({ top: savedPosition - 80, behavior: "smooth" });
+        }
+        setIsNavOpen(false);
+    };
+
+    // 모바일: 맨 위로 스크롤 이동
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setIsNavOpen(false);
+    };
+
     return (
-        <motion.section className="mb-12" initial="initial" animate="animate" variants={staggerContainer}>
+        <section className="mb-12">
             {/* 컬럼 헤더 */}
             <div
-                className={`flex ${isMobile ? "gap-2" : "gap-4"} mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4 ${
-                    isMobile ? "overflow-x-hidden" : ""
-                }`}
+                className="flex mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4"
+                style={{ paddingLeft: isMobile ? "52px" : "150px" }}
             >
-                <div className={isMobile ? "w-6" : "w-20"}></div>
-                <div className={isMobile ? "w-5" : "w-12"}></div>
                 <div className={`flex ${isMobile ? "gap-2" : "gap-8"}`}>
                     <div
                         className={`${
@@ -810,20 +627,20 @@ export function TimelinePage() {
                         } font-semibold crayon-highlight crayon-highlight-gold font-cafe24-gowoonbam inline-block`}
                         style={{ width: `${isMobile ? MOBILE_EXPERIENCE_WIDTH : EXPERIENCE_WIDTH}px` }}
                     >
-                        {isMobile ? "EXP" : "EXPERIENCE"}
+                        EXPERIENCE
                     </div>
                     <div className="flex" style={{ width: `${isMobile ? MOBILE_PROJECT_WIDTH : PROJECT_WIDTH}px` }}>
                         {!isMobile ? (
                             <>
                                 <div
                                     className="text-[28px] font-semibold crayon-highlight mr-8 crayon-highlight-forest font-cafe24-gowoonbam inline-block"
-                                    style={{ width: `${PROJECT_LANE_WIDTH}px` }}
+                                    style={{ width: `${PROJECT_WIDTH / 2}px` }}
                                 >
                                     WORK PROJECTS
                                 </div>
                                 <div
                                     className="text-[28px] font-semibold crayon-highlight crayon-highlight-orange font-cafe24-gowoonbam inline-block"
-                                    style={{ width: `${PROJECT_LANE_WIDTH}px` }}
+                                    style={{ width: `${PROJECT_WIDTH / 2}px` }}
                                 >
                                     PERSONAL PROJECTS
                                 </div>
@@ -859,7 +676,7 @@ export function TimelinePage() {
                         </div>
 
                         {/* 타임라인 그리드 */}
-                        <div className={`flex ${isMobile ? "gap-1" : "gap-8"} relative`} ref={containerRef}>
+                        <div className={`flex ${isMobile ? "gap-1" : "gap-8"} relative`}>
                             {!isMobile && (
                                 <YearDivider
                                     totalHeight={isMobile ? MOBILE_TOTAL_HEIGHT : TOTAL_HEIGHT}
@@ -909,18 +726,17 @@ export function TimelinePage() {
                 )}
             </div>
 
-            {/* Project Sidebar */}
+            {/* Project Summary 사이드바 */}
             <ProjectSummarySidebar
-                ref={sidebarRef}
                 isOpen={isSidebarOpen}
                 onClose={() => setIsSidebarOpen(false)}
                 projectSummaryData={selectedProjectSummary}
             />
 
-            {/* Mobile Floating Navigation */}
+            {/* 모바일: 플로팅 네비게이션 */}
             {isMobile && (
                 <div className="fixed bottom-6 right-4 z-50">
-                    {/* Navigation Menu */}
+                    {/* 네비게이션 메뉴 */}
                     <AnimatePresence>
                         {isNavOpen && (
                             <motion.div
@@ -976,7 +792,7 @@ export function TimelinePage() {
                         )}
                     </AnimatePresence>
 
-                    {/* Toggle Button */}
+                    {/* 토글 버튼 */}
                     <motion.button
                         onClick={() => setIsNavOpen(!isNavOpen)}
                         className="w-14 h-14 rounded-full bg-gray-800 text-white shadow-xl flex items-center justify-center"
@@ -989,6 +805,6 @@ export function TimelinePage() {
                     </motion.button>
                 </div>
             )}
-        </motion.section>
+        </section>
     );
 }

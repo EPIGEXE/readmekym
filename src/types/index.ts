@@ -1,8 +1,5 @@
-export interface SkillTag {
-    id: string
-    name: string
-    category: 'frontend' | 'backend' | 'other'
-}
+import type { SkillTag } from './common'
+
 
 export interface Project {
     id: string // 고유 식별자

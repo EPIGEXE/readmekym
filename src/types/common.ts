@@ -64,3 +64,9 @@ export interface DetailedDeveloperData {
     experiences: DetailedExperience[]
     projects: DetailedProject[]
 }
+
+export interface SkillTag {
+    id: string
+    name: string
+    category: 'frontend' | 'backend' | 'other'
+}

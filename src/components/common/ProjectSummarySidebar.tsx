@@ -9,8 +9,7 @@ import type { SidebarData } from "../../types/common";
 interface ProjectSummarySidebarProps {
     isOpen: boolean;
     onClose: () => void;
-    onViewDetail?: () => void;
-    projectSummaryData: SidebarData;
+    projectSummaryData: SidebarData | null;
 }
 
 export const ProjectSummarySidebar = forwardRef<HTMLDivElement, ProjectSummarySidebarProps>(
