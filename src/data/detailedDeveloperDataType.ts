@@ -79,7 +79,7 @@ export interface ImplementationDetail {
     id: string
     title: string
     description: string
-    code?: string // 코드 예시 (선택사항)
-    challenges?: string // 구현 중 어려웠던 점
-    solution?: string // 해결 방법
+    code?: string // 코드 예시 
+    challenges?: string | string[] // 구현 중 어려웠던 점들 
+    solution?: string | string[] // 해결 방법들 
 }

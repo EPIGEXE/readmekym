@@ -11,7 +11,7 @@ export const fadeInUpCustom = {
 export const fadeInUpEaseOut = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4, ease: "easeOut" }, 
+    transition: { duration: 0.8, ease: "easeOut" }, 
 };
 
 // 자식 순차 애니메이션
@@ -20,7 +20,7 @@ export const staggerContainer = {
     initial: {},
     animate: {
         transition: {
-            staggerChildren: 0.1
+            staggerChildren: 0.15
         }
     }
 }

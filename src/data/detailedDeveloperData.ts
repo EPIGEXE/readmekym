@@ -534,7 +534,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             title: '국가 시설 C 통합 출입통제 개발 프로그램',
             shortDescription: 'React + Konva 기반 실시간 도면 모니터링 및 생체인식 장치 제어 시스템',
-            fullDescription: '국가 시설의 출입통제 시스템에서 React와 Konva.js를 활용한 실시간 도면 기반 모니터링 화면과 생체인식 장치 제어 인터페이스를 담당했습니다. WebSocket을 통해 수백 개의 도어와 생체인식 장치 상태를 실시간으로 수신하고, Konva Canvas 위에 시설 도면과 도어 객체를 렌더링하여 경보 발생 시 시각적/청각적 알림을 제공하는 시스템을 구축했습니다. Zustand를 활용한 복잡한 상태 관리와 React DnD를 통한 직관적인 도어-경보 연결 UI를 구현하여 관제 요원의 업무 효율성을 크게 향상시켰습니다.',
+            fullDescription: '국가 시설의 출입통제 시스템에서 React와 Konva.js를 활용한 실시간 도면 기반 모니터링 화면과 생체인식 장치 제어 인터페이스를 담당했습니다. WebSocket을 통해 도어와 생체인식 장치 상태를 실시간으로 수신하고, Konva Canvas 위에 시설 도면과 도어 객체를 렌더링하여 경보 발생 시 시각적/청각적 알림을 제공하는 시스템을 구축했습니다. Zustand를 활용한 복잡한 상태 관리와 React DnD를 통한 직관적인 도어-경보 연결 UI를 구현하여 관제 요원의 업무 효율성을 크게 향상시켰습니다.',
             experienceId: 'exp-2',
             teamSize: 5,
             role: '프론트엔드 개발 (도면 모니터링 시스템 및 생체인식 장치 제어 UI 전담)',
@@ -579,61 +579,101 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 {
                     id: 'impl-1',
                     title: 'Konva Canvas 기반 실시간 도어 모니터링 시스템',
-                    description: '시설 도면을 배경 이미지로 불러오고, Konva Stage 위에 수백 개의 도어 객체를 동적으로 렌더링하는 시스템을 구축했습니다. 각 도어는 Layer/Image/Rect 컴포넌트로 구성되며, WebSocket으로 받은 실시간 상태(정상/경보/장애)에 따라 색상이 변경됩니다. 마우스 휠을 통한 줌(0.5x~2x), 드래그를 통한 패닝, 영역 선택을 통한 다중 도어 선택 등 관제 화면에 필요한 인터랙션을 구현했습니다. 편집 모드에서는 도어를 자유롭게 배치하고, 드래그로 위치를 조정할 수 있으며, 변경 사항은 백엔드 API로 저장됩니다.',
-                    challenges: 'Konva Stage의 좌표계와 React DnD의 HTML 좌표계 불일치로 인해 경보 카드를 도면 위로 드래그할 때 정확한 위치 계산이 어려웠습니다. 또한 수백 개의 도어 객체를 실시간으로 렌더링하면서 60fps를 유지하기 위한 성능 최적화가 필요했습니다.',
-                    solution: 'React DnD의 monitor.getClientOffset()으로 얻은 브라우저 좌표를 Konva의 setPointersPositions()로 전달하고, getRelativePointerPosition()으로 Canvas 좌표계로 변환하는 방식으로 해결했습니다. 성능 최적화를 위해 React.memo와 useMemo를 활용하여 불필요한 리렌더링을 방지하고, Konva의 Layer 분리를 통해 배경 이미지와 도어 객체를 독립적으로 관리했습니다. WebSocket 메시지를 배치 처리하여 여러 도어의 상태 변경을 한 번에 업데이트하도록 개선하여 렌더링 횟수를 크게 줄였습니다.'
+                    description: '시설 도면을 배경 이미지로 불러오고, Konva Stage 위에 수백 개의 도어 객체를 동적으로 렌더링하는 시스템을 구축했습니다. 각 도어는 Layer/Image/Rect 컴포넌트로 구성되며, WebSocket으로 받은 실시간 상태(정상/경보/장애)에 따라 색상이 변경됩니다. 마우스 휠을 통한 줌, 드래그를 통한 패닝, 영역 선택을 통한 다중 도어 선택 등 관제 화면에 필요한 인터랙션을 구현했습니다.',
+                    challenges: [
+                        '도어 상태 변경 시 React 리렌더링으로 인한 성능 저하 (20개에서도 버벅임)',
+                        'Canvas 좌표계와 HTML 좌표계 불일치로 인한 정확한 위치 계산 문제',
+                    ],
+                    solution: [
+                        'React Virtual DOM과 Canvas 렌더링을 분리하고 ref로 직접 참조하여 리렌더링 없이 Canvas API로 업데이트했습니다. WebSocket 메시지를 배치 처리하여 여러 도어를 한 번에 업데이트하도록 개선했습니다.',
+                        '브라우저 좌표를 Canvas 좌표로 변환하는 로직을 구현했습니다. 드롭 이벤트 좌표를 가상 이벤트로 만들어 Stage에 전달하고 상대 좌표를 계산했습니다.',
+                    ]
                 },
                 {
                     id: 'impl-2',
                     title: 'WebSocket 기반 실시간 이벤트 처리 및 경보음 시스템',
-                    description: 'STOMP 프로토콜을 사용하는 WebSocket 연결을 통해 "DM_EVENT" 토픽을 구독하여 도어 상태 변경 이벤트를 실시간으로 수신하는 시스템을 구현했습니다. 메시지 포맷은 { graphic_code: ["G0070", "G0071"], graphic_status: 1 } 형태로 여러 도어의 상태가 한 번에 전달되며, 이를 파싱하여 Zustand 스토어의 도어 상태를 일괄 업데이트합니다. 경보 발생 시(graphic_status === 1) Web Audio API를 활용하여 경보음을 재생하는데, 같은 경보음 파일을 사용하는 도어들을 그룹핑하여 중복 재생을 방지하고, 경보 해제 시 자동으로 경보음을 정지하도록 구현했습니다.',
-                    challenges: '동일한 경보음 파일을 사용하는 여러 도어에서 동시에 경보가 발생할 때 경보음이 중복 재생되어 소음이 발생했습니다. 또한 브라우저의 자동 재생 정책으로 인해 사용자 인터랙션 없이는 오디오 재생이 차단되는 문제가 있었습니다.',
-                    solution: 'Zustand 스토어에 경보음별로 재생 중인 도어 코드 목록을 관리하도록 하여, 같은 경보음은 한 번만 재생하고 여러 도어를 하나의 오디오 인스턴스에 연결하는 방식으로 변경했습니다. 브라우저 자동 재생 정책 문제는 Portal을 활용하여 화면에 "오디오 활성화" 안내 Float 카드를 표시하고, 사용자 클릭으로 오디오 컨텍스트를 초기화하도록 구현했습니다.'
+                    description: 'STOMP 프로토콜 기반 WebSocket을 통해 도어 상태 변경 이벤트를 실시간으로 수신하는 시스템을 구현했습니다. 여러 도어의 상태가 한 번에 전달되는 메시지를 파싱하여 Zustand 스토어의 상태를 일괄 업데이트합니다. 경보 발생 시 Web Audio API를 활용하여 경보음을 재생하며, 같은 경보음 파일을 사용하는 도어들을 그룹핑하여 중복 재생을 방지하고 경보 해제 시 자동으로 정지하도록 구현했습니다.',
+                    challenges: [
+                        '동일 경보음 파일을 사용하는 여러 도어의 중복 재생 문제',
+                        '브라우저 자동 재생 정책으로 인한 오디오 재생 차단'
+                    ],
+                    solution: [
+                        'Zustand 스토어에 경보음별로 재생 중인 도어 목록을 관리하여 같은 경보음은 한 번만 재생하고 여러 도어를 하나의 오디오 인스턴스에 연결했습니다.',
+                        'Portal을 활용한 플로팅 안내 UI를 표시하고 사용자 클릭으로 오디오 컨텍스트를 활성화하도록 구현했습니다.'
+                    ]
                 },
                 {
                     id: 'impl-3',
                     title: '생체인식 장치 관리 및 실시간 이벤트 모니터링 UI',
-                    description: '지문인식기, 카드리더기 등 생체인식 장치를 추가/삭제하고, 장치별 상세 설정(인증 방식, Wiegand 포맷, 관리자 설정)을 할 수 있는 관리 화면을 구현했습니다. AG Grid를 활용하여 장치 목록을 테이블 형태로 표시하고, 장치 클릭 시 설정 다이얼로그가 열리며 여러 탭(기본 설정/인증 설정/고급 설정)으로 구성된 설정 화면을 제공합니다. WebSocket을 통해 실시간으로 수신되는 생체인식 이벤트(인증 성공/실패, 장치 연결/해제 등)를 별도의 이벤트 창에 표시하여 관제 요원이 현장 상황을 즉시 파악할 수 있도록 했습니다.',
-                    challenges: '하나의 위젯으로 동작해야 하므로 React Router를 사용할 수 없어 화면 전환 로직을 별도로 구현해야 했습니다. 또한 장치 설정 변경 시 서버와의 동기화를 유지하면서 사용자 경험을 해치지 않아야 했습니다.',
-                    solution: 'useState로 displayMode(deviceList/realTimeEvent/wiegandConfig/adminSetting)를 관리하고, 조건부 렌더링으로 화면을 전환하는 SPA 패턴을 구현했습니다. 장치 설정 변경 시 Zustand의 syncDeviceList에 동기화 중인 장치를 추가하고, Portal을 활용한 Float 카드로 동기화 진행 상태를 표시하여 사용자가 다른 작업을 하면서도 진행 상황을 확인할 수 있도록 했습니다.'
+                    description: '지문인식기, 카드리더기 등 생체인식 장치를 관리하는 화면을 구현했습니다. AG Grid로 장치 목록을 테이블 형태로 표시하고, 장치 클릭 시 탭 기반 설정 화면(기본/인증/고급)을 제공합니다. WebSocket을 통해 실시간으로 수신되는 이벤트(인증 성공/실패, 장치 연결/해제 등)를 별도 창에 표시하여 현장 상황을 즉시 파악할 수 있도록 했습니다.',
+                    challenges: [
+                        '단일 페이지에서 React Router 없이 화면 전환 구현'
+                    ],
+                    solution: [
+                        '화면 모드를 상태로 관리하고 조건부 렌더링으로 화면을 전환하는 SPA 패턴을 구현했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-4',
+                    title: 'TanStack Query 기반 서버 상태 관리 및 최적화',
+                    description: 'TanStack Query를 활용하여 서버 데이터를 효율적으로 관리하는 시스템을 구축했습니다. 도어 목록, 지역 목록, 경보 목록 등 다양한 데이터를 fetch하고 캐싱하며, 데이터 변경 시 관련된 쿼리를 자동으로 무효화하여 최신 상태를 유지합니다.',
+                    challenges: [
+                        '수백 개의 도어 속성 일괄 편집 시 개별 API 요청으로 인한 서버 부하',
+                        '여러 화면에서 동일 데이터를 중복 fetch하여 불필요한 네트워크 요청 발생'
+                    ],
+                    solution: [
+                        '변경된 도어들을 배치로 모아서 단일 API 요청으로 전송하는 일괄 업데이트 훅을 구현했습니다. TanStack Query의 mutation을 활용하여 성공 시 관련 쿼리를 무효화하고 데이터를 refetch하도록 했습니다.',
+                        'TanStack Query의 캐싱 기능을 활용하여 동일한 데이터는 한 번만 fetch하고 여러 컴포넌트에서 공유하도록 했습니다. queryKey를 일관되게 관리하여 데이터 일관성을 유지했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-5',
+                    title: '대량 리스트 렌더링 최적화',
+                    description: '관제 시스템에서 수백 개의 도어, 수천 개의 경보 이벤트, 실시간 로그를 화면에 표시해야 했습니다. 초기에는 모든 항목을 DOM에 렌더링하여 성능 문제가 발생했습니다.',
+                    challenges: [
+                        '200개 이벤트 로그 Grid 렌더링 시 느린 초기 로딩 및 스크롤 버벅임',
+                        '수백 개 도어 카드의 상태 변경 시 전체 리렌더링으로 인한 성능 저하',
+                        '도어 속성 그리드에서 수백 개 셀의 불필요한 리렌더링',
+                        '검색어 타이핑마다 전체 그리드 필터링으로 인한 UI 버벅임'
+                    ],
+                    solution: [
+                        '이벤트 로그를 200개로 제한하고 새 이벤트 수신 시 가장 오래된 항목을 제거하여 DOM 크기를 일정하게 유지했습니다.',
+                        'React.memo로 DoorCard를 감싸고 커스텀 비교 함수로 필요한 props만 비교하도록 했습니다. useMemo로 색상 계산과 그리드 레이아웃을 캐싱했습니다.',
+                        '그리드의 각 셀 컴포넌트를 React.memo로 감싸서 해당 행의 데이터가 변경될 때만 리렌더링되도록 최적화했습니다.',
+                        '검색 입력에 300ms 디바운스를 적용하여 타이핑이 끝난 후에만 필터링이 실행되도록 개선했습니다.'
+                    ]
                 }
             ],
             challenges: [
                 'Konva Canvas 좌표계와 React DnD HTML 좌표계 간의 변환 문제',
-                '수백 개 도어 객체의 실시간 렌더링 성능 최적화 (60fps 유지)',
+                '수백 개 도어 객체의 실시간 렌더링 성능 최적화',
                 'WebSocket 메시지 배치 처리 및 상태 업데이트 최적화',
                 '같은 경보음 파일을 사용하는 여러 도어의 경보음 중복 재생 방지',
                 '브라우저 자동 재생 정책으로 인한 오디오 재생 제약',
-                'React Router 없이 복잡한 화면 전환 로직 구현',
             ],
             achievements: [
                 'Konva.js를 활용한 고성능 Canvas 기반 실시간 모니터링 시스템 구축',
                 'React DnD와 Konva 통합으로 직관적인 도어-경보 드래그 앤 드롭 연결 UI 구현',
-                'WebSocket 메시지 배치 처리로 렌더링 성능 최적화 (초당 수백 건의 상태 업데이트 처리)',
-                'Web Audio API 기반 경보음 시스템 구현 (같은 경보음 그룹핑, 자동 재생 정책 대응)',
-                'Zustand를 활용한 복잡한 상태 관리 (도어 목록, 경보 목록, WebSocket 연결 상태, 오디오 재생 상태)',
-                '사용자 친화적인 생체인식 장치 관리 UI (AG Grid, 탭 기반 설정 화면, 실시간 이벤트 모니터링)'
+                'React 리렌더링과 Canvas 직접 업데이트 분리로 성능 최적화',
+                'WebSocket 메시지 배치 처리로 렌더링 성능 최적화',
+                'Web Audio API 기반 경보음 시스템 구현',
+                'Zustand를 활용한 복잡한 상태 관리',
             ],
             retrospective: {
                 whatWentWell: [
-                    'Konva.js를 활용한 Canvas 기반 복잡한 인터랙션 구현 경험 - 관제 화면에 필요한 줌/팬/드래그/영역 선택 등 모든 기능을 직접 구현하며 Canvas API와 Konva 아키텍처에 대한 깊은 이해를 쌓음',
-                    'React DnD와 Konva의 좌표계 통합 문제를 해결하며 서로 다른 라이브러리 간의 통합 방법 학습',
-                    'WebSocket 실시간 통신과 React 상태 관리의 조화로운 통합 - STOMP 프로토콜 토픽 구독 패턴과 Zustand의 액션을 연결하여 실시간 데이터를 효율적으로 처리',
-                    'Web Audio API를 활용한 경보음 시스템 구현 - AudioContext, AudioBufferSourceNode 등을 활용하여 여러 오디오 파일을 동적으로 로드하고 재생 제어',
-                    'AG Grid를 활용한 복잡한 테이블 UI 구현 경험 - 커스텀 셀 렌더러, 인라인 편집, 행 선택 등 엔터프라이즈급 그리드 기능 활용',
+                    'Konva.js를 활용한 Canvas 기반 복잡한 인터랙션 구현 경험 줌/팬/드래그/영역 선택 등을 직접 구현하며 Canvas API와 Konva 아키텍처에 대한 깊은 이해 획득',
+                    'WebSocket 실시간 통신과 React 상태 관리의 조화로운 통합 STOMP 프로토콜 토픽 구독 패턴과 Zustand 액션을 연결하여 실시간 데이터를 효율적으로 처리',
+                    'Web Audio API를 활용한 경보음 시스템 구현 여러 오디오 파일을 동적으로 로드하고 재생 제어',
                 ],
                 whatCouldBeImproved: [
-                    'Konva Layer 분리 전략을 더 세밀하게 설계했다면 렌더링 성능을 더 개선할 수 있었을 것 - 현재는 배경 이미지와 도어 객체만 분리했지만, 선택 영역, 경보 상태별로 Layer를 더 분리하면 부분 렌더링이 가능',
-                    'WebSocket 재연결 로직을 더 견고하게 구현할 필요 - 현재는 단순 재연결만 하지만, 지수 백오프, 최대 재시도 횟수, 연결 상태 UI 표시 등을 추가하면 더 안정적',
-                    '컴포넌트 구조를 더 잘게 분리했다면 재사용성과 테스트 가능성이 향상되었을 것 - MapView 컴포넌트가 200줄이 넘어 복잡도가 높음',
+                    'Konva Layer 분리 전략을 더 세밀하게 설계했다면 렌더링 성능을 더 개선할 수 있었을 것 선택 영역, 경보 상태별로 Layer를 더 분리하면 부분 렌더링 최적화 가능',
+                    '컴포넌트 구조를 더 잘게 분리했다면 재사용성과 테스트 가능성이 향상되었을 것 일부 컴포넌트의 복잡도가 높음',
                 ],
                 lessonsLearned: [
-                    'Canvas 기반 UI는 DOM 기반보다 렌더링 성능이 우수하지만, 접근성과 SEO가 떨어지므로 데이터 시각화나 관제 화면 등 특정 상황에서만 적합',
-                    'Konva의 getRelativePointerPosition()은 Stage에 마우스 위치가 설정된 후에만 사용 가능하므로, 외부 이벤트(React DnD)를 연결할 때는 setPointersPositions()로 먼저 위치를 알려줘야 함',
-                    'WebSocket 메시지를 하나씩 처리하면 React의 렌더링 배칭이 제대로 작동하지 않아 성능 저하 발생 - 메시지를 모아서 배치 처리하거나 updateMultipleDoorStatus 같은 일괄 업데이트 액션을 만들어야 함',
-                    'Web Audio API의 AudioContext는 사용자 인터랙션 이후에만 resume() 가능하므로, 초기 화면에서 사용자 클릭을 유도하는 UI가 필수',
+                    'Canvas 기반 UI는 DOM 기반보다 렌더링 성능이 우수',
+                    'Web Audio API의 오디오 컨텍스트는 사용자 인터랙션 이후에만 활성화 가능하므로, 초기 화면에서 사용자 클릭을 유도하는 UI 필수',
                     'Zustand의 상태 구조가 너무 깊어지면(중첩된 객체/배열) 불변성 유지가 어려우므로, Immer를 활용하거나 상태를 평탄화하는 것이 좋음',
-                    'React 컴포넌트 내에서 Canvas 이벤트 리스너를 등록할 때는 useEffect의 cleanup 함수에서 반드시 제거해야 메모리 누수 방지',
+                    'React 컴포넌트 내에서 Canvas 이벤트 리스너를 등록할 때는 cleanup 함수에서 반드시 제거하여 메모리 누수 방지',
                 ]
             }
         },
@@ -642,7 +682,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             title: '온실가스 차트 웹페이지',
             shortDescription: '한국 온실가스 배출량 데이터 시각화 웹페이지',
-            fullDescription: '친구의 아이디어로 시작한 개인 프로젝트로, 한국의 온실가스 배출량 데이터를 시각화하는 웹페이지를 제작했습니다. 웹 개발 연습을 목적으로 React, Chart.js, shadcn/ui를 활용하여 깔끔하고 직관적인 데이터 시각화 인터페이스를 구현했습니다.',
+            fullDescription: '친구의 아이디어로 시작한 개인 프로젝트로, 한국의 온실가스 배출량 데이터를 시각화하는 웹페이지를 제작했습니다. React, Redux Toolkit, Chart.js, shadcn/ui를 활용하여 연간 배출량, 연도별 비교, 지역별 배출량을 인터랙티브하게 시각화했습니다.',
             teamSize: 1,
             role: '개인 개발자',
             repository: 'https://github.com/EPIGEXE/greenhouseGasFront',
@@ -652,56 +692,110 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     id: 'react-chart',
                     name: 'React',
                     category: 'frontend',
-                    usage: '컴포넌트 기반 UI 구현, 차트 데이터 상태 관리',
+                    usage: '컴포넌트 기반 UI 구현, React Router 페이지 라우팅',
                     experience: 'intermediate'
+                },
+                {
+                    id: 'redux-toolkit-greenhouse',
+                    name: 'Redux Toolkit',
+                    category: 'frontend',
+                    usage: 'createAsyncThunk로 비동기 데이터 fetching, slice 기반 상태 관리',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'chartjs-greenhouse',
+                    name: 'Chart.js',
+                    category: 'frontend',
+                    usage: '라인 차트, 도넛 차트, 바 차트로 온실가스 데이터 시각화',
+                    experience: 'beginner'
                 },
                 {
                     id: 'shadcn-ui',
                     name: 'shadcn/ui',
                     category: 'frontend',
-                    usage: '모던한 UI 컴포넌트, 일관된 디자인 시스템',
+                    usage: 'Card, Button, ComboBox 등 모던 UI 컴포넌트',
                     experience: 'beginner'
                 }
             ],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: '한국 온실가스 데이터 수집 및 처리',
-                    description: '한국 환경공단 등의 공개 데이터를 활용하여 국내 온실가스 배출량 데이터를 수집하고 차트에 적합한 형태로 가공했습니다.',
-                    challenges: '한국 특화 환경 데이터의 포맷 이해와 정제',
-                    solution: '한국 데이터 특성에 맞는 파싱 로직과 데이터 구조화'
+                    title: 'Redux Toolkit 기반 비동기 데이터 관리',
+                    description: 'Redux Toolkit의 비동기 액션 생성 기능을 활용하여 온실가스 배출량 API 호출을 처리하고, 로딩/성공/실패 상태를 관리했습니다. 연간 배출량, 연도별 비교, 지역별 데이터를 각각 독립된 상태 조각으로 분리하여 관리했습니다.',
+                    challenges: [
+                        'API 호출 상태(loading/succeeded/failed) 관리',
+                        '연도별 비교 시 두 개의 연도 선택 상태 동기화'
+                    ],
+                    solution: [
+                        '비동기 액션의 생명주기별로 대기/완료/실패 케이스를 구분하여 상태를 업데이트했습니다.',
+                        '비교 화면에서 첫 번째 연도와 두 번째 연도를 별도 상태로 관리하고 둘 다 선택되면 비교 데이터를 fetch하도록 구현했습니다.'
+                    ]
                 },
                 {
                     id: 'impl-2',
-                    title: 'shadcn/ui 기반 모던 인터페이스 구축',
-                    description: 'shadcn/ui 컴포넌트 라이브러리를 활용하여 깔끔하고 일관성 있는 사용자 인터페이스를 구축했습니다.',
-                    challenges: 'shadcn/ui 컴포넌트 시스템 학습과 커스터마이징',
-                    solution: '공식 문서와 예제를 통한 컴포넌트 활용법 습득'
+                    title: 'Chart.js 기반 인터랙티브 차트 시각화',
+                    description: 'Chart.js를 활용하여 연간 총배출량 라인 차트, 연도별 카테고리 도넛 차트, 비교 바 차트를 구현했습니다. 차트 클릭 시 해당 연도나 카테고리의 상세 데이터를 표시하는 인터랙션을 추가했습니다.',
+                    challenges: [
+                        'Chart.js의 반응형 설정 및 커스터마이징',
+                        '차트 클릭 이벤트로 상세 데이터 fetch 연동'
+                    ],
+                    solution: [
+                        'Chart.js의 반응형 옵션과 가로세로 비율 설정으로 화면 크기에 맞춰 차트가 조정되도록 구현했습니다.',
+                        '차트 클릭 이벤트 핸들러에서 선택된 연도를 Redux 상태로 저장하고 해당 연도의 상세 데이터를 비동기로 가져오도록 연동했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-3',
+                    title: 'SVG 기반 한국 지도 인터랙티브 시각화',
+                    description: '한국 지역별 온실가스 배출량을 SVG 맵으로 시각화했습니다. 각 지역 클릭 시 해당 지역이 확대되고 색상이 변경되며, 호버 시 툴팁으로 지역명을 표시했습니다.',
+                    challenges: [
+                        '지역 클릭 시 SVG 요소를 맨 위로 이동시켜 확대 애니메이션 구현',
+                        '클릭한 지역의 렌더링 순서 변경 필요'
+                    ],
+                    solution: [
+                        '지역 배열에서 선택된 지역을 맨 뒤로 이동시키고 브라우저의 애니메이션 프레임 API를 두 번 호출하여 DOM 업데이트 타이밍을 지연시켰습니다. SVG는 나중에 렌더링된 요소가 위에 표시되는 특성을 활용하여 확대 애니메이션이 다른 요소에 가려지지 않도록 했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-4',
+                    title: 'shadcn/ui 기반 UI 컴포넌트 시스템 구축',
+                    description: 'shadcn/ui의 Card, Button, ComboBox 등의 컴포넌트를 활용하여 일관된 디자인 시스템을 구축했습니다. Tailwind CSS 기반의 유틸리티 클래스로 스타일링했습니다.',
+                    challenges: [
+                        'shadcn/ui 컴포넌트 시스템 학습 및 커스터마이징'
+                    ],
+                    solution: [
+                        '공식 문서를 참고하여 필요한 컴포넌트를 프로젝트에 추가하고 Tailwind CSS 클래스로 커스터마이징했습니다.'
+                    ]
                 }
             ],
             challenges: [
-                'shadcn/ui 컴포넌트 시스템 학습과 적용',
-                '한국 환경 데이터 특성 이해와 처리',
+                'Redux Toolkit createAsyncThunk 비동기 상태 관리',
+                'Chart.js 반응형 설정 및 클릭 이벤트 연동',
+                'SVG 지역 클릭 시 렌더링 순서 변경으로 확대 애니메이션 구현',
+                'shadcn/ui 컴포넌트 시스템 학습'
             ],
             achievements: [
                 '친구 아이디어를 바탕으로 한 첫 데이터 시각화 프로젝트 완성',
-                'shadcn/ui 컴포넌트 라이브러리 활용 경험 습득',
-                '웹 개발 연습 목표 달성'
+                'Redux Toolkit 비동기 데이터 처리 경험 습득',
+                'Chart.js 인터랙티브 차트 구현 경험',
+                'SVG 기반 지도 시각화 및 애니메이션 구현'
             ],
             retrospective: {
                 whatWentWell: [
-                    'shadcn/ui를 통한 모던 UI 컴포넌트 시스템 경험',
-                    '친구 아이디어를 실제 구현으로 발전시키는 협업 경험',
-                    '한국 특화 데이터를 활용한 의미있는 시각화 완성'
+                    'Redux Toolkit의 createAsyncThunk로 비동기 로직을 깔끔하게 관리',
+                    'Chart.js와 SVG를 활용한 다양한 시각화 방식 경험',
+                    'shadcn/ui를 통한 일관된 디자인 시스템 구축',
+                    '친구 아이디어를 실제 구현으로 발전시키는 협업 경험'
                 ],
                 whatCouldBeImproved: [
-                    '더 다양한 차트 타입과 인터랙션 구현',
-                    '데이터 업데이트 자동화 메커니즘 부족'
+                    '데이터 업데이트 자동화 메커니즘 부족',
+                    'SVG 렌더링 순서 변경 로직이 복잡하여 더 간단한 방법 필요'
                 ],
                 lessonsLearned: [
-                    'shadcn/ui의 효율성과 디자인 시스템의 중요성',
-                    '데이터 시각화를 통한 정보 전달의 효과',
-                    '아이디어 공유와 실행의 가치'
+                    'Redux Toolkit의 extraReducers를 활용한 비동기 상태 관리 패턴',
+                    'Chart.js onClick 이벤트와 Redux 상태 연동 방법',
+                    'SVG 요소의 렌더링 순서가 시각적 레이어링에 영향을 준다는 점',
+                    'requestAnimationFrame을 활용한 DOM 업데이트 타이밍 제어'
                 ]
             }
         },
@@ -710,7 +804,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             title: '가계부 프로그램',
             shortDescription: '개인 연습용 데스크탑 가계부 애플리케이션',
-            fullDescription: '온실가스 차트 웹사이트보다 더 유용한 프로그램을 만들고 싶어서 시작한 개인 연습 프로젝트입니다. Electron 기반 데스크탑 애플리케이션으로 React와 SQLite를 활용하여 실제로 사용할 수 있는 가계부 프로그램을 개발했습니다. 웹 개발 기술을 데스크탑 환경에 적용해보는 학습 목적도 있었습니다.',
+            fullDescription: '온실가스 차트 웹사이트보다 더 유용한 프로그램을 만들고 싶어서 시작한 개인 연습 프로젝트입니다. Electron 기반 데스크탑 애플리케이션으로 React, TypeORM, SQLite를 활용하여 실제로 사용할 수 있는 가계부 프로그램을 개발했습니다. 수입/지출 관리, 고정비 관리, 목표 설정, 차트 분석 등의 기능을 구현했습니다.',
             teamSize: 1,
             role: '개인 개발자',
             repository: 'https://github.com/EPIGEXE/save_wise',
@@ -720,70 +814,114 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     id: 'electron-desktop',
                     name: 'Electron',
                     category: 'frontend',
-                    usage: '데스크탑 애플리케이션 구조 설계, 메인/렌더러 프로세스 관리',
+                    usage: 'IPC 통신으로 메인/렌더러 프로세스 간 데이터 전달',
                     experience: 'beginner'
                 },
                 {
                     id: 'react-desktop',
                     name: 'React',
                     category: 'frontend',
-                    usage: '가계부 UI 컴포넌트 구현, 상태 관리',
+                    usage: '가계부 UI 컴포넌트 구현, React Big Calendar로 거래 시각화',
                     experience: 'intermediate'
+                },
+                {
+                    id: 'typeorm-sqlite',
+                    name: 'TypeORM',
+                    category: 'backend',
+                    usage: 'SQLite 데이터베이스 ORM, Entity 정의 및 Repository 패턴',
+                    experience: 'beginner'
                 },
                 {
                     id: 'sqlite-local',
                     name: 'SQLite',
                     category: 'backend',
-                    usage: '로컬 데이터베이스 설계, 가계부 데이터 관리',
+                    usage: '로컬 데이터베이스로 가계부 데이터 영구 저장',
                     experience: 'beginner'
                 }
             ],
             implementation: [
                 {
                     id: 'impl-1',
-                    title: 'Electron 애플리케이션 구조 설계',
-                    description: 'Electron의 메인 프로세스와 렌더러 프로세스를 활용한 데스크탑 앱 아키텍처를 설계했습니다.',
-                    challenges: 'Electron 생태계와 프로세스 간 통신 이해',
-                    solution: '공식 문서와 예제를 통한 단계적 학습'
+                    title: 'TypeORM 기반 트랜잭션 처리',
+                    description: 'TypeORM을 활용하여 Transaction, Asset, PaymentMethod 등의 Entity를 정의하고 Repository 패턴으로 데이터를 관리했습니다. 거래 생성 시 자산이 자동으로 업데이트되도록 트랜잭션 처리를 구현했습니다. 수입은 자산을 증가시키고 현금 결제 지출은 자산을 차감하며, 신용카드 결제는 정산일에 차감됩니다.',
+                    challenges: [
+                        '거래 생성 시 자산 업데이트가 동시에 성공하거나 실패해야 하는 데이터 정합성 문제',
+                        '결제 방법 타입(현금/신용카드)에 따라 다른 자산 업데이트 로직 적용',
+                        '트랜잭션 내에서 여러 거래를 순차 처리하면서 에러 발생 시 전체 롤백'
+                    ],
+                    solution: [
+                        'TypeORM의 트랜잭션 API를 사용하여 거래 저장과 자산 업데이트를 하나의 트랜잭션으로 묶었습니다. 실패 시 자동으로 롤백되어 데이터 정합성을 보장했습니다.',
+                        '결제 방법을 조회하여 타입이 현금이면 즉시 자산을 차감하고 신용카드면 정산일까지 대기하도록 조건 분기했습니다.',
+                        '트랜잭션 내에서 각 거래를 순차적으로 저장하고 에러가 발생하면 자동으로 전체 작업이 롤백되도록 구현했습니다.'
+                    ]
                 },
                 {
                     id: 'impl-2',
-                    title: 'SQLite 데이터베이스 설계',
-                    description: '가계부 데이터를 효율적으로 저장하고 조회할 수 있는 SQLite 데이터베이스를 설계했습니다.',
-                    challenges: 'SQL 쿼리 최적화와 데이터 무결성 보장',
-                    solution: 'SQLite 데이터베이스 설계 및 관리'
+                    title: '신용카드 자동 정산 시스템',
+                    description: '신용카드로 결제한 지출이 결제일에 자동으로 자산에서 차감되는 시스템을 구현했습니다. CreditCardSettlementManager가 날짜 변경을 감지하고 해당 월의 신용카드 거래를 조회하여 정산 처리합니다. 결제일이 31일인데 해당 월이 30일까지만 있는 경우 월말로 조정하는 로직도 포함했습니다.',
+                    challenges: [
+                        '날짜 변경을 실시간으로 감지하는 방법',
+                        '결제일이 31일인데 2월처럼 해당 일자가 없는 달 처리',
+                        '동일한 월에 중복 정산을 방지하는 로직',
+                        '전월 1일~말일의 신용카드 거래를 집계하여 결제일에 차감'
+                    ],
+                    solution: [
+                        '1분마다 현재 날짜를 확인하여 날짜가 변경되면 정산 로직을 실행하도록 인터벌을 설정했습니다.',
+                        '결제일로 날짜를 생성했을 때 월이 넘어가면 해당 월의 마지막 날로 자동 조정하도록 구현했습니다.',
+                        'CreditCardSettlement 테이블에 정산 기록을 저장하고 조회하여 이미 처리된 월은 스킵하도록 했습니다.',
+                        '결제일 계산 로직에서 1월인 경우 작년 12월로, 일반 월은 전월로 계산하여 해당 기간의 거래를 조회했습니다.'
+                    ]
                 },
                 {
                     id: 'impl-3',
-                    title: '사용자 친화적 UI/UX 구현',
-                    description: '직관적이고 사용하기 쉬운 가계부 인터페이스를 React로 구현했습니다.',
-                    challenges: '복잡한 재정 데이터의 간단한 표현',
-                    solution: '사용자 시나리오 기반 UI/UX 설계'
+                    title: 'Electron IPC 통신 구조 설계',
+                    description: 'Electron의 메인 프로세스와 렌더러 프로세스 간 IPC 통신을 설계했습니다. IpcManager 클래스로 모든 IPC 핸들러를 중앙 관리하고, 렌더러에서 호출하면 메인 프로세스의 Service 레이어가 데이터베이스 작업을 처리하도록 구현했습니다.',
+                    challenges: [
+                        '40개 이상의 IPC 핸들러를 효율적으로 관리'
+                    ],
+                    solution: [
+                        'IpcManager 클래스에서 모든 핸들러를 등록하고 Service 레이어를 의존성 주입하여 체계적으로 관리했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-4',
+                    title: '금액 입력 커스텀 컴포넌트',
+                    description: '숫자 입력 시 천 단위로 자동으로 콤마를 추가하는 CurrencyInput 컴포넌트를 구현했습니다. 사용자가 입력한 값에서 숫자만 추출하고 포맷팅하여 표시합니다.',
+                    challenges: [
+                        '포맷팅된 값을 표시하면서도 실제 숫자 값을 부모 컴포넌트에 전달'
+                    ],
+                    solution: [
+                        '입력값에서 정규식으로 숫자만 추출하고, 표시용 포맷팅 함수와 실제 값 전달을 분리하여 구현했습니다.'
+                    ]
                 }
             ],
             challenges: [
-                'Electron 프레임워크 학습',
-                '로컬 데이터베이스 관리',
-                '크로스 플랫폼 호환성 확보',
+                'Electron IPC 통신 구조 설계 및 40개 이상의 핸들러 관리',
+                '거래 생성 시 자산 업데이트의 데이터 정합성 보장',
+                '신용카드 자동 정산을 위한 날짜 변경 감지',
+                '금액 입력 시 천 단위 콤마 자동 포맷팅'
             ],
             achievements: [
-                '실제 사용 가능한 유용한 프로그램 연습습',
-                'Electron을 통한 웹 기술의 데스크탑 확장 경험',
-                'SQLite 데이터베이스 설계 및 관리 능력 향상',
-                '개인 연습 프로젝트로서의 학습 목표 달성'
+                '실제 사용 가능한 가계부 프로그램 완성',
+                'Electron IPC 통신 및 프로세스 관리 경험',
+                'TypeORM 트랜잭션 처리로 데이터 정합성 보장',
+                '신용카드 자동 정산 시스템 구현'
             ],
             retrospective: {
                 whatWentWell: [
                     '이전 프로젝트보다 더 실용적이고 유용한 프로그램 완성',
                     'Electron을 통한 웹 기술의 데스크탑 확장 경험',
+                    'TypeORM 트랜잭션으로 데이터 정합성 문제 해결',
+                    'IpcManager로 체계적인 IPC 통신 관리'
                 ],
                 whatCouldBeImproved: [
-                    '사용자 경험(UX) 개선 여지',
+                    '신용카드 정산 로직을 더 유연하게 개선 (결제일 커스터마이징 등)',
+                    '날짜 변경 감지를 1분 인터벌 대신 더 효율적인 방법으로 개선 방법 필요',
+                    '실제 계좌와 인터페이스를 할 수 있으면 유용한 프로그램이 될 수 있다는 아쉬움'
                 ],
                 lessonsLearned: [
-                    '연습용 프로젝트도 실용성을 고려하면 더 의미있는 학습 효과',
-                    'Electron 생태계와 데스크탑 앱 개발의 특성',
-                    '점진적으로 더 복잡하고 유용한 프로젝트에 도전하는 것의 가치'
+                    'Electron에서 메인/렌더러 프로세스 간 통신을 통한 데스크탑 앱 개발',
+                    'TypeORM의 Repository 패턴과 트랜잭션 API 활용법',
                 ]
             }
         },
@@ -792,7 +930,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             type: 'project',
             title: '온라인 스캠 방지 사이트',
             shortDescription: '스캠 방지 교육 사이트',
-            fullDescription: '최근 증가하는 온라인 스캠 피해를 예방하기 위해 개발한 교육용 웹사이트입니다. Next.js와 TypeScript를 활용하여 구축하고, 다양한 스캠 유형과 대응 방법을 시나리오 기반으로 제공합니다.',
+            fullDescription: '최근 증가하는 온라인 스캠 피해를 예방하기 위해 개발한 교육용 웹사이트입니다. Next.js, TypeScript, next-intl을 활용하여 한국어/영어 다국어를 지원하고, 코인투자 스캠, BEC(비즈니스 이메일 해킹), 피싱 사이트, 로맨스 스캠 등 4가지 시뮬레이션을 인터랙티브하게 체험할 수 있도록 구현했습니다.',
             teamSize: 1,
             role: '개인 개발자',
             repository: 'https://github.com/EPIGEXE/FonziGuard',
@@ -802,14 +940,28 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     id: 'nextjs-ssg',
                     name: 'Next.js',
                     category: 'frontend',
-                    usage: 'SEO 최적화, 라우팅',
+                    usage: 'App Router, 동적 라우팅, SEO 최적화',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'next-intl-i18n',
+                    name: 'next-intl',
+                    category: 'frontend',
+                    usage: '한국어/영어 다국어 지원, 로케일별 라우팅',
+                    experience: 'intermediate'
+                },
+                {
+                    id: 'zustand-scam',
+                    name: 'Zustand',
+                    category: 'frontend',
+                    usage: '시뮬레이션 상태 관리 (코인투자, BEC 등)',
                     experience: 'intermediate'
                 },
                 {
                     id: 'typescript-type-safety',
                     name: 'TypeScript',
                     category: 'frontend',
-                    usage: '타입 안전성 확보, 코드 품질 향상',
+                    usage: '타입 안전성 확보, Interface 정의',
                     experience: 'intermediate'
                 },
                 {
@@ -823,36 +975,74 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             implementation: [
                 {
                     id: 'impl-1',
-                    title: '스캠 시나리오 기반 교육 콘텐츠 구현',
-                    description: '실제 스캠 사례를 바탕으로 한 인터랙티브 교육 콘텐츠를 구현했습니다.',
-                    challenges: '복잡한 시나리오의 단순하고 이해하기 쉬운 표현',
-                    solution: '단계별 시나리오와 시각적 가이드 제공'
+                    title: 'next-intl 기반 다국어 시스템',
+                    description: 'next-intl을 활용하여 한국어와 영어를 지원하는 다국어 시스템을 구축했습니다. 로케일별 동적 라우팅과 번역 파일 관리, 시뮬레이션 시나리오의 다국어 생성을 구현했습니다.',
+                    challenges: [
+                        'Next.js App Router에서 로케일별 동적 라우팅 구현',
+                        '시뮬레이션 시나리오가 로케일에 따라 다른 내용으로 생성되어야 함',
+                        '4개의 시뮬레이션 각각에 대한 번역 키 관리'
+                    ],
+                    solution: [
+                        'next-intl의 라우팅 정의로 ko/en 로케일을 설정하고 [locale] 동적 세그먼트로 라우팅했습니다.',
+                        '시나리오 생성 함수에 로케일을 파라미터로 받아 언어별 이메일 제목, 내용, 송신자를 동적으로 생성했습니다.',
+                        '시뮬레이션별로 번역 네임스페이스를 분리하고 번역 훅으로 필요한 번역만 로드했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-2',
+                    title: 'Zustand 기반 시뮬레이션 상태 관리',
+                    description: 'Zustand로 코인투자 시뮬레이션과 BEC 시뮬레이션의 상태를 독립적으로 관리했습니다. 사용자의 금액, 크레딧, 투자 이력, VIP 레벨, 이메일 목록 등을 관리하고 시뮬레이션 초기화 기능을 구현했습니다.',
+                    challenges: [
+                        '코인투자 시뮬레이션에서 VIP 레벨에 따라 수익률이 달라지는 로직',
+                        'BEC 시뮬레이션에서 이메일이 순차적으로 도착하는 시나리오 관리'
+                    ],
+                    solution: [
+                        '추천인 수를 기반으로 VIP 레벨을 계산하고 레벨별 수익률 상수를 정의하여 투자 시 동적으로 적용했습니다.',
+                        'Zustand 스토어에 이메일 배열과 현재 인덱스를 저장하고 다음 이메일 추가 함수로 순차 진행을 관리했습니다.'
+                    ]
+                },
+                {
+                    id: 'impl-3',
+                    title: '인터랙티브 스캠 시뮬레이션',
+                    description: '사용자가 실제 스캠 상황을 체험할 수 있는 4가지 시뮬레이션을 구현했습니다. 코인투자 스캠, BEC, 피싱 사이트, 로맨스 스캠 시나리오를 각각 독립된 페이지로 구성하고 실제와 유사한 UI로 구현했습니다.',
+                    challenges: [
+                        '코인투자 시뮬레이션에서 출금 시도 시 다양한 핑계로 막는 로직',
+                        'BEC 시뮬레이션에서 실제 기업 메일 UI를 모방한 인터페이스 구현'
+                    ],
+                    solution: [
+                        '출금 시도 상태를 Zustand에 저장하고 조건 분기하여 최소 금액, VIP 레벨 등의 핑계를 순차적으로 표시했습니다.',
+                        'Microsoft Outlook 스타일의 이메일 목록, 상단 검색바, 사이드 네비게이션을 Tailwind CSS로 재현했습니다.'
+                    ]
                 }
             ],
             challenges: [
-                'SEO 최적화와 웹 접근성 확보',
-                '다양한 연령층을 고려한 UI/UX'
+                'next-intl 로케일별 동적 라우팅 및 번역 파일 관리',
+                '출금 차단을 위한 다양한 핑계 시나리오',
+                '실제 기업 메일 UI 모방'
             ],
             achievements: [
-                'Next.js 사이트 완성',
-                'TypeScript 활용 능력 향상',
-                '사회적 가치 창출 프로젝트 완성',
-                'SEO 최적화 경험 습득'
+                'Next.js App Router와 next-intl로 다국어 지원 완성',
+                'Zustand로 복잡한 시뮬레이션 상태 관리',
+                '4가지 스캠 유형의 인터랙티브 시뮬레이션 구현',
+                '사회적 가치 창출 프로젝트 완성'
             ],
             retrospective: {
                 whatWentWell: [
-                    'Next.js 프레임워크에 대한 깊은 이해',
-                    'TypeScript 도입을 통한 코드 품질 향상',
-                    '사회적 문제 해결을 위한 기술 활용'
+                    'next-intl로 다국어 지원을 깔끔하게 구현',
+                    'Zustand의 간결한 API로 복잡한 상태 관리',
+                    'TypeScript로 타입 안전성 확보',
+                    '실제와 유사한 UI로 몰입감 높은 시뮬레이션 구현'
                 ],
                 whatCouldBeImproved: [
-                    '사용자 피드백 수집 메커니즘 부족',
-                    '콘텐츠 업데이트 자동화 필요'
+                    '사용자 완료 데이터 수집 및 분석 기능 부족',
+                    '추가 스캠 유형 시나리오 확장 필요',
+                    '실제 사용자 유치 실패 -> 프로젝트 리부트 예정 중'
                 ],
                 lessonsLearned: [
-                    'SSG의 장점과 활용 방법',
-                    '교육용 콘텐츠 설계의 중요성',
-                    '기술을 통한 사회적 가치 창출'
+                    'next-intl의 로케일 라우팅과 번역 시스템 활용법',
+                    'Zustand로 여러 독립된 상태를 효율적으로 관리하는 방법',
+                    '교육용 시뮬레이션은 실제와 유사할수록 효과적',
+                    '사회 문제 해결을 위한 기술 활용의 가치'
                 ]
             }
         },

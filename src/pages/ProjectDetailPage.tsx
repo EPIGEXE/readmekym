@@ -216,7 +216,17 @@ export function ProjectDetailPage() {
                                                     <h4 className="text-xs md:text-sm font-medium text-red-800 mb-1 md:mb-2">
                                                         Challenge
                                                     </h4>
-                                                    <p className="text-xs md:text-sm text-red-700">{impl.challenges}</p>
+                                                    {Array.isArray(impl.challenges) ? (
+                                                        <ul className="space-y-1.5 md:space-y-2">
+                                                            {impl.challenges.map((challenge, index) => (
+                                                                <li key={index} className="text-xs md:text-sm text-red-700 leading-relaxed">
+                                                                    {challenge}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : (
+                                                        <p className="text-xs md:text-sm text-red-700">{impl.challenges}</p>
+                                                    )}
                                                 </div>
                                             )}
 
@@ -225,7 +235,17 @@ export function ProjectDetailPage() {
                                                     <h4 className="text-xs md:text-sm font-medium text-green-800 mb-1 md:mb-2">
                                                         Solution
                                                     </h4>
-                                                    <p className="text-xs md:text-sm text-green-700">{impl.solution}</p>
+                                                    {Array.isArray(impl.solution) ? (
+                                                        <ul className="space-y-1.5 md:space-y-2">
+                                                            {impl.solution.map((solution, index) => (
+                                                                <li key={index} className="text-xs md:text-sm text-green-700 leading-relaxed">
+                                                                    {solution}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : (
+                                                        <p className="text-xs md:text-sm text-green-700">{impl.solution}</p>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
