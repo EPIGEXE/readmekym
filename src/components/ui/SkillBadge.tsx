@@ -1,4 +1,4 @@
-import type { SkillTag } from '../../types'
+import type { SkillTag } from "../../types/common"
 
 interface SkillBadgeProps {
     skill: SkillTag

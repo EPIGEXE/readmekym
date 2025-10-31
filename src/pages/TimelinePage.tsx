@@ -239,7 +239,7 @@ export function TimelinePage() {
                 color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
                 role: detailedProject.role,
                 teamSize: detailedProject.teamSize,
-                skills: detailedProject.skills,
+                skills: developerData.projects.find((p) => p.id === projectId)?.skills,
                 achievements: detailedProject.achievements.slice(0, 4),
                 fullDescription: detailedProject.fullDescription,
             };

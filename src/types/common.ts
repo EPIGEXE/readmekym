@@ -25,4 +25,5 @@ export interface SkillTag {
     id: string;
     name: string;
     category: "frontend" | "backend" | "other";
+    usage?: string;
 }

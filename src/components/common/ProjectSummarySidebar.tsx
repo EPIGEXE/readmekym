@@ -151,7 +151,6 @@ export const ProjectSummarySidebar = forwardRef<HTMLDivElement, ProjectSummarySi
                                     </span>
                                     <Drawer.Title
                                         className="text-base font-semibold text-gray-900 leading-tight truncate"
-                                        style={{ fontFamily: "'Noto Sans KR', sans-serif" }}
                                     >
                                         {projectSummaryData?.title}
                                     </Drawer.Title>
@@ -214,7 +213,6 @@ export const ProjectSummarySidebar = forwardRef<HTMLDivElement, ProjectSummarySi
                                         <h2
                                             className="text-lg font-semibold text-gray-900 leading-tight truncate"
                                             title={projectSummaryData?.title}
-                                            style={{ fontFamily: "'Noto Sans KR', sans-serif" }}
                                         >
                                             {projectSummaryData?.title}
                                         </h2>

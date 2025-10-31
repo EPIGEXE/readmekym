@@ -91,7 +91,7 @@ export function CategoryPage() {
                     color: detailedProject.experienceId ? "text-emerald-600" : "text-orange-600",
                     role: detailedProject.role,
                     teamSize: detailedProject.teamSize,
-                    skills: detailedProject.skills,
+                    skills: developerData.projects.find((p) => p.id === projectId)?.skills,
                     achievements: detailedProject.achievements.slice(0, 4),
                     fullDescription: detailedProject.fullDescription,
                 };
@@ -142,7 +142,6 @@ export function CategoryPage() {
                                 <div className="w-16 md:w-24 h-px bg-gray-300 mb-6 md:mb-8"></div>
                                 <p
                                     className="text-base md:text-2xl font-light text-gray-800 leading-relaxed max-w-2xl"
-                                    style={{ fontFamily: "'Noto Sans KR', sans-serif" }}
                                 >
                                     끊임없이 아이디어를 코드로 구현하며,
                                     <br />
@@ -390,7 +389,7 @@ export function CategoryPage() {
                                                         Skills
                                                     </div>
                                                     <div className="flex flex-wrap gap-1">
-                                                        {detailedProject.skills.map((skill, idx) => (
+                                                        {developerData.projects.find((p) => p.id === project.id)?.skills.map((skill, idx) => (
                                                             <SkillBadge key={idx} skill={skill} size="sm" />
                                                         ))}
                                                     </div>
@@ -536,7 +535,7 @@ export function CategoryPage() {
                                                         Skills
                                                     </div>
                                                     <div className="flex flex-wrap gap-1">
-                                                        {detailedProject.skills.map((skill, idx) => (
+                                                        {developerData.projects.find((p) => p.id === project.id)?.skills.map((skill, idx) => (
                                                             <SkillBadge key={idx} skill={skill} size="sm" />
                                                         ))}
                                                     </div>

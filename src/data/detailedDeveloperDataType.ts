@@ -27,7 +27,7 @@ export interface DetailedExperience {
     }
     responsibilities: string[] // 주요 업무
     achievements: string[] // 성과
-    skills: DetailedSkill[] // 사용한 기술들
+    skills: SkillTag[] // 사용한 기술들
     projects: string[] // 관련 프로젝트 ID들
 
     retrospective: {
@@ -47,7 +47,6 @@ export interface DetailedProject {
     fullDescription: string; // 상세 설명
 
     // 새로운 상세 정보
-    skills: DetailedSkill[];
     implementation: ImplementationDetail[];
     challenges: string[]; // 전체 프로젝트 도전 과제들
     achievements: string[]; // 성과/결과
@@ -68,11 +67,6 @@ export interface DetailedProject {
 
     // 경력 연관
     experienceId?: string;
-}
-
-export interface DetailedSkill extends SkillTag {
-    usage: string // 어떻게 사용했는지
-    experience: 'beginner' | 'intermediate' | 'advanced' // 숙련도
 }
 
 export interface ImplementationDetail {
