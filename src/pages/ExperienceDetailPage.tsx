@@ -3,29 +3,21 @@ import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { Calendar, Building } from "lucide-react";
 import { detailedDeveloperData } from "../data/detailedDeveloperData";
-import { SkillBadge } from "../components/ui/SkillBadge";
 import { developerData } from "../data/devloperData";
-
-const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8, ease: "easeOut" },
-};
-
-const staggerContainer = {
-    initial: {},
-    animate: {
-        transition: {
-            staggerChildren: 0.15,
-        },
-    },
-};
+import { fadeInUpEaseOut } from "../styles/framerMotion";
+import { formatPeriod } from "../utils/utils";
+import { formatWithEmphasis } from "../utils/textFormatter";
 
 export function ExperienceDetailPage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const experience = detailedDeveloperData.experiences.find((e) => e.id === id);
     const period = developerData.experiences.find((e) => e.id === id);
+
+    // 연결된 프로젝트
+    const relatedProjects = experience?.projects
+        ?.map((projectId) => developerData.projects.find((p) => p.id === projectId))
+        .filter(Boolean);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -36,7 +28,7 @@ export function ExperienceDetailPage() {
             <div className="min-h-screen flex items-center justify-center px-4">
                 <div className="text-center">
                     <h2 className="text-xl md:text-2xl font-bold mb-4">Experience not found</h2>
-                    <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-700">
+                    <button onClick={() => navigate(-1)} className="text-gray-500 hover:text-gray-700 cursor-pointer">
                         ← Back
                     </button>
                 </div>
@@ -44,29 +36,25 @@ export function ExperienceDetailPage() {
         );
     }
 
-    const formatPeriod = (startYear: number, startMonth: number, endYear: number, endMonth: number) => {
-        return `${startYear}.${String(startMonth).padStart(2, "0")} - ${endYear}.${String(endMonth).padStart(2, "0")}`;
-    };
-
     return (
-        <motion.div initial="initial" animate="animate" variants={staggerContainer} className="min-h-screen">
+        <motion.div initial="initial" animate="animate" className="min-h-screen">
             <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
                 {/* Content with Border */}
                 <div className="border-2 md:border-4 border-gray-700 p-4 md:p-8">
                     {/* Back Button */}
                     <motion.button
-                        variants={fadeInUp}
+                        variants={fadeInUpEaseOut}
                         onClick={() => navigate(-1)}
-                        className="text-sm md:text-lg text-gray-500 tracking-widest uppercase mb-8 md:mb-12 hover:text-gray-700 transition-colors"
+                        className="text-sm md:text-lg text-gray-500 tracking-widest uppercase mb-8 md:mb-12 hover:text-gray-700 transition-colors cursor-pointer"
                         style={{ fontFamily: "'Pretendard', sans-serif" }}
                     >
                         ← Back
                     </motion.button>
                     {/* Hero Section */}
-                    <motion.section className="mb-12 md:mb-24" variants={fadeInUp}>
+                    <motion.section className="mb-12 md:mb-24" variants={fadeInUpEaseOut}>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-16 items-start">
                             {/* Left Content */}
-                            <div className="lg:col-span-2 space-y-4 md:space-y-8">
+                            <div className="lg:col-span-3 space-y-4 md:space-y-8">
                                 <div
                                     className="text-sm md:text-lg text-gray-500 tracking-widest uppercase"
                                     style={{ fontFamily: "'Pretendard', sans-serif" }}
@@ -104,9 +92,7 @@ export function ExperienceDetailPage() {
                                     </div>
                                 </div>
 
-                                <p
-                                    className="text-base md:text-xl font-light text-gray-800 leading-relaxed"
-                                >
+                                <p className="text-base md:text-xl font-light text-gray-800 leading-relaxed">
                                     {experience.shortDescription}
                                 </p>
 
@@ -127,13 +113,15 @@ export function ExperienceDetailPage() {
                     </motion.section>
 
                     {/* Company Info */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
+                    <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Company
+                            <div>
+                                <div
+                                    className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
+                                    style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                >
+                                    Company
+                                </div>
                             </div>
                             <div className="md:col-span-3">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
@@ -165,118 +153,130 @@ export function ExperienceDetailPage() {
                     </motion.section>
 
                     {/* Description */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
+                    <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Overview
+                            <div>
+                                <div
+                                    className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
+                                    style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                >
+                                    Overview
+                                </div>
                             </div>
                             <div className="md:col-span-3">
                                 <p
                                     className="text-sm md:text-lg text-gray-700 whitespace-pre-line"
-                                    style={{ lineHeight: '1.9', letterSpacing: '-0.01em' }}
+                                    style={{ lineHeight: "1.9", letterSpacing: "-0.01em" }}
                                 >
-                                    {experience.fullDescription}
+                                    {formatWithEmphasis(experience.fullDescription)}
                                 </p>
                             </div>
                         </div>
                     </motion.section>
 
-                    {/* Responsibilities */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Responsibilities
-                            </div>
-                            <div className="md:col-span-3">
-                                <div className="space-y-3 md:space-y-4">
-                                    {experience.responsibilities.map((responsibility, index) => (
-                                        <div key={index} className="flex items-start gap-3 md:gap-4">
-                                            <span className="text-sm md:text-lg font-light text-gray-400 mt-0.5">
-                                                {String(index + 1).padStart(2, "0")}
-                                            </span>
-                                            <p className="text-sm md:text-base text-gray-700" style={{ lineHeight: '1.8', letterSpacing: '-0.01em' }}>
-                                                {responsibility}
-                                            </p>
-                                        </div>
-                                    ))}
+                    {/* Projects */}
+                    {relatedProjects && relatedProjects.length > 0 && (
+                        <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
+                                <div>
+                                    <div
+                                        className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
+                                        style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                    >
+                                        Projects
+                                    </div>
+                                </div>
+                                <div className="md:col-span-3">
+                                    <ul className="space-y-3 md:space-y-4">
+                                        {relatedProjects.map(
+                                            (project) =>
+                                                project && (
+                                                    <li key={project.id}>
+                                                        <div
+                                                            onClick={() => navigate(`/project/${project.id}`)}
+                                                            className="group cursor-pointer"
+                                                        >
+                                                            <h3 className="text-sm md:text-base text-gray-600 hover:text-gray-900 transition-colors underline decoration-dotted">
+                                                                {project.title} →
+                                                            </h3>
+                                                        </div>
+                                                    </li>
+                                                )
+                                        )}
+                                    </ul>
                                 </div>
                             </div>
-                        </div>
-                    </motion.section>
+                        </motion.section>
+                    )}
 
-                    {/* Skills */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
+                    {/* Key Contributions */}
+                    <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Technology
-                            </div>
-                            <div className="md:col-span-3 space-y-4 md:space-y-6">
-                                {experience.skills.map((skill) => (
-                                    <div
-                                        key={skill.id}
-                                        className="border-b border-gray-200 pb-3 md:pb-4 last:border-b-0"
-                                    >
-                                        <div className="flex items-center justify-between mb-1 md:mb-2">
-                                            <SkillBadge skill={skill} />
-                                        </div>
-                                        <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
-                                            {skill.usage}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </motion.section>
-
-                    {/* Achievements */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Achievements
+                            <div>
+                                <div
+                                    className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
+                                    style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                >
+                                    Contributions
+                                </div>
                             </div>
                             <div className="md:col-span-3">
-                                <div className="space-y-3 md:space-y-4">
-                                    {experience.achievements.map((achievement, index) => (
-                                        <div key={index} className="flex items-start gap-3 md:gap-4">
-                                            <span className="text-sm md:text-lg font-light text-gray-400 mt-0.5">
-                                                {String(index + 1).padStart(2, "0")}
-                                            </span>
-                                            <p className="text-sm md:text-base text-gray-700" style={{ lineHeight: '1.8', letterSpacing: '-0.01em' }}>
-                                                {achievement}
-                                            </p>
-                                        </div>
-                                    ))}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                                    <div>
+                                        <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5 flex items-center gap-3">
+                                            <span className="w-8 h-px bg-gray-400"></span>
+                                            Responsibilities
+                                        </h3>
+                                        <ul className="space-y-3 md:space-y-4">
+                                            {experience.responsibilities.map((responsibility, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="text-xs md:text-sm text-gray-700"
+                                                    style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
+                                                >
+                                                    {formatWithEmphasis(responsibility)}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5 flex items-center gap-3">
+                                            <span className="w-8 h-px bg-gray-400"></span>
+                                            Achievements
+                                        </h3>
+                                        <ul className="space-y-3 md:space-y-4">
+                                            {experience.achievements.map((achievement, index) => (
+                                                <li
+                                                    key={index}
+                                                    className="text-xs md:text-sm text-gray-700"
+                                                    style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
+                                                >
+                                                    {formatWithEmphasis(achievement)}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </motion.section>
 
                     {/* Retrospective */}
-                    <motion.section variants={fadeInUp} className="mb-12 md:mb-20">
+                    <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-20">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
-                            <div
-                                className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                style={{ fontFamily: "'Pretendard', sans-serif" }}
-                            >
-                                Reflection
+                            <div>
+                                <div
+                                    className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
+                                    style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                >
+                                    Reflection
+                                </div>
                             </div>
                             <div className="md:col-span-3">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
                                     <div className="space-y-6 md:space-y-8">
-                                        <div>
-                                            <h3 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                                        <div className="border-l-2 border-gray-200 pl-5">
+                                            <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5">
                                                 What Went Well
                                             </h3>
                                             <ul className="space-y-2.5 md:space-y-3">
@@ -284,16 +284,16 @@ export function ExperienceDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                     >
-                                                        {item}
+                                                        {formatWithEmphasis(item)}
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
 
-                                        <div>
-                                            <h3 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                                        <div className="border-l-2 border-gray-200 pl-5">
+                                            <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5">
                                                 Improvements
                                             </h3>
                                             <ul className="space-y-2.5 md:space-y-3">
@@ -301,9 +301,9 @@ export function ExperienceDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                     >
-                                                        {item}
+                                                        {formatWithEmphasis(item)}
                                                     </li>
                                                 ))}
                                             </ul>
@@ -311,8 +311,8 @@ export function ExperienceDetailPage() {
                                     </div>
 
                                     <div className="space-y-6 md:space-y-8">
-                                        <div>
-                                            <h3 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                                        <div className="border-l-2 border-gray-200 pl-5">
+                                            <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5">
                                                 Lessons Learned
                                             </h3>
                                             <ul className="space-y-2.5 md:space-y-3">
@@ -320,16 +320,16 @@ export function ExperienceDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                     >
-                                                        {item}
+                                                        {formatWithEmphasis(item)}
                                                     </li>
                                                 ))}
                                             </ul>
                                         </div>
 
-                                        <div>
-                                            <h3 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                                        <div className="border-l-2 border-gray-200 pl-5">
+                                            <h3 className="text-base md:text-lg font-bold text-black mb-4 md:mb-5">
                                                 Career Growth
                                             </h3>
                                             <ul className="space-y-2.5 md:space-y-3">
@@ -337,9 +337,9 @@ export function ExperienceDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                     >
-                                                        {item}
+                                                        {formatWithEmphasis(item)}
                                                     </li>
                                                 ))}
                                             </ul>

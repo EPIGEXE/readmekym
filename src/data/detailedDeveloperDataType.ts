@@ -1,5 +1,3 @@
-import type { SkillTag } from "../types/common";
-
 export interface DetailedDeveloperData {
     experiences: DetailedExperience[];
     projects: DetailedProject[];
@@ -27,7 +25,6 @@ export interface DetailedExperience {
     }
     responsibilities: string[] // 주요 업무
     achievements: string[] // 성과
-    skills: SkillTag[] // 사용한 기술들
     projects: string[] // 관련 프로젝트 ID들
 
     retrospective: {
@@ -67,6 +64,9 @@ export interface DetailedProject {
 
     // 경력 연관
     experienceId?: string;
+
+    // 이미지 갤러리
+    images?: string[]; // ProjectDetailPage 갤러리 이미지 경로들
 }
 
 export interface ImplementationDetail {

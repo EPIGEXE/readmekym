@@ -175,7 +175,6 @@ export const developerData: DeveloperData = {
                     category: "frontend",
                     usage: "STOMP 프로토콜 기반 실시간 양방향 통신, 토픽 구독/발행 패턴",
                 },
-                { id: "proj-6-tailwind", name: "Tailwind CSS", category: "frontend" },
                 {
                     id: "proj-6-zustand",
                     name: "Zustand",
@@ -201,6 +200,7 @@ export const developerData: DeveloperData = {
             endYear: 2024,
             startMonth: 11,
             endMonth: 11,
+            thumbnail: "/gallery/proj-7/greenGas1.png",
             skills: [
                 {
                     id: "proj-7-react-chart",
@@ -384,7 +384,7 @@ export const developerData: DeveloperData = {
                 },
                 {
                     id: "proj-11-react-query-welkit",
-                    name: "React Query",
+                    name: "Tanstack Query",
                     category: "frontend",
                     usage: "조건부 쿼리, 낙관적 업데이트, placeholderData를 통한 UX 최적화",
                 },

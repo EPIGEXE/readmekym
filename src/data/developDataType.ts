@@ -29,4 +29,5 @@ export interface Project {
     endMonth: number; // 1-12 for month
     skills: SkillTag[];
     experienceId?: string; // 연관된 경력 ID (독립 프로젝트면 undefined)
+    thumbnail?: string; // GalleryPage 썸네일 이미지
 }

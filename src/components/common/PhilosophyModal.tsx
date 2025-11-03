@@ -43,7 +43,7 @@ function Philosophy01Content() {
         },
         {
             title: 'WELKIT - 신입사원 온보딩 플랫폼',
-            tech: 'React · TypeScript · Next.js · React Query · Tailwind CSS',
+            tech: 'React · TypeScript · Next.js · Tanstack Query · Tailwind CSS',
             year: '2025.01-03',
             description: '신입사원을 위한 용어 사전 및 커뮤니티 서비스',
             image: '/welkit.png',
@@ -181,7 +181,7 @@ function Philosophy02Content() {
         { period: '2024.11', event: '차트 시각화 프로젝트', tech: 'Chart.js + shadcn/ui', category: 'frontend' },
         { period: '2024.12', event: 'Electron 데스크탑 앱', tech: 'React + SQLite 가계부', category: 'frontend' },
         { period: '2025.01', event: 'WebSocket 실시간 통신', tech: 'Konva 도면 기반 UI', category: 'frontend' },
-        { period: '2025.01', event: '팀 협업 프로젝트', tech: 'Next.js + React Query', category: 'frontend' },
+        { period: '2025.01', event: '팀 협업 프로젝트', tech: 'Next.js + Tanstack Query', category: 'frontend' },
         { period: '2025.02', event: 'AI 그래프 시각화', tech: 'React Flow + Dagre', category: 'frontend' },
         { period: '2025.07', event: 'Next.js SSG 마스터', tech: 'SEO 최적화 스캠 방지', category: 'frontend' },
         { period: '2025.08', event: 'LLM API 통합', tech: 'TypeORM + 다국어 자동번역', category: 'backend' },

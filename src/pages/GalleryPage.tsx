@@ -7,6 +7,8 @@ import { useState, useEffect, useRef } from "react";
 import { fadeInUpEaseOut, staggerContainer } from "../styles/framerMotion";
 import { formatPeriod } from "../utils/utils";
 import type { Experience, Project } from "../data/developDataType";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 type GalleryItem = Experience | Project;
 
@@ -201,14 +203,29 @@ export function GalleryPage() {
                         {workProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item);
                             const globalIndex = experienceItems.length + index + 1;
+                            const hasThumbnail = "thumbnail" in item && item.thumbnail;
                             return (
                                 <motion.article
                                     key={item.id}
                                     variants={fadeInUpEaseOut}
-                                    className="group cursor-pointer relative p-3 md:p-4 border-drawing"
+                                    className="group cursor-pointer relative border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
-                                    <div className="space-y-2 md:space-y-3">
+                                    <div className={hasThumbnail ? "p-2 md:p-3" : "p-3 md:p-4"}>
+                                        {/* 썸네일 이미지 */}
+                                        {hasThumbnail && (
+                                            <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100 rounded mb-2 md:mb-3">
+                                                <LazyLoadImage
+                                                    src={item.thumbnail}
+                                                    alt={item.title}
+                                                    effect="blur"
+                                                    className="w-full h-full object-cover transition-transform duration-300"
+                                                    wrapperClassName="w-full h-full"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-2 md:space-y-3">
                                         <div className="flex items-center gap-2">
                                             <span
                                                 className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
@@ -252,6 +269,7 @@ export function GalleryPage() {
                                                 )}
                                             </div>
                                         )}
+                                        </div>
                                     </div>
                                 </motion.article>
                             );
@@ -276,14 +294,29 @@ export function GalleryPage() {
                         {personalProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item);
                             const globalIndex = experienceItems.length + workProjectItems.length + index + 1;
+                            const hasThumbnail = "thumbnail" in item && item.thumbnail;
                             return (
                                 <motion.article
                                     key={item.id}
                                     variants={fadeInUpEaseOut}
-                                    className="group cursor-pointer relative p-3 md:p-4 border-drawing"
+                                    className="group cursor-pointer relative border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
-                                    <div className="space-y-2 md:space-y-3">
+                                    <div className={hasThumbnail ? "p-2 md:p-3" : "p-3 md:p-4"}>
+                                        {/* 썸네일 이미지 */}
+                                        {hasThumbnail && (
+                                            <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100 rounded mb-2 md:mb-3">
+                                                <LazyLoadImage
+                                                    src={item.thumbnail}
+                                                    alt={item.title}
+                                                    effect="blur"
+                                                    className="w-full h-full object-cover transition-transform duration-300"
+                                                    wrapperClassName="w-full h-full"
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="space-y-2 md:space-y-3">
                                         <div className="flex items-center gap-2">
                                             <span
                                                 className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
@@ -327,6 +360,7 @@ export function GalleryPage() {
                                                 )}
                                             </div>
                                         )}
+                                        </div>
                                     </div>
                                 </motion.article>
                             );
