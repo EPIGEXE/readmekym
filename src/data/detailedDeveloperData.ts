@@ -709,6 +709,17 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     "TypeORM의 Repository 패턴과 트랜잭션 API 활용법",
                 ],
             },
+            images: [
+                "/gallery/proj-8/saveWise1.png",
+                "/gallery/proj-8/saveWise2.png",
+                "/gallery/proj-8/saveWise3.png",
+                "/gallery/proj-8/saveWise4.png",
+                "/gallery/proj-8/saveWise5.png",
+                "/gallery/proj-8/saveWise6.png",
+                "/gallery/proj-8/saveWise1.gif",
+                "/gallery/proj-8/saveWise2.gif",
+                "/gallery/proj-8/saveWise3.gif",
+            ],
         },
         {
             id: "proj-9",
@@ -797,6 +808,16 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     "{{사회 문제 해결을 위한 기술 활용의 가치}}",
                 ],
             },
+            images: [
+                "/gallery/proj-9/fonzi1.png",
+                "/gallery/proj-9/fonzi2.png",
+                "/gallery/proj-9/fonzi3.png",
+                "/gallery/proj-9/fonzi4.png",
+                "/gallery/proj-9/fonzi5.png",
+                "/gallery/proj-9/fonzi6.png",
+                "/gallery/proj-9/fonzi7.png",
+                "/gallery/proj-9/fonzi8.png",
+            ],
         },
         {
             id: "proj-10",
@@ -913,6 +934,17 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     "대용량 콘텐츠는 {{파일 시스템에 저장하고 메타데이터만 DB에 저장하는 하이브리드 패턴}}",
                 ],
             },
+            images: [
+                "/gallery/proj-10/loudSelf1.png",
+                "/gallery/proj-10/loudSelf2.png",
+                "/gallery/proj-10/loudSelf3.png",
+                "/gallery/proj-10/loudSelf4.png",
+                "/gallery/proj-10/loudSelf5.png",
+                "/gallery/proj-10/loudSelf6.png",
+                "/gallery/proj-10/loudSelf7.png",
+                "/gallery/proj-10/loudSelf1.gif",
+                "/gallery/proj-10/loudSelf2.gif",
+            ],
         },
         {
             id: "proj-11",
@@ -1001,6 +1033,12 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     "Tanstack Query의 {{조건부 쿼리와 placeholderData는 성능과 UX를 동시에 개선하는 강력한 도구}}",
                 ],
             },
+            images: [
+                "/gallery/proj-11/welkit1.png",
+                "/gallery/proj-11/welkit2.png",
+                "/gallery/proj-11/welkit3.png",
+                "/gallery/proj-11/welkit4.png",
+            ],
         },
         {
             id: "proj-12",
@@ -1074,6 +1112,11 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                     "다른 팀원의 참여 저조 시 프로젝트 지속 가능성을 조기에 판단하는 것이 중요",
                 ],
             },
+            images: [
+                "/gallery/proj-12/MindMap1.png",
+                "/gallery/proj-12/MindMap1.gif",
+                "/gallery/proj-12/MindMap2.gif",
+            ],
         },
         {
             id: "proj-13",

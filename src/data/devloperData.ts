@@ -200,7 +200,6 @@ export const developerData: DeveloperData = {
             endYear: 2024,
             startMonth: 11,
             endMonth: 11,
-            thumbnail: "/gallery/proj-7/greenGas1.png",
             skills: [
                 {
                     id: "proj-7-react-chart",

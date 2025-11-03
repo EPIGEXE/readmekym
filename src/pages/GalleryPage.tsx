@@ -59,7 +59,6 @@ export function GalleryPage() {
         return () => mediaQuery.removeEventListener("change", checkMobile);
     }, []);
 
-
     // ============================ 핸들러 ============================
     // 아이템 클릭 시 경력 또는 프로젝트 상세 페이지로 이동
     const handleItemClick = (item: GalleryItem) => {
@@ -79,7 +78,7 @@ export function GalleryPage() {
         }
         setIsNavOpen(false);
     };
-    
+
     // 모바일: 맨 위로 스크롤 이동
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -203,7 +202,6 @@ export function GalleryPage() {
                         {workProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item);
                             const globalIndex = experienceItems.length + index + 1;
-                            const hasThumbnail = "thumbnail" in item && item.thumbnail;
                             return (
                                 <motion.article
                                     key={item.id}
@@ -211,64 +209,51 @@ export function GalleryPage() {
                                     className="group cursor-pointer relative border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
-                                    <div className={hasThumbnail ? "p-2 md:p-3" : "p-3 md:p-4"}>
-                                        {/* 썸네일 이미지 */}
-                                        {hasThumbnail && (
-                                            <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100 rounded mb-2 md:mb-3">
-                                                <LazyLoadImage
-                                                    src={item.thumbnail}
-                                                    alt={item.title}
-                                                    effect="blur"
-                                                    className="w-full h-full object-cover transition-transform duration-300"
-                                                    wrapperClassName="w-full h-full"
-                                                />
-                                            </div>
-                                        )}
-
+                                    <div className="p-3 md:p-4">
                                         <div className="space-y-2 md:space-y-3">
-                                        <div className="flex items-center gap-2">
-                                            <span
-                                                className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
-                                            >
-                                                {label}
-                                            </span>
-                                            <span className="text-[10px] md:text-xs text-gray-400">
-                                                #{String(globalIndex).padStart(2, "0")}
-                                            </span>
-                                        </div>
-
-                                        <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
-                                            <span className="crayon-hover crayon-hover-red">{item.title}</span>
-                                        </h4>
-
-                                        <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
-                                            {item.description}
-                                        </p>
-
-                                        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
-                                            <Calendar className="w-3 h-3" />
-                                            <span>
-                                                {formatPeriod(
-                                                    item.startYear,
-                                                    item.startMonth,
-                                                    item.endYear,
-                                                    item.endMonth
-                                                )}
-                                            </span>
-                                        </div>
-
-                                        {"skills" in item && item.skills && item.skills.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {item.skills.slice(0, 3).map((skill, idx) => (
-                                                    <SkillBadge key={idx} skill={skill} size="sm" />
-                                                ))}
-                                                {item.skills.length > 3 && (
-                                                    <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
-                                                        +{item.skills.length - 3}
-                                                    </span>
-                                                )}
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
+                                                >
+                                                    {label}
+                                                </span>
+                                                <span className="text-[10px] md:text-xs text-gray-400">
+                                                    #{String(globalIndex).padStart(2, "0")}
+                                                </span>
                                             </div>
-                                        )}
+
+                                            <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
+                                                <span className="crayon-hover crayon-hover-red">{item.title}</span>
+                                            </h4>
+
+                                            <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
+                                                {item.description}
+                                            </p>
+
+                                            <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
+                                                <Calendar className="w-3 h-3" />
+                                                <span>
+                                                    {formatPeriod(
+                                                        item.startYear,
+                                                        item.startMonth,
+                                                        item.endYear,
+                                                        item.endMonth
+                                                    )}
+                                                </span>
+                                            </div>
+
+                                            {"skills" in item && item.skills && item.skills.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {item.skills.slice(0, 3).map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                    {item.skills.length > 3 && (
+                                                        <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
+                                                            +{item.skills.length - 3}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </motion.article>
@@ -294,7 +279,6 @@ export function GalleryPage() {
                         {personalProjectItems.map((item, index) => {
                             const { label, color } = getItemTypeInfo(item);
                             const globalIndex = experienceItems.length + workProjectItems.length + index + 1;
-                            const hasThumbnail = "thumbnail" in item && item.thumbnail;
                             return (
                                 <motion.article
                                     key={item.id}
@@ -302,64 +286,51 @@ export function GalleryPage() {
                                     className="group cursor-pointer relative border-drawing"
                                     onClick={() => handleItemClick(item)}
                                 >
-                                    <div className={hasThumbnail ? "p-2 md:p-3" : "p-3 md:p-4"}>
-                                        {/* 썸네일 이미지 */}
-                                        {hasThumbnail && (
-                                            <div className="w-full aspect-[16/9] overflow-hidden bg-gray-100 rounded mb-2 md:mb-3">
-                                                <LazyLoadImage
-                                                    src={item.thumbnail}
-                                                    alt={item.title}
-                                                    effect="blur"
-                                                    className="w-full h-full object-cover transition-transform duration-300"
-                                                    wrapperClassName="w-full h-full"
-                                                />
-                                            </div>
-                                        )}
-
+                                    <div className="p-3 md:p-4">
                                         <div className="space-y-2 md:space-y-3">
-                                        <div className="flex items-center gap-2">
-                                            <span
-                                                className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
-                                            >
-                                                {label}
-                                            </span>
-                                            <span className="text-[10px] md:text-xs text-gray-400">
-                                                #{String(globalIndex).padStart(2, "0")}
-                                            </span>
-                                        </div>
-
-                                        <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
-                                            <span className="crayon-hover crayon-hover-red">{item.title}</span>
-                                        </h4>
-
-                                        <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
-                                            {item.description}
-                                        </p>
-
-                                        <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
-                                            <Calendar className="w-3 h-3" />
-                                            <span>
-                                                {formatPeriod(
-                                                    item.startYear,
-                                                    item.startMonth,
-                                                    item.endYear,
-                                                    item.endMonth
-                                                )}
-                                            </span>
-                                        </div>
-
-                                        {"skills" in item && item.skills && item.skills.length > 0 && (
-                                            <div className="flex flex-wrap gap-1">
-                                                {item.skills.slice(0, 3).map((skill, idx) => (
-                                                    <SkillBadge key={idx} skill={skill} size="sm" />
-                                                ))}
-                                                {item.skills.length > 3 && (
-                                                    <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
-                                                        +{item.skills.length - 3}
-                                                    </span>
-                                                )}
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`text-[10px] md:text-xs font-bold tracking-widest ${color}`}
+                                                >
+                                                    {label}
+                                                </span>
+                                                <span className="text-[10px] md:text-xs text-gray-400">
+                                                    #{String(globalIndex).padStart(2, "0")}
+                                                </span>
                                             </div>
-                                        )}
+
+                                            <h4 className="text-lg md:text-xl font-bold text-black leading-tight transition-colors">
+                                                <span className="crayon-hover crayon-hover-red">{item.title}</span>
+                                            </h4>
+
+                                            <p className="text-xs md:text-sm text-gray-700 leading-relaxed line-clamp-3">
+                                                {item.description}
+                                            </p>
+
+                                            <div className="flex items-center gap-2 md:gap-3 text-[10px] md:text-xs text-gray-500">
+                                                <Calendar className="w-3 h-3" />
+                                                <span>
+                                                    {formatPeriod(
+                                                        item.startYear,
+                                                        item.startMonth,
+                                                        item.endYear,
+                                                        item.endMonth
+                                                    )}
+                                                </span>
+                                            </div>
+
+                                            {"skills" in item && item.skills && item.skills.length > 0 && (
+                                                <div className="flex flex-wrap gap-1">
+                                                    {item.skills.slice(0, 3).map((skill, idx) => (
+                                                        <SkillBadge key={idx} skill={skill} size="sm" />
+                                                    ))}
+                                                    {item.skills.length > 3 && (
+                                                        <span className="text-[10px] md:text-xs text-gray-500 px-2 py-1">
+                                                            +{item.skills.length - 3}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </motion.article>
