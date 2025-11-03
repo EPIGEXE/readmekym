@@ -9,15 +9,15 @@ import { Philosophy02Content } from "../modalContent/Philosophy02Content";
 import { Philosophy03Content } from "../modalContent/Philosophy03Content";
 
 interface PhilosophyModalProps {
-    isOpen: boolean; // 모달 열림 여부
-    onClose: () => void; // 모달 닫기 함수
+    isOpen: boolean;
+    onClose: () => void;
     philosophyData: {
         id: string;
         number: string;
         title: string;
         description: string;
         color: string;
-    } | null; // Philosophy 데이터
+    } | null;
 }
 
 export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyModalProps) {
@@ -75,10 +75,10 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                     <Drawer.Portal>
                         <Drawer.Overlay className="fixed inset-0 bg-black/40 z-40" />
                         <Drawer.Content className="bg-white flex flex-col rounded-t-[20px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
-                            {/* Handle */}
+                            {/* 바텀 시트 핸들 */}
                             <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-gray-300 mt-4 mb-4" />
 
-                            {/* Header */}
+                            {/* 헤더 */}
                             <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-start justify-between">
                                 <div>
                                     <span className={`text-2xl font-light ${philosophyData.color} block mb-1`}>
@@ -96,7 +96,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                                 </button>
                             </div>
 
-                            {/* Content */}
+                            {/* 컨텐츠 */}
                             <div className="px-4 py-6 overflow-y-auto flex-1">
                                 <Drawer.Description asChild>
                                     <div>{content}</div>
@@ -106,7 +106,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                     </Drawer.Portal>
                 </Drawer.Root>
 
-                {/* Lightbox - Drawer 외부에 렌더링 */}
+                {/* Lightbox */}
                 <Lightbox
                     open={lightboxOpen}
                     close={() => setLightboxOpen(false)}
@@ -122,7 +122,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
         );
     }
 
-    // Desktop: Modal
+    // 데스크탑: 모달로 나옴
     return (
         <Dialog.Root
             open={isOpen}
@@ -135,7 +135,6 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
             }}
         >
             <Dialog.Portal>
-                {/* Backdrop */}
                 <Dialog.Overlay asChild>
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -146,7 +145,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                     />
                 </Dialog.Overlay>
 
-                {/* Modal Content */}
+                {/* 모달 컨텐츠 */}
                 <Dialog.Content asChild>
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -155,7 +154,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
                         className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] bg-white rounded-lg shadow-2xl max-w-6xl w-[95vw] max-h-[90vh] overflow-hidden"
                     >
-                        {/* Header */}
+                        {/* 헤더 */}
                         <div className="sticky top-0 bg-white border-b border-gray-200 px-8 py-6 flex items-start justify-between">
                             <div>
                                 <span className={`text-4xl font-light ${philosophyData.color} block mb-2`}>
@@ -173,7 +172,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                             </Dialog.Close>
                         </div>
 
-                        {/* Content - 스크롤 영역 */}
+                        {/* 컨텐츠 */}
                         <div className="px-8 py-8 overflow-y-auto max-h-[calc(90vh-140px)]">
                             <Dialog.Description asChild>
                                 <div>{content}</div>
@@ -183,7 +182,7 @@ export function PhilosophyModal({ isOpen, onClose, philosophyData }: PhilosophyM
                 </Dialog.Content>
             </Dialog.Portal>
 
-            {/* Lightbox - Dialog 외부에 렌더링 */}
+            {/* Lightbox */}
             <Lightbox
                 open={lightboxOpen}
                 close={() => setLightboxOpen(false)}

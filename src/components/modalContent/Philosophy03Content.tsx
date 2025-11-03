@@ -1,24 +1,12 @@
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { noteCategories } from "./philosophyData";
+
+interface Philosophy03ContentProps {
+    onImageClick?: (images: string[], index: number) => void; // 이미지 클릭 함수, 전체 이미지를 전달하면 라이트박스로 전달해서 오픈
+}
 
 // 정리하는 개발자 - 노션 학습 기록
-export function Philosophy03Content({ onImageClick }: { onImageClick?: (images: string[], index: number) => void }) {
-    const noteCategories = [
-        {
-            title: "기술 스택별 체계화",
-            description: "프론트엔드, 백엔드, 데이터베이스로 대분류",
-            items: ["각 기술의 핵심 개념 정리", "실습 코드와 예제", "트러블슈팅 경험", "베스트 프랙티스"],
-        },
-        {
-            title: "프로젝트 회고록",
-            description: "10개 프로젝트의 상세 기록과 회고",
-            items: ["구현 과정 단계별 기록", "기술적 도전과 해결", "배운 점과 아쉬운 점", "다음 프로젝트 개선 방향"],
-        },
-        {
-            title: "도구 및 환경 설정",
-            description: "개발 생산성을 위한 도구와 환경",
-            items: ["Git 워크플로우", "CI/CD 파이프라인", "개발 환경 자동화", "Electron 앱 배포"],
-        },
-    ];
+export function Philosophy03Content({ onImageClick }: Philosophy03ContentProps) {
 
     return (
         <div className="space-y-8 md:space-y-12">

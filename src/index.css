@@ -1,6 +1,14 @@
 @import "tailwindcss";
 @import "./styles/css/crayon-effects.css";
 @import "./styles/css/border-drawing.css";
+@import "./styles/css/custom-swiper-style.css";
+/* Lazy Load Image Component 블러 효과 */
+@import "react-lazy-load-image-component/src/effects/blur.css";
+/* Yet Another React Lightbox 라이트박스 스타일 */
+@import "yet-another-react-lightbox/styles.css";
+/* Swiper 스타일 */
+@import 'swiper/swiper-bundle.css';
+
 
 /* Pretendard */
 @font-face {
@@ -27,47 +35,4 @@
 
 .font-cafe24-gowoonbam {
     font-family: "Cafe24Gowoonbam", sans-serif;
-}
-
-/* Editorial Swiper Styles */
-.editorial-swiper {
-    padding-bottom: 50px !important;
-}
-
-.editorial-swiper .swiper-button-next,
-.editorial-swiper .swiper-button-prev {
-    width: 36px !important;
-    height: 36px !important;
-    background: transparent;
-    transition: opacity 0.3s;
-    opacity: 0.6;
-}
-
-.editorial-swiper .swiper-button-next:hover,
-.editorial-swiper .swiper-button-prev:hover {
-    opacity: 1;
-}
-
-.editorial-swiper .swiper-button-next::after,
-.editorial-swiper .swiper-button-prev::after {
-    font-size: 20px !important;
-    font-weight: 300;
-}
-
-.editorial-swiper .swiper-pagination {
-    bottom: 20px !important;
-}
-
-.editorial-swiper .swiper-pagination-bullet {
-    width: 6px;
-    height: 6px;
-    background: #9ca3af;
-    opacity: 1;
-    transition: all 0.3s;
-}
-
-.editorial-swiper .swiper-pagination-bullet-active {
-    width: 24px;
-    border-radius: 3px;
-    background: #374151;
 }

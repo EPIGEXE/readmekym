@@ -9,20 +9,28 @@ import { formatPeriod } from "../utils/utils";
 import { formatWithEmphasis } from "../utils/textFormatter";
 
 export function ExperienceDetailPage() {
-    const { id } = useParams<{ id: string }>();
-    const navigate = useNavigate();
-    const experience = detailedDeveloperData.experiences.find((e) => e.id === id);
-    const period = developerData.experiences.find((e) => e.id === id);
+    // ============================ Hooks ============================
+    const { id } = useParams<{ id: string }>(); // url 파라미터에서 id 추출
+    const navigate = useNavigate(); // 브라우저 히스토리 기반 뒤로가기 하려고
 
-    // 연결된 프로젝트
+    // ============================ 상수 정의 ============================
+    const experience = detailedDeveloperData.experiences.find((e) => e.id === id); // 표시할 경력 데이터 
+    const period = developerData.experiences.find((e) => e.id === id); // 경력 데이터의 기간 데이터 찾기용
+
+    // 경력과 연결된 프로젝트 데이터 
     const relatedProjects = experience?.projects
         ?.map((projectId) => developerData.projects.find((p) => p.id === projectId))
         .filter(Boolean);
 
+    // ============================ useEffect ============================
+    // 페이지 이동 시 맨 위로 스크롤
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
+
+    // ============================ 렌더링 ============================
+    // 경력 데이터가 없으면 뒤로가기 페이지 반환
     if (!experience) {
         return (
             <div className="min-h-screen flex items-center justify-center px-4">
@@ -39,9 +47,9 @@ export function ExperienceDetailPage() {
     return (
         <motion.div initial="initial" animate="animate" className="min-h-screen">
             <div className="max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
-                {/* Content with Border */}
+                {/* 컨텐츠 전체 테두리 */}
                 <div className="border-2 md:border-4 border-gray-700 p-4 md:p-8">
-                    {/* Back Button */}
+                    {/* 뒤로가기 버튼 */}
                     <motion.button
                         variants={fadeInUpEaseOut}
                         onClick={() => navigate(-1)}
@@ -50,10 +58,9 @@ export function ExperienceDetailPage() {
                     >
                         ← Back
                     </motion.button>
-                    {/* Hero Section */}
+                    {/* 히어로 섹션 */}
                     <motion.section className="mb-12 md:mb-24" variants={fadeInUpEaseOut}>
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-16 items-start">
-                            {/* Left Content */}
                             <div className="lg:col-span-3 space-y-4 md:space-y-8">
                                 <div
                                     className="text-sm md:text-lg text-gray-500 tracking-widest uppercase"
@@ -112,7 +119,7 @@ export function ExperienceDetailPage() {
                         </div>
                     </motion.section>
 
-                    {/* Company Info */}
+                    {/* 회사 정보 */}
                     <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
                             <div>
@@ -152,7 +159,7 @@ export function ExperienceDetailPage() {
                         </div>
                     </motion.section>
 
-                    {/* Description */}
+                    {/* 개요 */}
                     <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
                             <div>
@@ -174,7 +181,7 @@ export function ExperienceDetailPage() {
                         </div>
                     </motion.section>
 
-                    {/* Projects */}
+                    {/* 경력에서 진행한 프로젝트 */}
                     {relatedProjects && relatedProjects.length > 0 && (
                         <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
@@ -209,7 +216,7 @@ export function ExperienceDetailPage() {
                         </motion.section>
                     )}
 
-                    {/* Key Contributions */}
+                    {/* 주요 기여 */}
                     <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-24">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
                             <div>
@@ -261,7 +268,7 @@ export function ExperienceDetailPage() {
                         </div>
                     </motion.section>
 
-                    {/* Retrospective */}
+                    {/* 회고 */}
                     <motion.section variants={fadeInUpEaseOut} className="mb-12 md:mb-20">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-8">
                             <div>

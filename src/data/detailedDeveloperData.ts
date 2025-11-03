@@ -435,7 +435,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 "국가 시설의 출입통제 시스템에서 {{React와 Konva.js를 활용한 실시간 도면 기반 모니터링 화면과 생체인식 장치 제어 인터페이스를 담당}}했습니다. {{WebSocket을 통해 도어와 생체인식 장치 상태를 실시간으로 수신}}하고, Konva Canvas 위에 시설 도면과 도어 객체를 렌더링하여 경보 발생 시 시각적/청각적 알림을 제공하는 시스템을 구축했습니다. Zustand를 활용한 복잡한 상태 관리와 React DnD를 통한 직관적인 도어-경보 연결 UI를 구현하여 관제 요원의 업무 효율성을 크게 향상시켰습니다.",
             experienceId: "exp-2",
             teamSize: 5,
-            role: "프론트엔드 개발 (도면 모니터링 시스템 및 생체인식 장치 제어 UI 전담)",
+            role: "프론트엔드 개발",
             implementation: [
                 {
                     id: "impl-1",

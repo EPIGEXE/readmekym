@@ -7,9 +7,10 @@ import { useState, useRef, useEffect } from "react";
 import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
 import { PhilosophyModal } from "../components/common/PhilosophyModal";
 import { fadeInUpEaseOut, staggerContainer } from "../styles/framerMotion";
-import { philosophyData } from "../const/philosophyData";
 import type { PhilosophyData, SidebarData, SkillTag } from "../types/common";
 import { formatPeriod } from "../utils/utils";
+import { philosophyData } from "../components/modalContent/philosophyData";
+import { formatWithEmphasis } from "../utils/textFormatter";
 
 export function CategoryPage() {
     // ============================ 상태 관리 ============================
@@ -363,7 +364,7 @@ export function CategoryPage() {
                                                 className="overflow-hidden px-2 pb-4 space-y-3"
                                             >
                                                 <p className="text-xs text-gray-700 leading-relaxed">
-                                                    {detailedProject.fullDescription}
+                                                    {formatWithEmphasis(detailedProject.fullDescription)}
                                                 </p>
 
                                                 {detailedProject.role && (
@@ -408,7 +409,7 @@ export function CategoryPage() {
                                                                         key={idx}
                                                                         className="text-xs text-gray-600 leading-relaxed"
                                                                     >
-                                                                        • {achievement}
+                                                                        • {formatWithEmphasis(achievement)}
                                                                     </li>
                                                                 ))}
                                                         </ul>
@@ -509,7 +510,7 @@ export function CategoryPage() {
                                                 className="overflow-hidden px-2 pb-4 space-y-3"
                                             >
                                                 <p className="text-xs text-gray-700 leading-relaxed">
-                                                    {detailedProject.fullDescription}
+                                                    {formatWithEmphasis(detailedProject.fullDescription)}
                                                 </p>
 
                                                 {detailedProject.role && (
@@ -554,7 +555,7 @@ export function CategoryPage() {
                                                                         key={idx}
                                                                         className="text-xs text-gray-600 leading-relaxed"
                                                                     >
-                                                                        • {achievement}
+                                                                        • {formatWithEmphasis(achievement)}
                                                                     </li>
                                                                 ))}
                                                         </ul>

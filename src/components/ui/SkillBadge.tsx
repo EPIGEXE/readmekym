@@ -5,7 +5,9 @@ interface SkillBadgeProps {
     size?: 'sm' | 'md'
 }
 
+// 공용 스킬 뱃지 컴포넌트
 export function SkillBadge({ skill, size = 'md' }: SkillBadgeProps) {
+    // ============================ 개별 상수 ============================
     const dotColor = skill.category === 'frontend'
         ? 'bg-blue-500'    // 프론트엔드: 선명한 파란색 (UI/UX 연상)
         : skill.category === 'backend'

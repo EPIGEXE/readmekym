@@ -6,6 +6,7 @@ interface YearDividerProps {
     yearsArray: number[]
 }
 
+// 타임라인에서 주로 사용되는 연도 구분선
 export const YearDivider: React.FC<YearDividerProps> = ({ totalHeight, monthHeight, yearsArray }) => {
     return (
         <div

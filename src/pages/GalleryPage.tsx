@@ -7,8 +7,6 @@ import { useState, useEffect, useRef } from "react";
 import { fadeInUpEaseOut, staggerContainer } from "../styles/framerMotion";
 import { formatPeriod } from "../utils/utils";
 import type { Experience, Project } from "../data/developDataType";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 
 type GalleryItem = Experience | Project;
 

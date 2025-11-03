@@ -9,14 +9,9 @@ import { formatPeriod } from "../utils/utils";
 import { developerData } from "../data/devloperData";
 import { formatWithEmphasis } from "../utils/textFormatter";
 import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
 import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-
-// Swiper styles
-import 'swiper/swiper-bundle.css';
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
 export function ProjectDetailPage() {
     // ============================ Hooks ============================
@@ -26,7 +21,7 @@ export function ProjectDetailPage() {
     // ============================ 상태 관리 ============================
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [lightboxIndex, setLightboxIndex] = useState(0);
-    const [viewMode, setViewMode] = useState<'slider' | 'list'>('slider');
+    const [viewMode, setViewMode] = useState<"slider" | "list">("slider");
     const [currentPage, setCurrentPage] = useState(1);
 
     // 그리드 페이지네이션 설정
@@ -45,6 +40,17 @@ export function ProjectDetailPage() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    // ============================ 핸들러 ============================
+    const handleSliderModeClick = () => {
+        setViewMode("slider");
+        setCurrentPage(1);
+    };
+    
+    const handleListModeClick = () => {
+        setViewMode("list");
+        setCurrentPage(1);
+    };
 
     // ============================ 렌더링 ============================
     // 프로젝트가 없으면 나오는 페이지 반환
@@ -107,9 +113,7 @@ export function ProjectDetailPage() {
                                     )}
                                 </div>
 
-                                <p
-                                    className="text-base md:text-xl font-light text-gray-800 leading-relaxed"
-                                >
+                                <p className="text-base md:text-xl font-light text-gray-800 leading-relaxed">
                                     {project.shortDescription}
                                 </p>
 
@@ -122,54 +126,49 @@ export function ProjectDetailPage() {
                                         {/* 토글 버튼 */}
                                         <div className="flex items-center gap-1 mb-6 md:mb-8">
                                             <button
-                                                onClick={() => {
-                                                    setViewMode('slider');
-                                                    setCurrentPage(1);
-                                                }}
                                                 className={`text-[10px] md:text-xs px-4 py-2 tracking-widest uppercase transition-colors ${
-                                                    viewMode === 'slider'
-                                                        ? 'text-gray-900 border-b-2 border-gray-900'
-                                                        : 'text-gray-400 hover:text-gray-600'
+                                                    viewMode === "slider"
+                                                        ? "text-gray-900 border-b-2 border-gray-900"
+                                                        : "text-gray-400 hover:text-gray-600"
                                                 }`}
-                                                style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                                onClick={handleSliderModeClick}
+
                                             >
                                                 Slider
                                             </button>
                                             <span className="text-gray-300 mx-1">|</span>
                                             <button
-                                                onClick={() => {
-                                                    setViewMode('list');
-                                                    setCurrentPage(1);
-                                                }}
                                                 className={`text-[10px] md:text-xs px-4 py-2 tracking-widest uppercase transition-colors ${
-                                                    viewMode === 'list'
-                                                        ? 'text-gray-900 border-b-2 border-gray-900'
-                                                        : 'text-gray-400 hover:text-gray-600'
+                                                    viewMode === "list"
+                                                        ? "text-gray-900 border-b-2 border-gray-900"
+                                                        : "text-gray-400 hover:text-gray-600"
                                                 }`}
-                                                style={{ fontFamily: "'Pretendard', sans-serif" }}
+                                                onClick={handleListModeClick}
                                             >
                                                 Grid
                                             </button>
                                         </div>
 
                                         {/* 슬라이더 뷰 */}
-                                        {viewMode === 'slider' && (
+                                        {viewMode === "slider" && (
                                             <div className="min-h-[50vh]">
                                                 <Swiper
                                                     modules={[Navigation, Pagination, Autoplay]}
-                                                    spaceBetween={0}
-                                                    slidesPerView={1}
-                                                    navigation
+                                                    spaceBetween={0} // 슬라이드 간격 0
+                                                    slidesPerView={1} // 슬라이드 1개씩 보여줌
+                                                    navigation // 네비게이션 버튼 표시
                                                     pagination={{
                                                         clickable: true,
-                                                    }}
-                                                    autoplay={{ delay: 5000, disableOnInteraction: false }}
-                                                    loop={project.images.length > 1}
-                                                    className="editorial-swiper"
-                                                    style={{
-                                                        '--swiper-navigation-color': '#374151',
-                                                        '--swiper-navigation-size': '20px',
-                                                    } as React.CSSProperties}
+                                                    }} // 페이지네이션 버튼 클릭 가능
+                                                    autoplay={{ delay: 5000, disableOnInteraction: false }} // 자동 재생 설정 5초마다 재생, 사용자 상호작용 시 재생 중단
+                                                    loop={project.images.length > 1} // 이미지 개수가 1개 이상이면 루프 설정
+                                                    className="editorial-swiper" // 커스텀 스타일 적용
+                                                    style={
+                                                        {
+                                                            "--swiper-navigation-color": "#374151", // 네비게이션 버튼 색상
+                                                            "--swiper-navigation-size": "20px", // 네비게이션 버튼 크기
+                                                        } as React.CSSProperties
+                                                    }
                                                 >
                                                     {project.images.map((image, index) => (
                                                         <SwiperSlide key={index}>
@@ -186,7 +185,7 @@ export function ProjectDetailPage() {
                                                                         alt={`${project.title} - Image ${index + 1}`}
                                                                         effect="blur"
                                                                         className="max-w-full max-h-full object-contain"
-                                                                        style={{ display: 'block' }}
+                                                                        style={{ display: "block" }}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -197,89 +196,103 @@ export function ProjectDetailPage() {
                                         )}
 
                                         {/* 그리드 뷰 */}
-                                        {viewMode === 'list' && (() => {
-                                            const totalPages = Math.ceil((project.images?.length || 0) / imagesPerPage);
-                                            const startIndex = (currentPage - 1) * imagesPerPage;
-                                            const endIndex = startIndex + imagesPerPage;
-                                            const currentImages = project.images.slice(startIndex, endIndex);
+                                        {viewMode === "list" &&
+                                            (() => {
+                                                const totalPages = Math.ceil( // 총 페이지 수
+                                                    (project.images?.length || 0) / imagesPerPage 
+                                                );
+                                                const startIndex = (currentPage - 1) * imagesPerPage; // 시작 인덱스
+                                                const endIndex = startIndex + imagesPerPage; // 끝 인덱스
+                                                const currentImages = project.images.slice(startIndex, endIndex); // 현재 페이지에 보여줄 이미지 배열
 
-                                            return (
-                                                <div>
-                                                    {/* 그리드 */}
-                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 min-h-[50vh]">
-                                                        {currentImages.map((image, idx) => {
-                                                            const actualIndex = startIndex + idx;
-                                                            return (
-                                                                <div
-                                                                    key={actualIndex}
-                                                                    className="aspect-[4/3] cursor-pointer bg-white hover:opacity-90 transition-opacity flex items-center justify-center p-3"
-                                                                    onClick={() => {
-                                                                        setLightboxIndex(actualIndex);
-                                                                        setLightboxOpen(true);
-                                                                    }}
-                                                                >
-                                                                    <LazyLoadImage
-                                                                        src={image}
-                                                                        alt={`${project.title} - Image ${actualIndex + 1}`}
-                                                                        effect="blur"
-                                                                        className="max-w-full max-h-full object-contain"
-                                                                        style={{ display: 'block' }}
-                                                                    />
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-
-                                                    {/* 페이지네이션 */}
-                                                    {totalPages > 1 && (
-                                                        <div className="flex items-center justify-center gap-3 mt-8">
-                                                            {/* 이전 버튼 */}
-                                                            <button
-                                                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                                                disabled={currentPage === 1}
-                                                                className={`text-xs tracking-widest uppercase px-3 py-2 transition-colors ${
-                                                                    currentPage === 1
-                                                                        ? 'text-gray-300 cursor-not-allowed'
-                                                                        : 'text-gray-500 hover:text-gray-900'
-                                                                }`}
-                                                            >
-                                                                ← Prev
-                                                            </button>
-
-                                                            {/* 페이지 번호 */}
-                                                            <div className="flex items-center gap-2">
-                                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                                                    <button
-                                                                        key={page}
-                                                                        onClick={() => setCurrentPage(page)}
-                                                                        className={`w-8 h-8 text-xs transition-colors ${
-                                                                            currentPage === page
-                                                                                ? 'text-gray-900 border-b-2 border-gray-900'
-                                                                                : 'text-gray-400 hover:text-gray-600'
-                                                                        }`}
+                                                return (
+                                                    <div>
+                                                        {/* 그리드 */}
+                                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 min-h-[50vh]">
+                                                            {currentImages.map((image, idx) => {
+                                                                const actualIndex = startIndex + idx;
+                                                                return (
+                                                                    <div
+                                                                        key={actualIndex}
+                                                                        className="aspect-[4/3] cursor-pointer bg-white hover:opacity-90 transition-opacity flex items-center justify-center p-3"
+                                                                        onClick={() => {
+                                                                            setLightboxIndex(actualIndex);
+                                                                            setLightboxOpen(true);
+                                                                        }}
                                                                     >
-                                                                        {String(page).padStart(2, '0')}
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-
-                                                            {/* 다음 버튼 */}
-                                                            <button
-                                                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                                                                disabled={currentPage === totalPages}
-                                                                className={`text-xs tracking-widest uppercase px-3 py-2 transition-colors ${
-                                                                    currentPage === totalPages
-                                                                        ? 'text-gray-300 cursor-not-allowed'
-                                                                        : 'text-gray-500 hover:text-gray-900'
-                                                                }`}
-                                                            >
-                                                                Next →
-                                                            </button>
+                                                                        <LazyLoadImage
+                                                                            src={image}
+                                                                            alt={`${project.title} - Image ${
+                                                                                actualIndex + 1
+                                                                            }`}
+                                                                            effect="blur"
+                                                                            className="max-w-full max-h-full object-contain"
+                                                                            style={{ display: "block" }}
+                                                                        />
+                                                                    </div>
+                                                                );
+                                                            })}
                                                         </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })()}
+
+                                                        {/* 페이지네이션 */}
+                                                        {totalPages > 1 && (
+                                                            <div className="flex items-center justify-center gap-3 mt-8">
+                                                                {/* 이전 버튼 */}
+                                                                <button
+                                                                    onClick={() =>
+                                                                        setCurrentPage((prev) => Math.max(1, prev - 1))
+                                                                    }
+                                                                    disabled={currentPage === 1}
+                                                                    className={`text-xs tracking-widest uppercase px-3 py-2 transition-colors ${
+                                                                        currentPage === 1
+                                                                            ? "text-gray-300 cursor-not-allowed"
+                                                                            : "text-gray-500 hover:text-gray-900"
+                                                                    }`}
+                                                                >
+                                                                    ← Prev
+                                                                </button>
+
+                                                                {/* 페이지 번호 */}
+                                                                <div className="flex items-center gap-2">
+                                                                    {Array.from(
+                                                                        { length: totalPages },
+                                                                        (_, i) => i + 1
+                                                                    ).map((page) => (
+                                                                        <button
+                                                                            key={page}
+                                                                            onClick={() => setCurrentPage(page)}
+                                                                            className={`w-8 h-8 text-xs transition-colors ${
+                                                                                currentPage === page
+                                                                                    ? "text-gray-900 border-b-2 border-gray-900"
+                                                                                    : "text-gray-400 hover:text-gray-600"
+                                                                            }`}
+                                                                        >
+                                                                            {String(page).padStart(2, "0")}
+                                                                        </button>
+                                                                    ))}
+                                                                </div>
+
+                                                                {/* 다음 버튼 */}
+                                                                <button
+                                                                    onClick={() =>
+                                                                        setCurrentPage((prev) =>
+                                                                            Math.min(totalPages, prev + 1)
+                                                                        )
+                                                                    }
+                                                                    disabled={currentPage === totalPages}
+                                                                    className={`text-xs tracking-widest uppercase px-3 py-2 transition-colors ${
+                                                                        currentPage === totalPages
+                                                                            ? "text-gray-300 cursor-not-allowed"
+                                                                            : "text-gray-500 hover:text-gray-900"
+                                                                    }`}
+                                                                >
+                                                                    Next →
+                                                                </button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })()}
 
                                         {/* Lightbox */}
                                         <Lightbox
@@ -336,7 +349,6 @@ export function ProjectDetailPage() {
                             <div>
                                 <div
                                     className="text-sm md:text-base text-gray-500 uppercase tracking-widest"
-                                    style={{ fontFamily: "'Pretendard', sans-serif" }}
                                 >
                                     Overview
                                 </div>
@@ -344,7 +356,7 @@ export function ProjectDetailPage() {
                             <div className="md:col-span-3">
                                 <p
                                     className="text-sm md:text-lg text-gray-700 whitespace-pre-line"
-                                    style={{ lineHeight: '1.9', letterSpacing: '-0.01em' }}
+                                    style={{ lineHeight: "1.9", letterSpacing: "-0.01em" }}
                                 >
                                     {formatWithEmphasis(project.fullDescription)}
                                 </p>
@@ -376,7 +388,10 @@ export function ProjectDetailPage() {
                                                     <SkillBadge skill={skill} />
                                                 </div>
                                                 <div className="col-span-7 md:col-span-8">
-                                                    <p className="text-xs md:text-sm text-gray-600" style={{ lineHeight: '1.65', letterSpacing: '-0.01em' }}>
+                                                    <p
+                                                        className="text-xs md:text-sm text-gray-600"
+                                                        style={{ lineHeight: "1.65", letterSpacing: "-0.01em" }}
+                                                    >
                                                         {skill.usage}
                                                     </p>
                                                 </div>
@@ -414,14 +429,20 @@ export function ProjectDetailPage() {
                                                 </div>
                                             </div>
 
-                                            <p className="text-sm md:text-base text-gray-700 pl-16 md:pl-20" style={{ lineHeight: '1.8', letterSpacing: '-0.01em' }}>
+                                            <p
+                                                className="text-sm md:text-base text-gray-700 pl-16 md:pl-20"
+                                                style={{ lineHeight: "1.8", letterSpacing: "-0.01em" }}
+                                            >
                                                 {formatWithEmphasis(impl.description)}
                                             </p>
 
                                             <div className="pl-16 md:pl-20 space-y-4 md:space-y-5">
                                                 {impl.challenges && (
                                                     <div className="border-l-4 border-red-500 pl-6 py-1">
-                                                        <h4 className="text-xs md:text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider" style={{ letterSpacing: '0.1em' }}>
+                                                        <h4
+                                                            className="text-xs md:text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider"
+                                                            style={{ letterSpacing: "0.1em" }}
+                                                        >
                                                             Challenge
                                                         </h4>
                                                         {Array.isArray(impl.challenges) ? (
@@ -430,7 +451,10 @@ export function ProjectDetailPage() {
                                                                     <li
                                                                         key={idx}
                                                                         className="text-xs md:text-sm text-gray-800 relative pl-4"
-                                                                        style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}
+                                                                        style={{
+                                                                            lineHeight: "1.75",
+                                                                            letterSpacing: "-0.01em",
+                                                                        }}
                                                                     >
                                                                         <span className="absolute left-0 top-2 w-1.5 h-1.5 bg-red-400 rounded-full"></span>
                                                                         {formatWithEmphasis(challenge)}
@@ -438,7 +462,10 @@ export function ProjectDetailPage() {
                                                                 ))}
                                                             </ul>
                                                         ) : (
-                                                            <p className="text-xs md:text-sm text-gray-800" style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}>
+                                                            <p
+                                                                className="text-xs md:text-sm text-gray-800"
+                                                                style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
+                                                            >
                                                                 {formatWithEmphasis(impl.challenges)}
                                                             </p>
                                                         )}
@@ -447,7 +474,10 @@ export function ProjectDetailPage() {
 
                                                 {impl.solution && (
                                                     <div className="border-l-4 border-gray-800 pl-6 py-1">
-                                                        <h4 className="text-xs md:text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider" style={{ letterSpacing: '0.1em' }}>
+                                                        <h4
+                                                            className="text-xs md:text-sm font-bold text-gray-900 mb-3 uppercase tracking-wider"
+                                                            style={{ letterSpacing: "0.1em" }}
+                                                        >
                                                             Solution
                                                         </h4>
                                                         {Array.isArray(impl.solution) ? (
@@ -456,7 +486,10 @@ export function ProjectDetailPage() {
                                                                     <li
                                                                         key={idx}
                                                                         className="text-xs md:text-sm text-gray-800 relative pl-4"
-                                                                        style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}
+                                                                        style={{
+                                                                            lineHeight: "1.75",
+                                                                            letterSpacing: "-0.01em",
+                                                                        }}
                                                                     >
                                                                         <span className="absolute left-0 top-2 w-1.5 h-1.5 bg-gray-700 rounded-full"></span>
                                                                         {formatWithEmphasis(solution)}
@@ -464,7 +497,10 @@ export function ProjectDetailPage() {
                                                                 ))}
                                                             </ul>
                                                         ) : (
-                                                            <p className="text-xs md:text-sm text-gray-800" style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}>
+                                                            <p
+                                                                className="text-xs md:text-sm text-gray-800"
+                                                                style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
+                                                            >
                                                                 {formatWithEmphasis(impl.solution)}
                                                             </p>
                                                         )}
@@ -502,7 +538,7 @@ export function ProjectDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
                                                     >
                                                         {formatWithEmphasis(challenge)}
                                                     </li>
@@ -522,7 +558,7 @@ export function ProjectDetailPage() {
                                                     <li
                                                         key={index}
                                                         className="text-xs md:text-sm text-gray-700"
-                                                        style={{ lineHeight: '1.75', letterSpacing: '-0.01em' }}
+                                                        style={{ lineHeight: "1.75", letterSpacing: "-0.01em" }}
                                                     >
                                                         {formatWithEmphasis(achievement)}
                                                     </li>
@@ -557,7 +593,7 @@ export function ProjectDetailPage() {
                                                 <li
                                                     key={index}
                                                     className="text-xs md:text-sm text-gray-700"
-                                                    style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                    style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                 >
                                                     {formatWithEmphasis(item)}
                                                 </li>
@@ -574,7 +610,7 @@ export function ProjectDetailPage() {
                                                 <li
                                                     key={index}
                                                     className="text-xs md:text-sm text-gray-700"
-                                                    style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                    style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                 >
                                                     {formatWithEmphasis(item)}
                                                 </li>
@@ -591,7 +627,7 @@ export function ProjectDetailPage() {
                                                 <li
                                                     key={index}
                                                     className="text-xs md:text-sm text-gray-700"
-                                                    style={{ lineHeight: '1.7', letterSpacing: '-0.01em' }}
+                                                    style={{ lineHeight: "1.7", letterSpacing: "-0.01em" }}
                                                 >
                                                     {formatWithEmphasis(item)}
                                                 </li>

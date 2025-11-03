@@ -1,93 +1,21 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination } from "swiper/modules";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { projects } from "./philosophyData";
+
+interface Philosophy01ContentProps {
+    onImageClick?: (images: string[], index: number) => void; // 이미지 클릭 함수, 전체 이미지를 전달하면 라이트박스로 전달해서 오픈
+}
 
 // 만드는 개발자 - 사이드 프로젝트 소개
-export function Philosophy01Content({ onImageClick }: { onImageClick?: (images: string[], index: number) => void }) {
-    const projects = [
-        {
-            title: "온실가스 차트 웹페이지",
-            tech: "React · Chart.js · shadcn/ui",
-            year: "2024.11",
-            description: "한국 온실가스 배출량 데이터 시각화 웹페이지",
-            images: [
-                "/gallery/proj-7/greenGas1.png",
-                "/gallery/proj-7/greenGas2.png",
-                "/gallery/proj-7/greenGas3.png",
-                "/gallery/proj-7/greenGas1.gif",
-                "/gallery/proj-7/greenGas2.gif",
-            ],
-        },
-        {
-            title: "가계부 프로그램",
-            tech: "Electron · React · SQLite",
-            year: "2024.12-2025.01",
-            description: "데스크탑 가계부 애플리케이션",
-            images: [
-                "/gallery/proj-8/saveWise1.png",
-                "/gallery/proj-8/saveWise2.png",
-                "/gallery/proj-8/saveWise3.png",
-                "/gallery/proj-8/saveWise4.png",
-                "/gallery/proj-8/saveWise5.png",
-                "/gallery/proj-8/saveWise6.png",
-                "/gallery/proj-8/saveWise1.gif",
-                "/gallery/proj-8/saveWise2.gif",
-                "/gallery/proj-8/saveWise3.gif",
-            ],
-        },
-        {
-            title: "시맨틱 검색 기반 마인드맵 서비스",
-            tech: "React · React Flow · Dagre · AI Embedding API · Tailwind CSS",
-            year: "2025.01-02",
-            description: "AI 임베딩을 활용한 의미적 검색 마인드맵",
-            images: ["/gallery/proj-12/MindMap1.png", "/gallery/proj-12/MindMap1.gif", "/gallery/proj-12/MindMap2.gif"],
-        },
-        {
-            title: "WELKIT - 신입사원 온보딩 플랫폼",
-            tech: "React · TypeScript · Next.js · Tanstack Query · Tailwind CSS",
-            year: "2025.01-03",
-            description: "신입사원을 위한 용어 사전 및 커뮤니티 서비스",
-            images: [
-                "/gallery/proj-11/welkit1.png",
-                "/gallery/proj-11/welkit2.png",
-                "/gallery/proj-11/welkit3.png",
-                "/gallery/proj-11/welkit4.png",
-            ],
-        },
-        {
-            title: "온라인 스캠 방지 사이트",
-            tech: "Next.js · TypeScript · Tailwind CSS",
-            year: "2025.07",
-            description: "증가하는 온라인 스캠 피해 예방을 위한 교육용 웹사이트",
-            images: [
-                "/gallery/proj-9/fonzi1.png",
-                "/gallery/proj-9/fonzi2.png",
-                "/gallery/proj-9/fonzi3.png",
-                "/gallery/proj-9/fonzi4.png",
-                "/gallery/proj-9/fonzi5.png",
-                "/gallery/proj-9/fonzi6.png",
-                "/gallery/proj-9/fonzi7.png",
-                "/gallery/proj-9/fonzi8.png",
-            ],
-        },
-        {
-            title: "다국어 멀티 블로그 포스팅 프로그램",
-            tech: "Electron · React · TypeScript · TypeORM · SQLite",
-            year: "2025.08-09",
-            description: "LLM API 자동 번역과 dev.to, Google Blogger, Qiita 3개 플랫폼 동시 포스팅 도구",
-            images: [
-                "/gallery/proj-10/loudSelf1.png",
-                "/gallery/proj-10/loudSelf2.png",
-                "/gallery/proj-10/loudSelf3.png",
-                "/gallery/proj-10/loudSelf4.png",
-                "/gallery/proj-10/loudSelf5.png",
-                "/gallery/proj-10/loudSelf6.png",
-                "/gallery/proj-10/loudSelf7.png",
-                "/gallery/proj-10/loudSelf1.gif",
-                "/gallery/proj-10/loudSelf2.gif",
-            ],
-        },
-    ];
+export function Philosophy01Content({ onImageClick }: Philosophy01ContentProps) {
+    //=========================== 핸들러 ============================
+    // 캐러셀 이미지 클릭 핸들러
+    const handleCarouselClick = (idx: number, imageIdx: number) => {
+        const allImages = projects.flatMap((p) => p.images); // 모든 이미지 배열열
+        const globalIndex = projects.slice(0, idx).reduce((acc, p) => acc + p.images.length, 0) + imageIdx; // 모든 이미지 중 현재 이미지 인덱스
+        onImageClick?.(allImages, globalIndex); // 모든 이미지 배열과 전체 이미지 인덱스를 라이트박스로 전달해서 오픈
+    };
 
     return (
         <div className="space-y-8 md:space-y-12">
@@ -144,18 +72,18 @@ export function Philosophy01Content({ onImageClick }: { onImageClick?: (images: 
                             <div className="w-full">
                                 <Swiper
                                     modules={[Navigation, Pagination]}
-                                    spaceBetween={0}
-                                    slidesPerView={1}
-                                    navigation
+                                    spaceBetween={0} // 슬라이드 간격 0
+                                    slidesPerView={1} // 슬라이드 1개씩 보여줌
+                                    navigation // 네비게이션 버튼 표시
                                     pagination={{
-                                        clickable: true,
+                                        clickable: true, // 페이지네이션 버튼 클릭 가능
                                     }}
-                                    loop={project.images.length > 1}
-                                    className="editorial-swiper"
+                                    loop={project.images.length > 1} // 이미지 개수가 1개 이상이면 루프 설정
+                                    className="editorial-swiper" // 커스텀 스타일 적용
                                     style={
                                         {
-                                            "--swiper-navigation-color": "#374151",
-                                            "--swiper-navigation-size": "16px",
+                                            "--swiper-navigation-color": "#374151", // 네비게이션 버튼 색상
+                                            "--swiper-navigation-size": "16px", // 네비게이션 버튼 크기
                                         } as React.CSSProperties
                                     }
                                 >
@@ -164,12 +92,7 @@ export function Philosophy01Content({ onImageClick }: { onImageClick?: (images: 
                                             <div
                                                 className="w-full aspect-video cursor-pointer bg-white flex items-center justify-center"
                                                 onClick={() => {
-                                                    const allImages = projects.flatMap((p) => p.images);
-                                                    const globalIndex =
-                                                        projects
-                                                            .slice(0, idx)
-                                                            .reduce((acc, p) => acc + p.images.length, 0) + imageIdx;
-                                                    onImageClick?.(allImages, globalIndex);
+                                                    handleCarouselClick(idx, imageIdx);
                                                 }}
                                             >
                                                 <LazyLoadImage

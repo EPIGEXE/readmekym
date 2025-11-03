@@ -1,41 +1,8 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import { growthChartData, growthEvidence } from "./philosophyData";
 
 // 성장하는 개발자 - 빠른 학습과 실전 적용
 export function Philosophy02Content() {
-    // 기술 성장 타임라인 차트 데이터
-    const growthChartData = [
-        { date: "2021.09", frontend: 0, backend: 0, others: 10 },
-        { date: "2022.06", frontend: 0, backend: 0, others: 25 },
-        { date: "2023.12", frontend: 0, backend: 0, others: 35 },
-        { date: "2024.01", frontend: 8, backend: 20, others: 38 },
-        { date: "2024.04", frontend: 15, backend: 40, others: 42 },
-        { date: "2024.07", frontend: 28, backend: 50, others: 46 },
-        { date: "2024.11", frontend: 48, backend: 53, others: 48 },
-        { date: "2024.12", frontend: 58, backend: 55, others: 50 },
-        { date: "2025.01", frontend: 70, backend: 57, others: 52 },
-        { date: "2025.02", frontend: 75, backend: 58, others: 53 },
-        { date: "2025.07", frontend: 80, backend: 60, others: 54 },
-        { date: "2025.08", frontend: 83, backend: 62, others: 55 },
-        { date: "2025.10", frontend: 85, backend: 63, others: 55 },
-    ];
-
-    // 성장 근거 (프로젝트 기반)
-    const growthEvidence = [
-        { period: "2021.09", event: "PLM 엔지니어 시작", tech: "Teamcenter BOM 설계", category: "others" },
-        { period: "2022.06", event: "PLM 전문화", tech: "A사/B사 프로젝트 완수", category: "others" },
-        { period: "2024.01", event: "C# .NET 레거시 개선", tech: "Windows Forms 개선", category: "backend" },
-        { period: "2024.04", event: "Spring Boot 첫 프로젝트", tech: "Thymeleaf UI 재구축", category: "backend" },
-        { period: "2024.07", event: "SNMP 마이크로서비스", tech: "Spring Cloud 구축", category: "backend" },
-        { period: "2024.07", event: "React 전환 시작", tech: "SNMP 인터페이스 서버", category: "frontend" },
-        { period: "2024.11", event: "차트 시각화 프로젝트", tech: "Chart.js + shadcn/ui", category: "frontend" },
-        { period: "2024.12", event: "Electron 데스크탑 앱", tech: "React + SQLite 가계부", category: "frontend" },
-        { period: "2025.01", event: "WebSocket 실시간 통신", tech: "Konva 도면 기반 UI", category: "frontend" },
-        { period: "2025.01", event: "팀 협업 프로젝트", tech: "Next.js + Tanstack Query", category: "frontend" },
-        { period: "2025.02", event: "AI 그래프 시각화", tech: "React Flow + Dagre", category: "frontend" },
-        { period: "2025.07", event: "Next.js SSG 마스터", tech: "SEO 최적화 스캠 방지", category: "frontend" },
-        { period: "2025.08", event: "LLM API 통합", tech: "TypeORM + 다국어 자동번역", category: "backend" },
-        { period: "2025.10", event: "Framer Motion 애니메이션", tech: "인터랙티브 포트폴리오", category: "frontend" },
-    ];
 
     return (
         <div className="space-y-8 md:space-y-12">
