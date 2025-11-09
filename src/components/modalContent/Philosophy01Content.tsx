@@ -79,6 +79,7 @@ export function Philosophy01Content({ onImageClick }: Philosophy01ContentProps) 
                                         clickable: true, // 페이지네이션 버튼 클릭 가능
                                     }}
                                     loop={project.images.length > 1} // 이미지 개수가 1개 이상이면 루프 설정
+                                    watchSlidesProgress // 슬라이드 진행상황 감시 (인접 슬라이드 미리 로드용)
                                     className="editorial-swiper" // 커스텀 스타일 적용
                                     style={
                                         {
@@ -99,6 +100,7 @@ export function Philosophy01Content({ onImageClick }: Philosophy01ContentProps) 
                                                     src={image}
                                                     alt={`${project.title} - ${imageIdx + 1}`}
                                                     effect="blur"
+                                                    threshold={300} // 뷰포트 500px 전에 미리 로드 시작
                                                     className="max-w-full max-h-full object-contain border border-gray-200 rounded hover:opacity-90 transition-opacity"
                                                 />
                                             </div>
