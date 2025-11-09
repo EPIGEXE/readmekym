@@ -954,7 +954,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
             fullDescription:
                 '신입사원들이 회사 생활에 빠르게 적응할 수 있도록 돕는 온보딩 플랫폼입니다. 개발자들이 {{"신입사원을 위한 서비스"라는 공동 목표에 공감하여 시작한 팀 프로젝트}}입니다. {{프론트엔드 2명, 백엔드 2명, 디자이너 2명으로 구성된 6인 팀에서 프론트엔드 개발자로 참여}}하여 용어 사전, 마이페이지, 커뮤니티 기능을 전담 개발했습니다.',
             teamSize: 5,
-            role: "프론트엔드 개발자 - 용어 사전, 마이페이지, 커뮤니티 담당",
+            role: "프론트엔드 개발자",
             repository: "https://github.com/WELKIT/welkit-frontend",
             implementation: [
                 {

@@ -131,8 +131,7 @@ export const ProjectSummarySidebar = ({ isOpen, onClose, projectSummaryData }: P
                         }
                         onClose();
                     }}
-                    className="w-full py-2.5 md:py-3 bg-gray-900 text-white hover:bg-gray-800 transition-colors text-xs md:text-sm tracking-wider uppercase font-medium"
-                    style={{ fontFamily: "'Pretendard', sans-serif" }}
+                    className="w-full py-2.5 md:py-3 bg-gray-900 text-white hover:bg-gray-800 transition-colors text-xs md:text-sm tracking-wider uppercase font-medium cursor-pointer"
                 >
                     Read More →
                 </button>
@@ -182,25 +181,26 @@ export const ProjectSummarySidebar = ({ isOpen, onClose, projectSummaryData }: P
 
     // 데스크탑: 사이드바로 나옴
     return (
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {isOpen && (
                 <>
+                    {/* Backdrop - 투명하고 클릭 이벤트 통과 (뒤의 요소가 먼저 반응) */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className="fixed inset-0 bg-black/50 z-40 hidden md:block"
-                        onClick={onClose}
+                        className="fixed inset-0 bg-transparent pointer-events-none z-40 hidden md:block"
                     />
 
-                    {/* 사이드바 */}
+                    {/* 사이드바 - key를 projectId로 설정하여 교체 시 애니메이션 재생 */}
                     <motion.div
+                        key={projectSummaryData?.id} // 프로젝트 ID가 바뀌면 새 컴포넌트로 간주
                         initial={{ x: "100%" }}
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-[400px] bg-white shadow-2xl z-50 overflow-y-auto"
+                        className="fixed top-0 right-0 h-full w-[400px] bg-white shadow-2xl z-50 overflow-y-auto pointer-events-auto"
                     >
                         <div className="p-6">
                             {/* 헤더 */}
@@ -222,7 +222,7 @@ export const ProjectSummarySidebar = ({ isOpen, onClose, projectSummaryData }: P
                                 </div>
                                 <button
                                     onClick={onClose}
-                                    className="p-1.5 hover:bg-gray-100 rounded-full transition-colors ml-2 flex-shrink-0"
+                                    className="p-1.5 hover:bg-gray-100 rounded-full transition-colors ml-2 flex-shrink-0 cursor-pointer"
                                 >
                                     <X className="w-4 h-4 text-gray-500" />
                                 </button>

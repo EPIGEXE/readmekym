@@ -81,6 +81,12 @@ export function CategoryPage() {
             // 모바일: 확장/축소 토글
             setExpandedProjectId(expandedProjectId === projectId ? null : projectId);
         } else {
+            // 데스크탑: 이미 선택된 프로젝트를 다시 클릭하면 사이드바 토글
+            if (selectedProjectSummary?.id === projectId && isSidebarOpen) {
+                setIsSidebarOpen(false);
+                return;
+            }
+
             // 데스크탑: 사이드바 열기
             const detailedProject = detailedDeveloperData.projects.find((p) => p.id === projectId);
             if (detailedProject) {
@@ -96,6 +102,8 @@ export function CategoryPage() {
                     achievements: detailedProject.achievements.slice(0, 4),
                     fullDescription: detailedProject.fullDescription,
                 };
+
+                // 프로젝트 데이터 업데이트 (key prop이 변경되어 자동으로 애니메이션 재생)
                 setSelectedProjectSummary(projectSummary);
                 setSelectedPhilosophy(null);
                 setIsSidebarOpen(true);

@@ -39,6 +39,13 @@ export function TimelinePage() {
 
     const [isNavOpen, setIsNavOpen] = useState(false); // 네비게이션 메뉴 열림 여부
 
+    const [viewportWidth, setViewportWidth] = useState(() => {
+        if (typeof window !== "undefined") {
+            return window.innerWidth;
+        }
+        return 1400;
+    }); // 뷰포트 너비 추적
+
     // ============================ useRef ============================
     const yearPositionsRef = useRef<{ [key: number]: number }>({}); // 연도별 위치 저장용 ref
 
@@ -54,6 +61,25 @@ export function TimelinePage() {
     const MOBILE_EXPERIENCE_WIDTH = 140;
     const MOBILE_PROJECT_WIDTH = 140; // 1레인
     const MOBILE_SKILLS_WIDTH = 100;
+
+    // 반응형 처리
+    const SKILLS_HIDE_THRESHOLD = 1650; // Skills 숨김 임계값 (1650px)
+    const showSkills = !isMobile && viewportWidth >= SKILLS_HIDE_THRESHOLD;
+
+    // 타임라인 전체 너비 계산
+    const TIMELINE_BASE_WIDTH = 1550; // 라벨 + 컬럼들 + gap + 우측 스킬 스택 전체
+    const TIMELINE_WITHOUT_SKILLS = 1200; // Skills 제외한 너비
+
+    // transform scale 계산 (화면이 좁으면 축소)
+    const getTimelineScale = () => {
+        if (isMobile) return 1;
+        const baseWidth = showSkills ? TIMELINE_BASE_WIDTH : TIMELINE_WITHOUT_SKILLS;
+        const availableWidth = viewportWidth - 100; // 여유 공간
+        if (availableWidth >= baseWidth) return 1;
+        return Math.max(availableWidth / baseWidth, 0.65); // 최소 65%까지 축소
+    };
+
+    const timelineScale = getTimelineScale();
 
     // 연도 범위 계산 (2021년 9월부터 시작)
     const totalYears = developerData.yearRange.end - developerData.yearRange.start + 1;
@@ -83,15 +109,16 @@ export function TimelinePage() {
         saveYearPositions();
     }, [isMobile]); // isMobile 변경 시 재계산
 
-    // 화면이 모바일인지 감지
+    // 화면 크기 감지 (모바일 여부 + 뷰포트 너비)
     useEffect(() => {
-        const mediaQuery = window.matchMedia("(max-width: 767px)");
-        const checkMobile = () => {
-            setIsMobile(mediaQuery.matches);
+        const handleResize = () => {
+            const width = window.innerWidth;
+            setViewportWidth(width);
+            setIsMobile(width <= 767);
         };
-        checkMobile();
-        mediaQuery.addEventListener("change", checkMobile);
-        return () => mediaQuery.removeEventListener("change", checkMobile);
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     // 스크롤 이벤트로 뷰포트를 지나는 스킬의 추가/제거 처리
@@ -626,7 +653,17 @@ export function TimelinePage() {
                 className="flex mb-6 sticky top-0 bg-[#F8F8F8] z-20 py-4"
                 style={{ paddingLeft: isMobile ? "52px" : "150px" }}
             >
-                <div className={`flex ${isMobile ? "gap-2" : "gap-8"}`}>
+                <div
+                    className={`flex ${isMobile ? "gap-2" : "gap-8"}`}
+                    style={
+                        !isMobile && timelineScale < 1
+                            ? {
+                                transform: `scale(${timelineScale})`,
+                                transformOrigin: 'left center',
+                            }
+                            : {}
+                    }
+                >
                     <div
                         className={`${
                             isMobile ? "text-sm" : "text-[28px]"
@@ -660,7 +697,7 @@ export function TimelinePage() {
                             </div>
                         )}
                     </div>
-                    {!isMobile && (
+                    {showSkills && (
                         <div
                             className="text-[28px] font-semibold crayon-highlight crayon-highlight-silver font-cafe24-gowoonbam inline-block"
                             style={{ width: `${SKILLS_WIDTH}px` }}
@@ -673,7 +710,17 @@ export function TimelinePage() {
 
             <div className="flex gap-4">
                 {/* 타임라인 컨테이너 */}
-                <div className="flex-1">
+                <div
+                    className="flex-1"
+                    style={
+                        !isMobile && timelineScale < 1
+                            ? {
+                                transform: `scale(${timelineScale})`,
+                                transformOrigin: 'left top',
+                            }
+                            : {}
+                    }
+                >
                     <div className={`flex ${isMobile ? "gap-2" : "gap-4"}`}>
                         {/* 연도 및 월 라벨 */}
                         <div className="flex">
@@ -692,13 +739,13 @@ export function TimelinePage() {
                             )}
                             {renderExperienceColumn()}
                             {renderProjectsColumn()}
-                            {!isMobile && renderSkillsColumn()}
+                            {showSkills && renderSkillsColumn()}
                         </div>
                     </div>
                 </div>
 
                 {/* 수집된 스킬들을 우측에 별도로 표시 (데스크톱만) */}
-                {!isMobile && stackedSkills.frontend.concat(stackedSkills.backend, stackedSkills.other).length > 0 && (
+                {showSkills && stackedSkills.frontend.concat(stackedSkills.backend, stackedSkills.other).length > 0 && (
                     <div className="sticky top-20 ml-4 self-start">
                         <div className="flex flex-wrap gap-1" style={{ width: "200px" }}>
                             {(() => {
