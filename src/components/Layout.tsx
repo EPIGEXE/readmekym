@@ -42,7 +42,7 @@ export function Layout() {
                                     whileHover={{ scale: 1.05 }}
                                 >
                                     <Grid3x3 size={16} />
-                                    <span className="text-xs md:text-sm font-medium">Category</span>
+                                    <span className="text-xs md:text-sm font-medium">Resume</span>
                                 </motion.div>
                             </Link>
 
