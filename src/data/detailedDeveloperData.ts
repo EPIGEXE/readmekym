@@ -598,7 +598,7 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 ],
                 whatCouldBeImproved: [
                     "{{실제 프로덕션으로 운영하기에 UI/UX, 데이터 처리, 성능 최적화 등 부족한 부분이 많음}}",
-                    "데이터 업데이트 자동화 메커니즘 부족",
+                    "Redux Toolkit으로 비동기 상태 등을 처리했는데 {{Tanstack Query + Zustand 조합이 더 쉽고 편함}}",
                     "SVG 렌더링 순서 변경 로직이 복잡하여 더 간단한 방법 필요",
                 ],
                 lessonsLearned: [

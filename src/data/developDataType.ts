@@ -13,9 +13,9 @@ export interface Experience {
     subtitle?: string;
     description?: string;
     startYear: number;
-    endYear: number;
+    endYear: number | null; // null이면 "현재"
     startMonth: number; // 1-12 for month
-    endMonth: number; // 1-12 for month
+    endMonth: number | null; // null이면 "현재"
 }
 
 export interface Project {
@@ -24,9 +24,9 @@ export interface Project {
     title: string;
     description?: string;
     startYear: number;
-    endYear: number;
+    endYear: number | null; // null이면 "현재"
     startMonth: number; // 1-12 for month
-    endMonth: number; // 1-12 for month
+    endMonth: number | null; // null이면 "현재"
     skills: SkillTag[];
     experienceId?: string; // 연관된 경력 ID (독립 프로젝트면 undefined)
 }

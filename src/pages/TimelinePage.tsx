@@ -7,7 +7,6 @@ import { SkillBadge } from "../components/ui/SkillBadge";
 import { Signpost, X } from "lucide-react";
 import { ProjectSummarySidebar } from "../components/common/ProjectSummarySidebar";
 import type { SidebarData, SkillTag } from "../types/common";
-import { getYearsArray } from "../utils/utils";
 import type { Project } from "../data/developDataType";
 
 export interface StackedSkills {
@@ -62,32 +61,40 @@ export function TimelinePage() {
     const MOBILE_PROJECT_WIDTH = 140; // 1레인
     const MOBILE_SKILLS_WIDTH = 100;
 
-    // 반응형 처리
-    const SKILLS_HIDE_THRESHOLD = 1650; // Skills 숨김 임계값 (1650px)
-    const showSkills = !isMobile && viewportWidth >= SKILLS_HIDE_THRESHOLD;
+    // 현재 날짜 기준으로 동적 연도 범위 계산
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1; // 0-indexed이므로 +1
 
-    // 타임라인 전체 너비 계산
-    const TIMELINE_BASE_WIDTH = 1550; // 라벨 + 컬럼들 + gap + 우측 스킬 스택 전체
-    const TIMELINE_WITHOUT_SKILLS = 1200; // Skills 제외한 너비
-
-    // transform scale 계산 (화면이 좁으면 축소)
-    const getTimelineScale = () => {
-        if (isMobile) return 1;
-        const baseWidth = showSkills ? TIMELINE_BASE_WIDTH : TIMELINE_WITHOUT_SKILLS;
-        const availableWidth = viewportWidth - 100; // 여유 공간
-        if (availableWidth >= baseWidth) return 1;
-        return Math.max(availableWidth / baseWidth, 0.65); // 최소 65%까지 축소
+    // 연도 범위: 시작은 고정, 끝은 현재 연도까지
+    const dynamicYearRange = {
+        start: developerData.yearRange.start,
+        end: Math.max(developerData.yearRange.end, currentYear),
     };
 
-    const timelineScale = getTimelineScale();
+    // 연도 범위 계산 (2021년 9월부터 시작, 현재까지)
+    const totalYears = dynamicYearRange.end - dynamicYearRange.start + 1;
+    // 전체 높이: 연도 수 * 12개월 - 첫해 8개월(1-8월) + 현재 연도의 현재 월까지만
+    const fullYearMonths = (totalYears - 1) * 12; // 마지막 해 제외한 월 수
+    const lastYearMonths = currentMonth; // 현재 연도의 현재 월까지
+    const totalMonths = fullYearMonths + lastYearMonths - 8; // 첫해 1-8월 제외
 
-    // 연도 범위 계산 (2021년 9월부터 시작)
-    const totalYears = developerData.yearRange.end - developerData.yearRange.start + 1;
-    const TOTAL_HEIGHT = totalYears * MONTH_HEIGHT * 12 - 8 * MONTH_HEIGHT;
-    const MOBILE_TOTAL_HEIGHT = totalYears * MOBILE_MONTH_HEIGHT * 12 - 8 * MOBILE_MONTH_HEIGHT;
+    const TOTAL_HEIGHT = totalMonths * MONTH_HEIGHT;
+    const MOBILE_TOTAL_HEIGHT = totalMonths * MOBILE_MONTH_HEIGHT;
 
-    // 연도 배열 생성
-    const yearsArray = getYearsArray(developerData);
+    // 연도 배열 생성 (동적 범위 사용)
+    const yearsArray: number[] = [];
+    for (let year = dynamicYearRange.start; year <= dynamicYearRange.end; year++) {
+        yearsArray.push(year);
+    }
+
+    // ============================ 반응형 스케일링 계산 ============================
+    // 타임라인 기본 너비 계산 (경력 + 프로젝트 + 스킬 + 여백)
+    const TIMELINE_BASE_WIDTH = EXPERIENCE_WIDTH + PROJECT_WIDTH + SKILLS_WIDTH + 250;
+    // 화면 너비에 맞게 스케일 계산 (최소 0.6, 최대 1)
+    const timelineScale = Math.min(1, Math.max(0.6, (viewportWidth - 150) / TIMELINE_BASE_WIDTH));
+    // 스킬 컬럼 표시 여부 (너비 1200px 이상에서만 표시)
+    const showSkills = !isMobile && viewportWidth > 1200;
 
     // ============================ useEffect ============================
     // 연도 위치 초기화
@@ -278,8 +285,13 @@ export function TimelinePage() {
     // ============================ 유틸 함수 ============================
     // --------------------- 레이아웃 관련 유틸 함수 ----------------------------
     // 경력, 프로젝트 바의 높이 계산
-    const getBarHeight = (startYear: number, endYear: number, startMonth: number, endMonth: number) => {
+    const getBarHeight = (startYear: number, endYear: number | null, startMonth: number, endMonth: number | null) => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
+
+        // null인 경우 현재 날짜 사용
+        const now = new Date();
+        const actualEndYear = endYear ?? now.getFullYear();
+        const actualEndMonth = endMonth ?? (now.getMonth() + 1);
 
         // 시작 연도에서의 오프셋 계산 (2021년 8월부터 시작)
         const startYearOffset = (startYear - developerData.yearRange.start) * monthHeight * 12;
@@ -288,20 +300,20 @@ export function TimelinePage() {
         // 전체 높이 계산
         let totalHeight = 0;
 
-        if (startYear === endYear) {
+        if (startYear === actualEndYear) {
             // 같은 연도 내 프로젝트
-            totalHeight = (endMonth - startMonth + 1) * monthHeight;
+            totalHeight = (actualEndMonth - startMonth + 1) * monthHeight;
         } else {
             // 시작 연도 높이
             totalHeight += (12 - startMonth + 1) * monthHeight;
 
             // 중간 연도들 높이
-            for (let year = startYear + 1; year < endYear; year++) {
+            for (let year = startYear + 1; year < actualEndYear; year++) {
                 totalHeight += 12 * monthHeight;
             }
 
             // 종료 연도 높이
-            totalHeight += endMonth * monthHeight;
+            totalHeight += actualEndMonth * monthHeight;
         }
 
         return {
@@ -318,6 +330,14 @@ export function TimelinePage() {
      */
     const calculateProjectLayout = (): Array<Project & { laneIndex: number; offset: number; zIndex: number }> => {
         const allProjects: Array<Project & { laneIndex: number; offset: number; zIndex: number }> = [];
+
+        // null인 경우 현재 날짜 사용하는 헬퍼 함수
+        const now = new Date();
+        const getEndTime = (endYear: number | null, endMonth: number | null) => {
+            const actualEndYear = endYear ?? now.getFullYear();
+            const actualEndMonth = endMonth ?? (now.getMonth() + 1);
+            return actualEndYear * 12 + actualEndMonth;
+        };
 
         // 시작 시점 기준으로 정렬 (연도 우선, 월 보조)
         const sortedProjects = [...developerData.projects].sort((a, b) => {
@@ -341,7 +361,7 @@ export function TimelinePage() {
                 if (sameLaneProjects.length > 0) {
                     const prevProject = sameLaneProjects[sameLaneProjects.length - 1];
 
-                    const prevEndTime = prevProject.endYear * 12 + prevProject.endMonth;
+                    const prevEndTime = getEndTime(prevProject.endYear, prevProject.endMonth);
                     const currentStartTime = project.startYear * 12 + project.startMonth;
 
                     // 직전 프로젝트와 겹치면 들여쓰기
@@ -373,6 +393,26 @@ export function TimelinePage() {
         const yearHeight = isMobile ? 60 : 40;
         const height = isMobile ? MOBILE_TOTAL_HEIGHT : TOTAL_HEIGHT;
 
+        // 연도별 마진 계산 함수
+        const getYearMargin = (yearIndex: number) => {
+            const isLastYear = yearIndex === yearsArray.length - 1;
+            const isSecondToLastYear = yearIndex === yearsArray.length - 2;
+
+            if (isLastYear) {
+                // 마지막 해: 현재 월까지만 마진 (하지만 이미 컨테이너 높이로 제한됨)
+                return currentMonth * monthHeight - yearHeight;
+            } else if (isSecondToLastYear) {
+                // 마지막 해 바로 전: 12개월 전체 마진 (마지막 해로 이어지므로)
+                return monthHeight * 12 - yearHeight;
+            } else if (yearIndex === 0) {
+                // 첫 해: 9-12월만 (4개월)
+                return monthHeight * 4 - yearHeight;
+            } else {
+                // 중간 해들: 12개월 전체
+                return monthHeight * 12 - yearHeight;
+            }
+        };
+
         return (
             <div className={isMobile ? "w-6" : "w-20"} style={{ height: `${height}px` }}>
                 {yearsArray.map((year, yearIndex) => {
@@ -386,11 +426,7 @@ export function TimelinePage() {
                             style={{
                                 top: isMobile ? "80px" : "100px",
                                 height: `${yearHeight}px`,
-                                marginBottom: isLastYear
-                                    ? "0px"
-                                    : `${
-                                          yearIndex === 0 ? monthHeight * 4 - yearHeight : monthHeight * 12 - yearHeight
-                                      }px`,
+                                marginBottom: isLastYear ? "0px" : `${getYearMargin(yearIndex)}px`,
                             }}
                         >
                             <div
@@ -418,6 +454,7 @@ export function TimelinePage() {
     // 렌더링 해야하는 월의 개수를 계산해서 렌더링
     const renderMonthLabels = () => {
         const monthHeight = isMobile ? MOBILE_MONTH_HEIGHT : MONTH_HEIGHT;
+        const isLastYear = (yearIndex: number) => yearIndex === yearsArray.length - 1;
 
         return (
             <div className={isMobile ? "w-5" : "w-12"}>
@@ -426,6 +463,9 @@ export function TimelinePage() {
                         {[...Array(12)].map((_, month) => {
                             // 2021년(첫 해) 1-8월은 렌더링하지 않음
                             if (yearIndex === 0 && month < 8) return null;
+
+                            // 현재 연도(마지막 해)는 현재 월까지만 렌더링
+                            if (isLastYear(yearIndex) && month >= currentMonth) return null;
 
                             return (
                                 <div
@@ -717,6 +757,7 @@ export function TimelinePage() {
                             ? {
                                 transform: `scale(${timelineScale})`,
                                 transformOrigin: 'left top',
+                                height: `${TOTAL_HEIGHT * timelineScale}px`, // 스케일에 맞게 높이 조정
                             }
                             : {}
                     }

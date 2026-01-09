@@ -20,9 +20,9 @@ export const developerData: DeveloperData = {
             subtitle: "CATIS",
             description: "웹 개발 및 솔루션 개발",
             startYear: 2024,
-            endYear: 2025,
+            endYear: null, // 현재 진행 중
             startMonth: 1,
-            endMonth: 12,
+            endMonth: null, // 현재 진행 중
         },
     ],
     projects: [
