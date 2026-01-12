@@ -1118,6 +1118,193 @@ export const detailedDeveloperData: DetailedDeveloperData = {
                 "/gallery/proj-12/MindMap2.gif",
             ],
         },
+        {
+            id: "proj-13",
+            type: "project",
+            title: "AI 기반 학습 노트 시스템 '맥'",
+            shortDescription: "ProseMirror 에디터와 LLM 기반 3가지 학습 모드를 제공하는 개인 학습 플랫폼",
+            fullDescription:
+                "{{개발자를 위한 학습 노트 관리 및 AI 기반 면접 대비 시스템}}입니다. ProseMirror로 구현한 리치 텍스트 에디터에서 학습 노트를 작성하고, {{Gemini API를 활용한 3가지 학습 모드(단어/문장/서술형)로 면접을 준비}}할 수 있습니다. {{개인 프로젝트로 기획부터 프론트엔드, Firebase Cloud Functions 백엔드까지 전체 개발}}을 담당했습니다.",
+            teamSize: 1,
+            role: "프론트엔드 개발자",
+            repository: "https://github.com/EPIGEXE/mac",
+            live: "https://mac-ten-pearl.vercel.app/",
+            implementation: [
+                {
+                    id: "impl-1",
+                    title: "ProseMirror 기반 커스텀 에디터 구현",
+                    description:
+                        "{{Notion 스타일의 블록 에디터를 ProseMirror로 직접 구현}}했습니다. 슬래시 커맨드로 블록 타입을 선택하고, 블록 핸들로 드래그&드롭 재배치가 가능한 에디터를 만들었습니다.",
+                    challenges: [
+                        "{{ProseMirror의 낮은 추상화 수준으로 인해 스키마, 플러그인, NodeView를 모두 직접 구현해야 함}}",
+                        "슬래시 커맨드 메뉴의 키보드 네비게이션과 에디터 포커스 관리",
+                        "테이블, 체크박스 등 복잡한 노드의 커스텀 렌더링",
+                    ],
+                    solution: [
+                        "{{heading, codeBlock, table, checkbox 등 10개 이상의 노드 타입을 정의한 커스텀 스키마를 설계}}하고, 각 노드별 NodeView로 React 컴포넌트 렌더링을 구현했습니다.",
+                        "{{InputRule 플러그인으로 `/` 입력 시 SlashCommandMenu를 표시}}하고, 방향키/Enter 키 이벤트를 가로채 메뉴 네비게이션을 구현했습니다.",
+                        "prosemirror-tables 패키지와 커스텀 BlockHandle 컴포넌트로 테이블 편집과 블록 드래그&드롭을 지원했습니다.",
+                    ],
+                },
+                {
+                    id: "impl-2",
+                    title: "2단계 파이프라인으로 LLM 퀴즈 생성 최적화",
+                    description:
+                        "{{동일한 노트에서 다른 학습 모드로 전환할 때마다 개념 추출을 반복하는 비효율을 해결}}하기 위해 2단계 파이프라인을 설계했습니다.",
+                    challenges: [
+                        "{{노트 내용에서 개념 추출 → 모드별 퀴즈 생성이 매번 반복되어 LLM 호출 비용과 지연 시간 증가}}",
+                        "같은 노트로 단어 모드 → 문장 모드 전환 시 동일한 개념 추출이 중복 실행됨",
+                    ],
+                    solution: [
+                        "{{Stage 1(개념 추출)과 Stage 2(모드별 퀴즈 생성)를 분리}}하고, Stage 1 결과를 contentHash 기반으로 메모리와 Firestore에 이중 캐싱했습니다.",
+                        "같은 노트의 다른 모드 요청 시 캐시된 개념을 재사용하여 {{LLM 호출을 50% 이상 절감}}했습니다.",
+                    ],
+                },
+                {
+                    id: "impl-3",
+                    title: "sessionStorage persist로 학습 세션 복구",
+                    description:
+                        "{{학습 도중 새로고침하거나 실수로 탭을 닫았을 때 진행 상황이 모두 사라지는 문제를 해결}}했습니다.",
+                    challenges: [
+                        "3개 노트로 서술형 모드 진행 중 새로고침 시 {{현재 노트 인덱스, 각 노트별 점수, 상세 피드백이 모두 초기화}}됨",
+                        "Zustand 상태는 메모리에만 존재하여 페이지 이탈 시 유실",
+                    ],
+                    solution: [
+                        "{{Zustand의 persist 미들웨어를 sessionStorage와 연동}}하여 studySessionStore의 상태를 자동 저장/복구하도록 구현했습니다.",
+                        "selectedNoteIds, currentIndex, noteResults, essayDetails 등 핵심 상태를 직렬화하여 {{세션 단위로 학습 진행 상황을 완벽하게 복구}}합니다.",
+                    ],
+                },
+                {
+                    id: "impl-4",
+                    title: "Suspense와 manualChunks로 초기 로딩 최적화",
+                    description:
+                        "{{번들 크기가 커지면서 초기 로딩이 느려지는 문제를 Code Splitting으로 해결}}했습니다.",
+                    challenges: [
+                        "ProseMirror, ReactFlow, Recharts, Firebase 등 대형 라이브러리가 단일 번들에 포함되어 {{초기 번들 크기가 1MB 이상}}",
+                        "학습 모드 페이지에서만 필요한 차트 라이브러리가 메인 페이지 로딩을 지연",
+                    ],
+                    solution: [
+                        "{{8개 페이지를 React.lazy로 분리}}하고 Suspense fallback으로 로딩 상태를 처리했습니다.",
+                        "Vite의 {{manualChunks로 vendor-react, vendor-prosemirror, vendor-firebase, vendor-recharts, vendor-reactflow를 개별 청크로 분리}}하여 필요한 시점에만 로드되도록 최적화했습니다.",
+                    ],
+                },
+                {
+                    id: "impl-5",
+                    title: "AppError 계층화와 TanStack Query 재시도 제어",
+                    description:
+                        "{{에러 종류에 따라 사용자에게 다른 메시지를 보여주고, 재시도 가능 여부를 제어}}하기 위해 계층화된 에러 시스템을 구축했습니다.",
+                    challenges: [
+                        "DB 에러, Firebase 에러, 네트워크 에러가 모두 같은 형태로 처리되어 {{적절한 사용자 피드백 불가}}",
+                        "일시적 네트워크 오류는 재시도하되, 인증 오류나 잘못된 요청은 재시도하지 않아야 함",
+                    ],
+                    solution: [
+                        "{{AppError를 베이스로 DBError, FirebaseError를 상속}}하고, 각 에러에 code, retryable 속성을 부여했습니다.",
+                        "TanStack Query의 retry 옵션에서 {{error.retryable이 false면 재시도하지 않도록}} 선택적 재시도 로직을 구현했습니다.",
+                    ],
+                },
+            ],
+            challenges: [
+                "{{ProseMirror의 낮은 추상화 수준에서 Notion 스타일 블록 에디터 구현}}",
+                "LLM 응답의 불확실성을 처리하면서 일관된 퀴즈 품질 유지",
+                "{{오프라인 우선 설계와 Cloud Functions 연동의 균형}}",
+            ],
+            achievements: [
+                "{{2단계 캐싱으로 LLM 호출 50% 이상 절감}}",
+                "{{7개 테이블의 IndexedDB 스키마 설계로 완전한 오프라인 지원}}",
+                "Code Splitting으로 초기 번들 크기 400KB 이하로 최적화",
+                "{{질문 유형별 평가 기준 분리로 채점 정확도 개선}}",
+            ],
+            retrospective: {
+                whatWentWell: [
+                    "{{ProseMirror로 복잡한 에디터를 직접 구현하며 문서 편집기의 내부 동작 원리를 깊이 이해}}",
+                    "LLM 프롬프트 엔지니어링을 통해 {{면접 시나리오 기반 질문 생성과 평가 품질을 지속적으로 개선}}",
+                    "{{TanStack Query + Zustand 조합으로 서버 상태와 클라이언트 상태를 명확히 분리}}",
+                    "IndexedDB 기반 오프라인 저장소로 네트워크 없이도 노트 작성 가능",
+                ],
+                whatCouldBeImproved: [
+                    "{{LLM 응답 품질이 프롬프트에 크게 의존하여 지속적인 튜닝 필요}}",
+                    "테스트 커버리지를 더 높여 리팩토링 안정성 확보",
+                    "모바일 환경에서의 에디터 사용성 개선",
+                ],
+                lessonsLearned: [
+                    "{{ProseMirror는 학습 곡선이 가파르지만, 완전한 커스터마이징이 필요할 때 최선의 선택}}",
+                    "LLM 기반 기능은 {{프롬프트 설계가 코드만큼 중요하며, 지속적인 개선이 필수}}",
+                    "{{오프라인 우선 설계는 초기에 복잡하지만 UX와 성능 모두에서 큰 이점}}",
+                    "2단계 캐싱 같은 {{파이프라인 설계가 LLM 비용 최적화의 핵심}}",
+                    "에러를 계층화하면 {{사용자 경험과 개발자 디버깅 모두 개선}}됨",
+                ],
+            },
+            images: [],
+        },
+        {
+            id: "proj-14",
+            type: "project",
+            title: "시간 기록 앱 '타이밍'",
+            shortDescription: "블록 기반 시간 기록 앱의 테마 커스터마이징 시스템 구현",
+            fullDescription:
+                "{{시간 기록 앱 Flashback의 테마 편집 기능을 설계 및 구현}}했습니다. 사용자가 구매한 컬러/컬러팩을 블록 타입별로 적용하고, {{7단계 그라데이션 색상 선택과 실시간 미리보기}}를 제공합니다. {{재사용 가능한 Accordion 컴포넌트와 useThemeEditor 커스텀 훅을 설계}}하여 PresetEditor, BlockEditor, QuickThemeEditor 등 여러 화면에서 일관된 테마 편집 경험을 제공합니다.",
+            teamSize: 5,
+            role: "프론트엔드 개발자",
+            live: 'https://nalda.co/',
+            implementation: [
+                {
+                    id: "impl-1",
+                    title: "useThemeEditor 커스텀 훅으로 테마 상태 관리 통합",
+                    description:
+                        "{{ThemeEditor, QuickThemeEditor, BlockColorEditor 등 여러 컴포넌트에서 중복되던 테마 관련 로직을 하나의 커스텀 훅으로 추출}}했습니다.",
+                    challenges: [
+                        "{{컬러팩 적용, 개별 컬러 적용, 블록타입별 색상 할당 등 복잡한 상태 관리 로직이 여러 컴포넌트에 중복}}",
+                        "Firestore 저장/로드와 로컬 상태 동기화 로직이 분산되어 유지보수 어려움",
+                        "변경사항 감지(hasChanges)와 되돌리기(reset) 로직의 일관성 유지",
+                    ],
+                    solution: [
+                        "{{currentTheme, appliedColors, appliedPackId 등 핵심 상태와 loadCurrentTheme, applyColorPack, selectColorForBlockType 등 액션 함수를 하나의 훅으로 통합}}했습니다.",
+                        "original 상태를 별도로 관리하여 {{변경사항 감지(hasChanges)와 되돌리기(reset) 기능을 자동화}}했습니다.",
+                        "useMockData 옵션으로 {{개발 환경에서는 Mock 데이터, 프로덕션에서는 Firestore를 사용}}하도록 분기 처리했습니다.",
+                    ],
+                },
+                {
+                    id: "impl-2",
+                    title: "재사용 가능한 Accordion 컴포넌트 설계",
+                    description:
+                        "{{QuickThemeEditor의 아코디언 UI를 재사용 가능한 컴포넌트로 분리}}하여 BlockColorEditor, PresetEditor 등에서 일관된 UX를 제공합니다.",
+                    challenges: [
+                        "QuickThemeEditor에서만 사용하던 아코디언이 다른 화면에서도 필요해짐",
+                        "헤더 우측 커스텀 요소(색상 미리보기, 선택된 값 표시)가 컴포넌트마다 다름",
+                        "CSS 모듈 기반 스타일링과 확장/축소 애니메이션 처리",
+                    ],
+                    solution: [
+                        "{{label, isExpanded, onToggle, headerRight, children을 props로 받는 범용 Accordion 컴포넌트}}를 설계했습니다.",
+                        "{{headerRight prop으로 색상 인디케이터, 선택된 색상명 등 커스텀 요소를 주입}}할 수 있도록 구현했습니다.",
+                        "contentRef를 활용한 {{동적 높이 계산으로 부드러운 확장/축소 애니메이션}}을 구현했습니다.",
+                    ],
+                },
+            ],
+            challenges: [
+                "{{여러 화면에서 공유되는 테마 상태 관리 로직의 중복 제거}}",
+                "컬러팩 적용과 개별 컬러 적용의 상호 배타적 동작 구현",
+                "{{Mock 데이터와 실제 Firestore 데이터 간의 원활한 전환}}",
+            ],
+            achievements: [
+                "{{useThemeEditor 훅으로 300줄 이상의 중복 로직 제거}}",
+                "{{Accordion 컴포넌트로 화면에서 일관된 UX 제공}}",
+                "테마 편집 관련 컴포넌트 간 의존성 분리로 유지보수성 향상",
+            ],
+            retrospective: {
+                whatWentWell: [
+                    "{{커스텀 훅을 통한 상태 관리 로직 추출로 컴포넌트 코드량 대폭 감소}}",
+                    "{{headerRight prop 패턴으로 Accordion의 유연성 확보}}",
+                    "Mock 데이터 시스템 구축으로 백엔드 의존 없이 UI 개발 가능",
+                ],
+                whatCouldBeImproved: [
+                ],
+                lessonsLearned: [
+                    "{{재사용 컴포넌트는 children과 render props 패턴을 적절히 조합}}하면 확장성 있게 설계 가능",
+                    "{{커스텀 훅은 상태 + 액션 + 파생 상태를 함께 묶어야 응집도가 높아짐}}",
+                ],
+            },
+            images: [],
+        }
         // {
         //     id: "proj-13",
         //     type: "project",
